@@ -77,11 +77,26 @@ public class GItem extends AWidget implements ItemInfo.ResOwner {
     public Glob glob() {
 	return(ui.sess.glob);
     }
-
+    
     public List<ItemInfo> info() {
-	if(info == null)
-	    info = ItemInfo.buildinfo(this, rawinfo);
-	return(info);
+   if(info == null)
+        {
+       info = ItemInfo.buildinfo(this, rawinfo);
+            
+            ItemInfo.Name nm = ItemInfo.find(ItemInfo.Name.class, info);
+            if(nm!=null)
+            {
+                if(meter > 0)
+                {
+                    String newtext = nm.str.text + "   (" + meter + "% done)";
+                    ItemInfo.Name newnm = new ItemInfo.Name(nm.owner, newtext);
+                    int nameidx=info.indexOf(nm);
+                    info.set(nameidx, newnm);
+                }
+            }     
+        }
+        
+   return(info);
     }
     
     public Resource resource() {
