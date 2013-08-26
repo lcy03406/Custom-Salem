@@ -901,9 +901,21 @@ public class MapView extends PView implements DTarget {
 		throw(new MCache.LoadingMap());
 	    undelay(delayed, g);
 	    super.draw(g);
+            //project marathon
+            //assumes you use the freestyle cam.
+            //but who doesn't?
+            Matrix4f dgpcam=new Matrix4f(), dgpwxf=new Matrix4f();
+            dgpcam.load(g.st.cam);
+            dgpwxf.load(g.st.wxf);
+            
 	    undelay(delayed2, g);
 	    poldraw(g);
 	    partydraw(g);
+            
+            //project marathon
+            if(Config.showgobpath)
+                drawGobPath(g, dgpcam, dgpwxf);
+            
 	    glob.map.reqarea(cc.div(tilesz).sub(MCache.cutsz.mul(view + 1)),
 			     cc.div(tilesz).add(MCache.cutsz.mul(view + 1)));
 	} catch(Loading e) {
@@ -913,6 +925,60 @@ public class MapView extends PView implements DTarget {
 	    g.chcolor(Color.WHITE);
 	    g.atext(text, sz.div(2), 0.5, 0.5);
 	}
+    }
+    
+       
+    //project marathon
+    private void drawGobPath(GOut g, Matrix4f dgpcam, Matrix4f dgpwxf) {
+	Moving m;
+	LinMove gobpath;
+	g.chcolor(Color.GREEN);
+        
+        Matrix4f cam = new Matrix4f(), wxf = new Matrix4f(),
+            mv = new Matrix4f(), wxfaccent = new Matrix4f();
+        mv.load(cam.load(dgpcam)).mul1(wxf.load(dgpwxf));
+        wxfaccent = wxf.trim3(1).transpose();
+        float field = 0.5f;
+        float aspect = ((float)g.sz.y) / ((float)g.sz.x);
+        Projection proj = Projection.frustum(-field, field, -aspect * field, aspect * field, 1, 5000);
+
+	synchronized (glob.oc) {
+	    for (Gob gob : glob.oc){
+                if(gob.sc == null){continue;}
+                m = gob.getattr(Moving.class);
+                if((m!=null)&&(m instanceof LinMove)){
+                    gobpath = (LinMove) m;
+                    
+                    Coord3f reposstart = gob.getc();
+                    reposstart.x -= wxf.get(3,0);
+                    reposstart.y *= -1;
+                    reposstart.y -= wxf.get(3,1);
+                    reposstart.z -= wxf.get(3,2);
+                    reposstart = wxfaccent.mul4(reposstart);
+                    Coord3f sstart = proj.toscreen(mv.mul4(reposstart), g.sz);
+                    Coord scstart = new Coord(sstart);
+                    
+                    float targetheight = 0;
+                    try{
+                        targetheight = glob.map.getcz(gobpath.t);
+                    }catch(MCache.LoadingMap e){
+                        targetheight = reposstart.z;
+                    }
+                    
+                    Coord3f reposend = new Coord3f(gobpath.t.x, gobpath.t.y, targetheight);
+                    reposend.x -= wxf.get(3,0);
+                    reposend.y *= -1;
+                    reposend.y -= wxf.get(3,1);
+                    reposend.z -= wxf.get(3,2);
+                    reposend = wxfaccent.mul4(reposend);
+                    Coord3f send = proj.toscreen(mv.mul4(reposend), g.sz);
+                    Coord scend = new Coord(send);
+                    
+                    g.line(scstart, scend,2);
+                }
+	    }
+	}
+	g.chcolor();
     }
     
     public void tick(double dt) {

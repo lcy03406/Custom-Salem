@@ -185,6 +185,14 @@ public abstract class PView extends Widget {
 	    if(s.r instanceof Render2D)
 		((Render2D)s.r).draw2d(g);
 	}
+        
+        //project marathon
+        //rendering 2D loses all earlier settings for 3D,
+        //so we put them back
+        g.st.set(def);
+        g.apply();
+        g.st.set(bk);
+        
 	if(curf != null)
 	    curf.tick("2d");
 	if(curf != null)
