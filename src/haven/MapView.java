@@ -931,7 +931,6 @@ public class MapView extends PView implements DTarget {
     //project marathon
     private void drawGobPath(GOut g, Matrix4f dgpcam, Matrix4f dgpwxf) {
 	Moving m;
-	LinMove gobpath;
 	g.chcolor(Color.GREEN);
         
         Matrix4f cam = new Matrix4f(), wxf = new Matrix4f(),
@@ -946,10 +945,49 @@ public class MapView extends PView implements DTarget {
 	    for (Gob gob : glob.oc){
                 if(gob.sc == null){continue;}
                 m = gob.getattr(Moving.class);
-                if((m!=null)&&(m instanceof LinMove)){
-                    gobpath = (LinMove) m;
+                if(m!=null){
+                    Coord3f reposstart=Coord3f.o, reposend=Coord3f.o;
                     
-                    Coord3f reposstart = gob.getc();
+                    reposstart = gob.getc();
+                    if(m instanceof LinMove)
+                    {
+                        LinMove gobpath = (LinMove) m;
+                        float targetheight = 0;
+                        try{
+                            targetheight = glob.map.getcz(gobpath.t);
+                        }catch(MCache.LoadingMap e){
+                            targetheight = reposstart.z;
+                        }
+                        reposend = new Coord3f(gobpath.t.x, gobpath.t.y, targetheight);
+                    }
+                    else if(m instanceof Homing)
+                    {
+                        Homing gobpath = (Homing) m;
+                        float targetheight = 0;
+                        try{
+                            targetheight = glob.map.getcz(gobpath.tc);
+                        }catch(MCache.LoadingMap e){
+                            targetheight = reposstart.z;
+                        }
+                        reposend = new Coord3f(gobpath.tc.x, gobpath.tc.y, targetheight);
+                    }
+                    else if(m instanceof Following)
+                    {
+                        Following gobpath = (Following) m;
+                        long targetid = gobpath.tgt;
+                        Gob target = glob.oc.getgob(targetid);
+                        if(target!=null)
+                        {
+                            reposend = target.getc();
+                        }
+                        else{
+                            continue;
+                        }
+                    }
+                    else{
+                        continue;
+                    }
+                    
                     reposstart.x -= wxf.get(3,0);
                     reposstart.y *= -1;
                     reposstart.y -= wxf.get(3,1);
@@ -957,15 +995,7 @@ public class MapView extends PView implements DTarget {
                     reposstart = wxfaccent.mul4(reposstart);
                     Coord3f sstart = proj.toscreen(mv.mul4(reposstart), g.sz);
                     Coord scstart = new Coord(sstart);
-                    
-                    float targetheight = 0;
-                    try{
-                        targetheight = glob.map.getcz(gobpath.t);
-                    }catch(MCache.LoadingMap e){
-                        targetheight = reposstart.z;
-                    }
-                    
-                    Coord3f reposend = new Coord3f(gobpath.t.x, gobpath.t.y, targetheight);
+                                        
                     reposend.x -= wxf.get(3,0);
                     reposend.y *= -1;
                     reposend.y -= wxf.get(3,1);
