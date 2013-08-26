@@ -1,6 +1,7 @@
 /.classpath
 /.project
 /build
+/nbproject
 *~
 
 /.externalToolBuilders

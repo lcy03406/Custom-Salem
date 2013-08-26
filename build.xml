@@ -100,7 +100,12 @@
 	<target name="deftgt" depends="jars, appletview" />
 
 	<target name="run" depends="jars">
-		<java jar="build/salem.jar" fork="true" />
+		<java jar="build/salem.jar" 
+				dir="build" 
+				fork="true" 
+				maxmemory="1024m">
+			<arg line="-U http://plymouth.seatribe.se/res/ plymouth.seatribe.se" />
+		</java>
 	</target>
 
 	<target name="clean">
