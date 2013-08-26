@@ -47,6 +47,11 @@ public class Charlist extends Widget {
     public IButton sau, sad;
     public List<Char> chars = new ArrayList<Char>();
     
+    //project alphabet
+    private boolean charschanged = false;
+    public List<Char> alphachars = new ArrayList<Char>();
+    
+    
     public static class Char {
 	static Text.Furnace tf = new Text.Imager(new Text.Foundry(new java.awt.Font("Serif", java.awt.Font.PLAIN, 20), java.awt.Color.WHITE).aa(true)) {
 		protected BufferedImage proc(Text text) {
@@ -62,6 +67,13 @@ public class Charlist extends Widget {
 	    this.name = name;
 	    nt = tf.render(name);
 	}
+        
+        public static class CharComparator implements Comparator<Char>
+        {
+            public int compare(Char c1, Char c2){
+                return c1.name.compareTo(c2.name);
+            }
+        }
     }
     
     @RName("charlist")
@@ -87,6 +99,19 @@ public class Charlist extends Widget {
 	    };
 	sau.hide();
 	sad.hide();
+        
+        //project alphabet
+        CheckBox alphacheck = new CheckBox(new Coord(50,sz.y-30),this,"Alphabetical sorting"){
+            @Override
+            public void changed(boolean val) {
+                super.changed(val);
+                Config.alphasort = val;
+                Utils.setprefb("alphasort", val);
+            }
+
+            {tooltip = Text.render("Sorts the list of characters alphabetically rather than by last log-in.");}
+        };
+        alphacheck.a = Config.alphasort;
     }
     
     public void scroll(int amount) {
@@ -102,12 +127,19 @@ public class Charlist extends Widget {
     public void draw(GOut g) {
 	Coord cc = new Coord((clu[0].getWidth() - bg.sz().x) / 2, bmargin);
 	synchronized(chars) {
-	    for(Char c : chars) {
+            //project alphabet
+            if(charschanged)
+            {
+                    alphachars = new ArrayList<Char>(chars);
+                    Collections.sort(alphachars, new Char.CharComparator());
+            }
+
+            for(Char c : (Config.alphasort?alphachars:chars)) {
 		// c.ava.hide();
 		c.plb.hide();
 	    }
-	    for(int i = 0; (i < height) && (i + this.y < chars.size()); i++) {
-		Char c = chars.get(i + this.y);
+	    for(int i = 0; (i < height) && (i + this.y < (Config.alphasort?alphachars:chars).size()); i++) {
+		Char c = (Config.alphasort?alphachars:chars).get(i + this.y);
 		g.image(bg, cc);
 		// c.ava.show();
 		c.plb.show();
@@ -155,6 +187,7 @@ public class Charlist extends Widget {
 	    c.plb.hide();
 	    synchronized(chars) {
 		chars.add(c);
+                charschanged = true;
 		if(chars.size() > height) {
 		    sau.show();
 		    sad.show();

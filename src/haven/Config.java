@@ -105,6 +105,8 @@ public class Config {
     public static int fieldproducescale = (int) Utils.getpreff("fieldproducescale", 1.0f);
     //project purity
     public static boolean alwaysshowpurity = Utils.getprefb("alwaysshowpurity", false);
+    //project alphabet
+    public static boolean alphasort = Utils.getprefb("alphasort", false);
     
     static {
 	String p;
