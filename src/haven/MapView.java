@@ -963,13 +963,15 @@ public class MapView extends PView implements DTarget {
                     else if(m instanceof Homing)
                     {
                         Homing gobpath = (Homing) m;
-                        float targetheight = 0;
-                        try{
-                            targetheight = glob.map.getcz(gobpath.tc);
-                        }catch(MCache.LoadingMap e){
-                            targetheight = reposstart.z;
+                        long targetid = gobpath.tgt;
+                        Gob target = glob.oc.getgob(targetid);
+                        if(target!=null)
+                        {
+                            reposend = target.getc();
                         }
-                        reposend = new Coord3f(gobpath.tc.x, gobpath.tc.y, targetheight);
+                        else{
+                            continue;
+                        }
                     }
                     else if(m instanceof Following)
                     {
