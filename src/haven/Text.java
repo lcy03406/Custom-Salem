@@ -120,6 +120,11 @@ public class Text {
 	    this(new Font(font, Font.PLAIN, psz));
 	}
 		
+        //project alert
+        public Foundry(String font, int psz, int style) {
+            this(new Font(font, style, psz));
+        }
+        		
 	public Foundry aa(boolean aa) {
 	    this.aa = aa;
 	    return(this);

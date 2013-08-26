@@ -30,6 +30,7 @@ import static haven.Window.cbtni;
 
 import java.util.*;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextHitInfo;
@@ -137,6 +138,16 @@ public class ChatUI extends Widget {
 	private final Scrollbar sb;
 	public IButton cbtn;
 	
+        //project alert
+        protected boolean read = true;
+        
+        //project alert
+        @Override
+        public void show(){
+            super.show();
+            read = true;
+        }
+        
 	public static abstract class Message {
 	    public final long time = System.currentTimeMillis();
 	    
@@ -649,6 +660,10 @@ public class ChatUI extends Widget {
 		    if(notify)
 			notify(cmsg);
 		}
+                
+                //project alert
+                if(!visible)
+                    read = false;
 	    }
 	}
 	
@@ -680,6 +695,10 @@ public class ChatUI extends Widget {
 		    append(cmsg);
 		    notify(cmsg);
 		}
+                
+                //project alert
+                if(!visible)
+                    read = false;
 	    }
 	}
     }
@@ -716,6 +735,10 @@ public class ChatUI extends Widget {
 		    Message cmsg = new InMessage(line, iw());
 		    append(cmsg);
 		    notify(cmsg);
+                    
+                    //project alert
+                    if(!visible)
+                        read = false;
 		} else if(t.equals("out")) {
 		    append(new OutMessage(line, iw()));
 		}
@@ -766,13 +789,19 @@ public class ChatUI extends Widget {
 	public final Text.Foundry nf = new Text.Foundry("SansSerif", 10);
 	private final List<DarkChannel> chls = new ArrayList<DarkChannel>();
 	private int s = 0;
+        
+        //project alert
+        public final Text.Foundry nfunread = new Text.Foundry("SansSerif", 12, Font.BOLD);
 	
 	private class DarkChannel {
 	    public final Channel chan;
 	    public Text rname;
+            //project alert
+            public boolean rread;
 	    
 	    private DarkChannel(Channel chan) {
 		this.chan = chan;
+                this.rread = false;
 	    }
 	}
 	
@@ -809,8 +838,23 @@ public class ChatUI extends Widget {
 			g.frect(new Coord(0, y), new Coord(sz.x, 19));
 		    }
 		    g.chcolor(255, 255, 255, 255);
-		    if((ch.rname == null) || !ch.rname.text.equals(ch.chan.name()))
-			ch.rname = nf.render(ch.chan.name());
+                    
+                    //project alert
+                    
+                    //project safari
+		    if((ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) ||ch.rread != ch.chan.read)
+                    {
+                        ch.rread = ch.chan.read;
+                        if(ch.rread)
+                        {
+                            ch.rname = nf.render(ch.chan.name());
+                        }
+                        else
+                        {
+                            ch.rname = nfunread.render(ch.chan.name());
+                        }
+                    }
+                    
 		    g.aimage(ch.rname.tex(), new Coord(sz.x / 2, y + 10), 0.5, 0.5);
 		    g.line(new Coord(5, y + 19), new Coord(sz.x - 5, y + 19), 1);
 		    y += 20;
