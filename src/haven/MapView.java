@@ -1269,7 +1269,6 @@ public class MapView extends PView implements DTarget {
         } else if(grab != null) {
             grab.mmouseup(c, button);
         }else if(Config.laptopcontrols && LMBdown && button == 1 && !mousemoved && placing == null){
-            System.out.println("Delayed!");
             delay(new Click(c, button));
         }
         
