@@ -109,6 +109,8 @@ public class Config {
     public static boolean alphasort = Utils.getprefb("alphasort", false);
     //project free the camera
     public static boolean laptopcontrols = Utils.getprefb("laptopcontrols", false);
+    //project locator
+    public static boolean preciselocator = Utils.getprefb("preciselocator", false);
     
     static {
 	String p;

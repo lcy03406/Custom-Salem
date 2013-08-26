@@ -7,7 +7,7 @@ class LocatorTool extends Window{
     static final String title = "Locator tool";
     static final String defaulttext = "Not followed anyone yet";
     
-    private Coord location = Coord.z;
+    private static Coord location = Coord.z;
     private final Label text;
     
     private static LocatorTool instance; 
@@ -70,10 +70,17 @@ class LocatorTool extends Window{
     }
     
     public static void setlocation(Coord location){
+        if(Config.preciselocator)
+        {
+            LocatorTool.location = location;
+        }
+        else{
+            LocatorTool.location = location.div(100);
+        }
+        
         if(instance != null)
         {
-            instance.settext("Target is at "+location+" relative to your location");
-            instance.location = location;
+            instance.settext("Target is at "+LocatorTool.location+" relative to your location");
             instance.pack();
         }            
     }
