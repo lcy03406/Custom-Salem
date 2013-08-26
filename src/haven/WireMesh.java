@@ -12,9 +12,10 @@ public class WireMesh extends FastMesh {
     public WireMesh(FastMesh from, VertexBuf vert) {
 	super(from, vert);
     }
-
+    
     @Override
     public void draw(GOut g) {
+        g.apply();
 	GL2 gl = g.gl;
 	VertexBuf.VertexArray vbuf = null;
 	for(int i = 0; i < vert.bufs.length; i++) {
