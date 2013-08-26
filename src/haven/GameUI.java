@@ -451,6 +451,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	TimerPanel.close();
 	DarknessWnd.close();
 	FlatnessTool.close();
+        LocatorTool.close();
 	WikiBrowser.close();
     }
 

@@ -972,6 +972,9 @@ public class MapView extends PView implements DTarget {
                         else{
                             reposend = new Coord3f(gobpath.tc.x, gobpath.tc.y, reposstart.z);
                         }
+                        
+                        Coord3f relloc = reposend.sub(reposstart).div(1100.0f);
+                        LocatorTool.setlocation(new Coord((int)relloc.x, (int)relloc.y));
                     }
                     else if(m instanceof Following)
                     {
