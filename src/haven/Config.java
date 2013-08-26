@@ -101,7 +101,9 @@ public class Config {
     //project marathon
     public static boolean showgobpath = Utils.getprefb("showgobpath", false);
     //project overgrown
+    public static boolean fieldfix = Utils.getprefb("fieldfix", true);
     public static int fieldproducescale = (int) Utils.getpreff("fieldproducescale", 1.0f);
+    //project purity
     public static boolean alwaysshowpurity = Utils.getprefb("alwaysshowpurity", false);
     
     static {

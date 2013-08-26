@@ -377,8 +377,19 @@ public class OptWnd2 extends Window {
             tab = body.new Tab(new Coord(210,0), 60, "Latikai");
             
             //project overgrown
+	    new CheckBox(new Coord(0, 65), tab, "Enable 1x1 field fix"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.fieldfix = val;
+		    Utils.setprefb("fieldfix", val);
+		}
+
+		{tooltip = Text.render("Show paths of moving entities of the world.");}
+		
+	    }.a = Config.showgobpath;
             final Label cropscale = new Label(new Coord(0, 90), tab, "Crop scaling: x"+Config.fieldproducescale);
-	    new HSlider(new Coord(15, 110), 200, tab, 0, 9, Config.fieldproducescale) {
+	    new HSlider(new Coord(15, 110), 200, tab, 0, 9, Config.fieldproducescale-1) {
 		public void changed() {
 		    Config.setFieldproducescale(val+1);
                     cropscale.settext("Crop scaling: x"+Config.fieldproducescale);
