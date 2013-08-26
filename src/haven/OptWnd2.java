@@ -422,6 +422,22 @@ public class OptWnd2 extends Window {
 		
 	    }.a = Config.alwaysshowpurity;
             
+            //project free the camera
+	    new CheckBox(new Coord(0, 170), tab, "Laptop mode for the mouse"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.laptopcontrols = val;
+		    Utils.setprefb("laptopcontrols", val);
+		}
+
+		{tooltip = Text.render("Switches the mode for the mouse and world interactions");}
+		
+	    }.a = Config.laptopcontrols;
+            
+            final Label laptopcontrol1 = new Label(new Coord(10, 190), tab, "Laptop controls: Move the camera by pressing LMB, then dragging RMB.");
+            final Label laptopcontrol2 = new Label(new Coord(10, 200), tab, "Zoom in with + and out with -, and rotate objects like that while pressing shift.");
+            final Label laptopcontrol3 = new Label(new Coord(10, 210), tab, "Rotate in precise mode by pressing shift-alt rather than shift-ctrl.");
         }
         
 	//new Frame(new Coord(-10, 20), new Coord(420, 330), this);

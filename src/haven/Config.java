@@ -107,6 +107,8 @@ public class Config {
     public static boolean alwaysshowpurity = Utils.getprefb("alwaysshowpurity", false);
     //project alphabet
     public static boolean alphasort = Utils.getprefb("alphasort", false);
+    //project free the camera
+    public static boolean laptopcontrols = Utils.getprefb("laptopcontrols", false);
     
     static {
 	String p;

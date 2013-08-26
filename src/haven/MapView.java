@@ -1214,45 +1214,62 @@ public class MapView extends PView implements DTarget {
 	    this.grab = null;
     }
     
+    //project free the camera
+    private boolean LMBdown = false;
+    private boolean mousemoved = false;
+    
     public boolean mousedown(Coord c, int button) {
 	parent.setfocus(this);
-	if(button == 2) {
-	    if(((Camera)camera).click(c)) {
-		ui.grabmouse(this);
-		camdrag = true;
-	    }
-	} else if(placing != null) {
-	    if(placing.lastmc != null)
-		wdgmsg("place", placing.rc, (int)(placing.a * 180 / Math.PI), button, ui.modflags());
-	} else if((grab != null) && grab.mmousedown(c, button)) {
-	} else {
-	    delay(new Click(c, button));
-	}
+        
+        if(button == 1){
+            LMBdown = true;
+            mousemoved = false;
+        }
+            
+        if( (!Config.laptopcontrols && button == 2) || (Config.laptopcontrols && button == 3 && LMBdown)) {
+            if(((Camera)camera).click(c)) {
+                ui.grabmouse(this);
+                camdrag = true;
+            }
+        } else if(placing != null) {
+            if(placing.lastmc != null)
+                wdgmsg("place", placing.rc, (int)(placing.a * 180 / Math.PI), button, ui.modflags());
+        } else if((grab != null) && grab.mmousedown(c, button)) {
+        } else if(!(Config.laptopcontrols && LMBdown)){
+            delay(new Click(c, button));
+        }
 	return(true);
     }
     
     public void mousemove(Coord c) {
-	if(grab != null)
-	    grab.mmousemove(c);
-	if(camdrag) {
-	    ((Camera)camera).drag(c);
-	} else if(placing != null) {
-	    if((placing.lastmc == null) || !placing.lastmc.equals(c)) {
-		delay(placing.new Adjust(c, !ui.modctrl));
-	    }
-	}
+        if(grab != null)
+            grab.mmousemove(c);
+        if(camdrag) {
+            ((Camera)camera).drag(c);
+            mousemoved = true;
+        } else if(placing != null) {
+            if((placing.lastmc == null) || !placing.lastmc.equals(c)) {
+                delay(placing.new Adjust(c, !ui.modctrl));
+            }
+        }
     }
     
     public boolean mouseup(Coord c, int button) {
-	if(button == 2) {
-	    if(camdrag) {
-		((Camera)camera).release();
-		ui.grabmouse(null);
-		camdrag = false;
-	    }
-	} else if(grab != null) {
-	    grab.mmouseup(c, button);
-	}
+        if( (!Config.laptopcontrols && button == 2) || (Config.laptopcontrols && button == 3 && camdrag)) {
+            if(camdrag) {
+                ((Camera)camera).release();
+                ui.grabmouse(null);
+                camdrag = false;
+            }
+        } else if(grab != null) {
+            grab.mmouseup(c, button);
+        }else if(Config.laptopcontrols && LMBdown && button == 1 && !mousemoved && placing == null){
+            System.out.println("Delayed!");
+            delay(new Click(c, button));
+        }
+        
+        if(button == 1) LMBdown = false;
+                
 	return(true);
     }
 
@@ -1262,10 +1279,10 @@ public class MapView extends PView implements DTarget {
 	if(ui.modshift) {
 	    if(placing != null) {
 		placing.freerot = true;
-		if(!ui.modctrl)
-		    placing.a = (Math.PI / 4) * Math.round((placing.a + (amount * Math.PI / 4)) / (Math.PI / 4));
-		else
+		if(ui.modctrl || (Config.laptopcontrols && ui.modmeta))
 		    placing.a += amount * Math.PI / 16;
+		else
+		    placing.a = (Math.PI / 4) * Math.round((placing.a + (amount * Math.PI / 4)) / (Math.PI / 4));
 	    }
 	    return(true);
 	}
@@ -1294,6 +1311,18 @@ public class MapView extends PView implements DTarget {
     }
     
     public boolean globtype(char c, java.awt.event.KeyEvent ev) {
+        //project free the camera
+        if(Config.laptopcontrols)
+        {
+            if(c == '+')
+            {
+                this.mousewheel(cc, -1);
+            }                
+            else if (c == '-')
+            {
+                this.mousewheel(cc, +1);
+            }
+        }
 	return(false);
     }
 
