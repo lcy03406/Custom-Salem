@@ -97,6 +97,13 @@ public class Config {
     protected static boolean ss_ui = Utils.getprefb("ss_ui", false);
     public static boolean hptr = Utils.getprefb("hptr", false);
     
+    /*LATIKAI settings*/
+    //project marathon
+    public static boolean showgobpath = Utils.getprefb("showgobpath", false);
+    //project overgrown
+    public static int fieldproducescale = (int) Utils.getpreff("fieldproducescale", 1.0f);
+    public static boolean alwaysshowpurity = Utils.getprefb("alwaysshowpurity", false);
+    
     static {
 	String p;
 	if((p = getprop("haven.authck", null)) != null)
@@ -320,5 +327,11 @@ public class Config {
     public static void setBrighten(float val) {
 	brighten = val;
 	Utils.setpreff("brighten", val);
+    }
+    
+    //project overgrown
+    public static void setFieldproducescale(int val) {
+	fieldproducescale = val;
+	Utils.setpreff("fieldproducescale", val);
     }
 }

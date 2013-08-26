@@ -373,6 +373,46 @@ public class OptWnd2 extends Window {
 	    };
 	}
 
+        { /* LATIKAI TAB */
+            tab = body.new Tab(new Coord(210,0), 60, "Latikai");
+            
+            //project overgrown
+            final Label cropscale = new Label(new Coord(0, 90), tab, "Crop scaling: x"+Config.fieldproducescale);
+	    new HSlider(new Coord(15, 110), 200, tab, 0, 9, Config.fieldproducescale) {
+		public void changed() {
+		    Config.setFieldproducescale(val+1);
+                    cropscale.settext("Crop scaling: x"+Config.fieldproducescale);
+		}
+	    };
+            
+            //project marathon
+	    new CheckBox(new Coord(0, 130), tab, "Show gob paths"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.showgobpath = val;
+		    Utils.setprefb("showgobpath", val);
+		}
+
+		{tooltip = Text.render("Show paths of moving entities of the world.");}
+		
+	    }.a = Config.showgobpath;
+            
+            //project purity
+	    new CheckBox(new Coord(0, 150), tab, "Always show purity percentage/multiplier"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.alwaysshowpurity = val;
+		    Utils.setprefb("alwaysshowpurity", val);
+		}
+
+		{tooltip = Text.render("Always shows the purity on inventory items (as a percentage or as a multiplier, depending on the setting).");}
+		
+	    }.a = Config.alwaysshowpurity;
+            
+        }
+        
 	//new Frame(new Coord(-10, 20), new Coord(420, 330), this);
 	String last = Utils.getpref("optwndtab", "");
 	for(Tabs.Tab t : body.tabs) {
