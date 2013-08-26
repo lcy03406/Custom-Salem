@@ -970,7 +970,7 @@ public class MapView extends PView implements DTarget {
                             reposend = target.getc();
                         }
                         else{
-                            continue;
+                            reposend = new Coord3f(gobpath.tc.x, gobpath.tc.y, reposstart.z);
                         }
                     }
                     else if(m instanceof Following)
@@ -983,7 +983,7 @@ public class MapView extends PView implements DTarget {
                             reposend = target.getc();
                         }
                         else{
-                            continue;
+                            reposend = gobpath.getc();
                         }
                     }
                     else{
