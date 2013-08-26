@@ -289,7 +289,7 @@ public class WItem extends Widget implements DTarget {
     };
     
     private void drawpurity(GOut g) {
-	if(ui.modflags() == 0){return;}//show purity only when any mod key pressed
+	if(!Config.alwaysshowpurity && ui.modflags() == 0){return;}//show purity only when any mod key pressed
 	Tex img = Config.pure_mult?puritymult.get():purity.get();
 	if(img != null){
 	    g.aimage(img, new Coord(0, sz.y), 0, 1);

@@ -42,10 +42,6 @@ public class GrowingPlant extends Sprite
       float offsetx = Config.fieldfix?0:((float) Math.random()*40 - 20);
       float offsety = Config.fieldfix?0:((float) Math.random()*40 - 20);
       localCoord3f = new Coord3f(offsetx, offsety, gob.glob.map.getcz(gob.rc.x + offsetx, gob.rc.y + offsety) - f1);
-      float orientx = (float) Math.random()-0.5f;
-      float orienty = (float) Math.random()-0.5f;
-      orientx /= Math.sqrt(orientx*orientx + orienty*orienty);
-      orienty /= Math.sqrt(orientx*orientx + orienty*orienty);
       
       if (!meshes.isEmpty()) {
         j = ((Integer)meshes.get(((Random)rand).nextInt(meshes.size()))).intValue();
@@ -64,8 +60,8 @@ public class GrowingPlant extends Sprite
               localVertex.pos.x += localCoord3f.x;
               localVertex.pos.y -= localCoord3f.y;
               localVertex.pos.z += localCoord3f.z;
-              localVertex.nrm.x = orientx;
-              localVertex.nrm.y = orienty;
+              localVertex.nrm.x = 0.0f;
+              localVertex.nrm.y = 0.0f;
             }
           }
         }
