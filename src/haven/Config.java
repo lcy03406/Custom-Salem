@@ -51,7 +51,7 @@ public class Config {
     public static URL mapurl = geturl("haven.mapurl", "");
     public static URL screenurl = geturl("haven.screenurl", "http://plymouth.seatribe.se/mt/ss");
     public static URL storeurl = geturl("haven.storeurl", "http://services.paradoxplaza.com/adam/storelette/salem");
-    public static URL regurl = geturl("haven.regurl", "");
+    public static URL regurl = geturl("haven.regurl", "http://login.salemthegame.com/beta/nregister");
     public static boolean dbtext = getprop("haven.dbtext", "off").equals("on");
     public static boolean bounddb = getprop("haven.bounddb", "off").equals("on");
     public static boolean profile = getprop("haven.profile", "off").equals("on");
@@ -91,6 +91,7 @@ public class Config {
     public static boolean flight = false;
     public static boolean cellshade = false;
     protected static boolean fsaa = false;
+    protected static boolean water = false;
     public static boolean center = false;
     public static float brighten = Utils.getpreff("brighten", 0.0f), maxbright = 2.0f;
     protected static boolean ss_silent = Utils.getprefb("ss_slent", false);
@@ -156,6 +157,7 @@ public class Config {
         flight = options.getProperty("flight", "false").equals("true");
         cellshade = options.getProperty("cellshade", "false").equals("true");
         fsaa = options.getProperty("fsaa", "false").equals("true");
+        water = options.getProperty("water", "false").equals("true");
         
         if(isUpdate){
             saveOptions();
@@ -170,6 +172,7 @@ public class Config {
 	    options.setProperty("flight", flight?"true":"false");
 	    options.setProperty("cellshade", cellshade?"true":"false");
 	    options.setProperty("fsaa", fsaa?"true":"false");
+	    options.setProperty("water", water?"true":"false");
 	    //store it
 	    saveProps(options, "salem.cfg", "Salem config file");
 	}
@@ -329,6 +332,7 @@ public class Config {
 	    glcfg.lshadow.set(shadows);
 	    glcfg.flight.set(flight);
 	    glcfg.cel.set(cellshade);
+	    glcfg.wsurf.set(water);
 	} catch(SettingException e){}
     }
 
