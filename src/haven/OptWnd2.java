@@ -471,6 +471,19 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("The locator shows the location in tiles rather than hundreds of tiles.");}
 		
 	    }.a = Config.preciselocator;
+            
+            //project raider
+	    new CheckBox(new Coord(0, 250), tab, "Raider mode"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.raidermode = val;
+		    Utils.setprefb("raidermode", val);
+		}
+
+		{tooltip = Text.render("Active braziers are shown in hot pink, and all trees are rendered as stumps. Re-load after disabling.");}
+		
+	    }.a = Config.raidermode;
         }
         
 	//new Frame(new Coord(-10, 20), new Coord(420, 330), this);

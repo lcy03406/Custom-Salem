@@ -1055,6 +1055,11 @@ public class Resource implements Comparable<Resource>, Prioritized, Serializable
 	}
 	
 	public ClassLoader loader(final boolean wait) {
+//            System.out.println("Getting classloader for resource "+Resource.this.name+", entries:");
+//	    for(Code c : layers(Code.class, false))
+//                System.out.println("\t"+c.name);
+            
+            
 	    synchronized(CodeEntry.this) {
 		if(this.loader == null) {
 		    this.loader = java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<ClassLoader>() {

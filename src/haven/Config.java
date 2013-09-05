@@ -112,6 +112,8 @@ public class Config {
     public static boolean laptopcontrols = Utils.getprefb("laptopcontrols", false);
     //project locator
     public static boolean preciselocator = Utils.getprefb("preciselocator", false);
+    //project raider
+    public static boolean raidermode = Utils.getprefb("raidermode", false);
     
     static {
 	String p;
