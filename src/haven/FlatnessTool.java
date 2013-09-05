@@ -121,6 +121,9 @@ class FlatnessTool extends Window implements MapView.Grabber {
 
     @Override
     public void destroy() {
+        if(this.grabbed)
+            this.toggle();
+        
 	if (this.ol != null)
 	    this.ol.destroy();
 	this.mv.disol(MapView.WFOL);
