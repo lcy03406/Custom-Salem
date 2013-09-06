@@ -113,7 +113,10 @@ public class Config {
     //project locator
     public static boolean preciselocator = Utils.getprefb("preciselocator", false);
     //project raider
-    public static boolean raidermode = Utils.getprefb("raidermode", false);
+    public static boolean raidermodetrees = Utils.getprefb("raidermodetrees", false);
+    public static boolean raidermodebraziers = Utils.getprefb("raidermodebraziers", false);
+    //project ironborn
+    public static boolean altprosp = Utils.getprefb("altprosp", false);
     
     static {
 	String p;

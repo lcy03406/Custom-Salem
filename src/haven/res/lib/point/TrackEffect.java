@@ -1,5 +1,6 @@
 package haven.res.lib.point;
 
+import haven.Config;
 import haven.Coord3f;
 import haven.FastMesh;
 import haven.Gob;
@@ -37,8 +38,7 @@ public class TrackEffect extends Sprite
   public boolean tick(int paramInt) {
     double d1 = paramInt / 1000.0D;
     this.t += d1;
-    //needs config
-    if ( true || this.t > this.tt) {
+    if ( this.t > this.tt || Config.altprosp) {
       this.oa = this.ca;
       double d2 = this.a1 + Math.random() * (this.a2 - this.a1);
       this.da = (d2 - this.oa);
@@ -54,8 +54,7 @@ public class TrackEffect extends Sprite
   }
 
   public boolean setup(RenderList paramRenderList) {
-      //needs config here instead of true
-    if(true)
+    if(Config.altprosp)
     {
         paramRenderList.add(this.fx, Location.compose(Location.rot(Coord3f.zu, (float)(((Gob)this.owner).a - this.a1)), Location.xlate(new Coord3f(5,0,0))));
         paramRenderList.add(this.fx, Location.compose(Location.rot(Coord3f.zu, (float)(((Gob)this.owner).a - (this.a1+this.a2)/2)), Location.xlate(new Coord3f(5,0,1)), new Material.Colors(Color.GREEN)));

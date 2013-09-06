@@ -472,18 +472,44 @@ public class OptWnd2 extends Window {
 		
 	    }.a = Config.preciselocator;
             
-            //project raider
-	    new CheckBox(new Coord(0, 250), tab, "Raider mode"){
+            //project raider trees
+	    new CheckBox(new Coord(0, 250), tab, "Raider mode trees"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
-		    Config.raidermode = val;
-		    Utils.setprefb("raidermode", val);
+		    Config.raidermodetrees = val;
+		    Utils.setprefb("raidermodetrees", val);
 		}
 
-		{tooltip = Text.render("Active braziers are shown in hot pink, and all trees are rendered as stumps. Re-load after disabling.");}
+		{tooltip = Text.render("All trees are rendered as stumps. Re-load after disabling.");}
 		
-	    }.a = Config.raidermode;
+	    }.a = Config.raidermodetrees;
+            
+            //project raider braziers
+	    new CheckBox(new Coord(150, 250), tab, "Raider mode braziers"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.raidermodebraziers = val;
+		    Utils.setprefb("raidermodebraziers", val);
+		}
+
+		{tooltip = Text.render("Braziers are rendered in hot pink.");}
+		
+	    }.a = Config.raidermodebraziers;
+            
+            //project ironborn
+	    new CheckBox(new Coord(0, 270), tab, "Alternate prospecting"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.altprosp = val;
+		    Utils.setprefb("altprosp", val);
+		}
+
+		{tooltip = Text.render("Shows the rough direction and the pie slice to search in, rather than the erratic arrow. Give it some time!");}
+		
+	    }.a = Config.altprosp;
         }
         
 	//new Frame(new Coord(-10, 20), new Coord(420, 330), this);

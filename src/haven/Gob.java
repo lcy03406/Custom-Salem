@@ -207,7 +207,7 @@ public class Gob implements Sprite.Owner, Rendered {
 	    if(blnk != null)
 		rl.prepc(blnk.getfx());
 	}
-        if(Config.raidermode){//always true for debugging
+        if(Config.raidermodetrees || Config.raidermodebraziers){//always true for debugging
             boolean brazier = false;
             boolean tree = false;
             
@@ -218,7 +218,7 @@ public class Gob implements Sprite.Owner, Rendered {
                 tree = rd.res.get().name.contains("tree");
             }
             
-            if(brazier && hlt.asfloat()>0.5)
+            if(Config.raidermodebraziers && brazier && hlt.asfloat()>0.5)
             {                
                 Material.Colors fx = new Material.Colors();
                 Color c = new Color(255, 105, 180, 200);
@@ -228,7 +228,7 @@ public class Gob implements Sprite.Owner, Rendered {
                 rl.prepc(fx);
             }
             
-            if(tree)
+            if(Config.raidermodetrees && tree)
             {
                 if(rd.res.toString().contains("trunk"))
                 {
