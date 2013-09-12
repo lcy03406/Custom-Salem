@@ -55,9 +55,7 @@ public class RootWidget extends ConsoleHost {
 		entercmd();
 	    }else if((code == KeyEvent.VK_L ) && ctrl){
 		FlatnessTool.instance(ui).toggle();
-	    }else if((code == KeyEvent.VK_F ) && ctrl){
-                LocatorTool.instance(ui).toggle();
-            }else if(code == KeyEvent.VK_D && ctrl){
+	    }else if(code == KeyEvent.VK_D && ctrl){
 		DarknessWnd.toggle();
 	    }else if(code == KeyEvent.VK_Z && ctrl){
 		Config.center = !Config.center;

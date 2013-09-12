@@ -458,22 +458,9 @@ public class OptWnd2 extends Window {
             final Label laptopcontrol1 = new Label(new Coord(10, 190), tab, "Laptop controls: Move the camera by pressing LMB, then dragging RMB.");
             final Label laptopcontrol2 = new Label(new Coord(10, 200), tab, "Zoom in with + and out with -, and rotate objects like that while pressing shift.");
             final Label laptopcontrol3 = new Label(new Coord(10, 210), tab, "Rotate in precise mode by pressing shift-alt rather than shift-ctrl.");
-
-            //project locator
-	    new CheckBox(new Coord(0, 230), tab, "Extra-precise locator"){
-		@Override
-		public void changed(boolean val) {
-		    super.changed(val);
-		    Config.preciselocator = val;
-		    Utils.setprefb("preciselocator", val);
-		}
-
-		{tooltip = Text.render("The locator shows the location in tiles rather than hundreds of tiles.");}
-		
-	    }.a = Config.preciselocator;
             
             //project raider trees
-	    new CheckBox(new Coord(0, 250), tab, "Raider mode trees"){
+	    new CheckBox(new Coord(0, 230), tab, "Raider mode trees"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -486,7 +473,7 @@ public class OptWnd2 extends Window {
 	    }.a = Config.raidermodetrees;
             
             //project raider braziers
-	    new CheckBox(new Coord(150, 250), tab, "Raider mode braziers"){
+	    new CheckBox(new Coord(150, 230), tab, "Raider mode braziers"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -499,7 +486,7 @@ public class OptWnd2 extends Window {
 	    }.a = Config.raidermodebraziers;
             
             //project ironborn
-	    new CheckBox(new Coord(0, 270), tab, "Alternate prospecting"){
+	    new CheckBox(new Coord(0, 250), tab, "Alternate prospecting"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -510,6 +497,19 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("Shows the rough direction and the pie slice to search in, rather than the erratic arrow. Give it some time!");}
 		
 	    }.a = Config.altprosp;
+            
+            //project locator
+//	    new CheckBox(new Coord(0, 270), tab, "Extra-precise locator"){
+//		@Override
+//		public void changed(boolean val) {
+//		    super.changed(val);
+//		    Config.preciselocator = val;
+//		    Utils.setprefb("preciselocator", val);
+//		}
+//
+//		{tooltip = Text.render("The locator shows the location in tiles rather than hundreds of tiles.");}
+//		
+//	    }.a = Config.preciselocator;
         }
         
 	//new Frame(new Coord(-10, 20), new Coord(420, 330), this);

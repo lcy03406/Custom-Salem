@@ -207,7 +207,7 @@ public class Gob implements Sprite.Owner, Rendered {
 	    if(blnk != null)
 		rl.prepc(blnk.getfx());
 	}
-        if(Config.raidermodetrees || Config.raidermodebraziers){//always true for debugging
+        if(Config.raidermodetrees || Config.raidermodebraziers){
             boolean brazier = false;
             boolean tree = false;
             
