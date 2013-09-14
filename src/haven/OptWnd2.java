@@ -28,6 +28,10 @@ package haven;
 
 import haven.GLSettings.BoolSetting;
 
+import haven.minimap.ConfigGroup;
+import haven.minimap.ConfigMarker;
+import haven.minimap.MarkerFactory;
+import haven.minimap.RadarConfig;
 import java.util.*;
 import java.awt.Color;
 import java.awt.font.TextAttribute;
@@ -36,6 +40,9 @@ public class OptWnd2 extends Window {
     public static final RichText.Foundry foundry = new RichText.Foundry(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 10);
     public static OptWnd2 instance = null;
     private Tabs body;
+    private Tabs.Tab radartab;
+    private static RadarConfig rc=null;
+    private static MarkerFactory mf=null;
     private String curcam;
     private Map<String, CamInfo> caminfomap = new HashMap<String, CamInfo>();
     private Map<String, String> camname2type = new HashMap<String, String>();
@@ -525,6 +532,9 @@ public class OptWnd2 extends Window {
 //	    }.a = Config.preciselocator;
         }
         
+        /* RADAR TAB */
+        makeRadarTab();
+        
 	//new Frame(new Coord(-10, 20), new Coord(420, 330), this);
 	String last = Utils.getpref("optwndtab", "");
 	for(Tabs.Tab t : body.tabs) {
@@ -533,6 +543,56 @@ public class OptWnd2 extends Window {
 	}
     }
     
+    public static void setRadarInfo(RadarConfig rcf, MarkerFactory mf){
+        OptWnd2.rc = rcf;
+        OptWnd2.mf = mf;
+        if(instance == null) return;
+        instance.makeRadarTab();
+    }
+    
+    private void makeRadarTab()
+    {
+        if(rc==null) return;
+        
+        boolean viewingradartab = body.curtab == radartab;
+        //remove the old tab
+        if(radartab !=null)
+        {
+            boolean success = body.tabs.remove(radartab);
+            System.out.println("Removed the radartab step 1: "+success);
+            radartab.unlink();
+            radartab.btn.destroy();
+            radartab.destroy();
+        }
+        
+        //create the new one
+        radartab = body.new Tab(new Coord(280,0), 100, "Radar config");
+
+        int x = 0, y = 35;
+        for(final ConfigGroup cg : rc.getGroups())
+        {
+            new CheckBox(new Coord(x, y), radartab, cg.name){
+                @Override
+                public void changed(boolean val) {
+                    super.changed(val);
+                    cg.show = val;
+                    for(ConfigMarker cm : cg.markers)
+                        cm.show = val;
+                    if(mf != null)
+                        mf.setConfig(rc);
+                }		
+            }.a = cg.show;
+            y+=25;
+            if(y > radartab.sz.y)
+            {
+                y = 35;
+                x += 100;
+            }
+        }
+        
+        if(viewingradartab) body.showtab(radartab);
+    }
+   
     private static void checkVideoOpt(CheckBox check, BoolSetting setting){
 	checkVideoOpt(check, setting, null);
     }

@@ -153,7 +153,6 @@ public class UI {
     }
 	
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
-        System.out.println("Making new widget for the UI: "+type);
 	synchronized(this) {
 	    Widget pwdg = widgets.get(parent);
 	    if(pwdg == null)

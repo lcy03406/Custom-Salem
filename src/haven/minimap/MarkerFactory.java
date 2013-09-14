@@ -4,19 +4,23 @@ import java.util.*;
 
 import haven.*;
 
-class MarkerFactory {
+public class MarkerFactory {
     private final Set<String> unknownNameCache;
     private final Map<String, MarkerTemplate> templateCache;
     private final Map<String, ConfigMarker> matches;
     private final List<ConfigMarker> patterns;
 
     public MarkerFactory() {
+        this(new RadarConfig());
+    }
+    
+    public MarkerFactory(RadarConfig rc){
         unknownNameCache = new HashSet<String>();
         templateCache = new HashMap<String, MarkerTemplate>();
         matches = new HashMap<String, ConfigMarker>();
         patterns = new ArrayList<ConfigMarker>();
 
-        setConfig(new RadarConfig());
+        setConfig(rc);
     }
 
     public Marker makeMarker(String resname, Gob gob) {

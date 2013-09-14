@@ -43,6 +43,8 @@ public class RadarConfig {
         }
         try {
             load();
+            //add a new tab to the optwnd2...somehow...
+            //remove the old one!
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

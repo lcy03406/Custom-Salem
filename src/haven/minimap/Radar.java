@@ -15,7 +15,9 @@ public class Radar {
     private final Object colorLock = new Object();
 
     public Radar() {
-        factory = new MarkerFactory();
+        RadarConfig rc = new RadarConfig();
+        factory = new MarkerFactory(rc);
+        OptWnd2.setRadarInfo(rc, factory);
     }
 
     public void add(Gob g, Indir<Resource> res) {
@@ -92,7 +94,9 @@ public class Radar {
     public void reload() {
         synchronized (markerLock) {
             undefined.clear();
-            factory.setConfig(new RadarConfig());
+            RadarConfig rc = new RadarConfig();
+            OptWnd2.setRadarInfo(rc, factory);
+            factory.setConfig(rc);
             Marker[] ms = markers.values().toArray(new Marker[markers.size()]);
             markers.clear();
             for (Marker m : ms) {
