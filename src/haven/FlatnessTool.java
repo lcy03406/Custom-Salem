@@ -46,7 +46,7 @@ class FlatnessTool extends Window implements MapView.Grabber {
     }
 
     public static FlatnessTool instance(UI ui) {
-	if(instance == null){
+	if(instance == null && ui.gui !=null && ui.gui.map != null){
 	    instance = new FlatnessTool(ui.gui.map, new Coord(100, 100), ui.gui);
 	}
 	return instance;

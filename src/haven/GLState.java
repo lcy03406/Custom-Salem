@@ -450,7 +450,7 @@ public abstract class GLState {
 	    cur.copy(old);
 	    for(int i = deplist.length - 1; i >= 0; i--) {
 		int id = deplist[i].id;
-		if(repl[id]) {
+		if(repl[id]) {//TODO: Frank's crash, IndexOutOfBounds
 		    if(cur.states[id] != null) {
 			cur.states[id].unapply(g);
 			if(debug)

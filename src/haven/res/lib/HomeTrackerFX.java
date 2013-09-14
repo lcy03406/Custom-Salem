@@ -106,6 +106,12 @@ public class HomeTrackerFX extends Sprite {
 	    }
 	}
 
+        public void dispose(){
+            if(fx!=null)
+                fx.dispose();
+            if(ptr!=null)
+                ptr.destroy();
+        }
     }
 
 }

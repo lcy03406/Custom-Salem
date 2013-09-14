@@ -53,8 +53,9 @@ public class RootWidget extends ConsoleHost {
 		    new Profwnd(new Coord(100, 100), this, gi.map.prof, "MV prof");
 	    } else if(key == ':') {
 		entercmd();
-	    }else if((code == KeyEvent.VK_L ) && ctrl){
-		FlatnessTool.instance(ui).toggle();
+	    }else if((code == KeyEvent.VK_L || code == KeyEvent.VK_F) && ctrl){
+		FlatnessTool ft = FlatnessTool.instance(ui);
+                if(ft!=null) ft.toggle();
 	    }else if(code == KeyEvent.VK_D && ctrl){
 		DarknessWnd.toggle();
 	    }else if(code == KeyEvent.VK_Z && ctrl){

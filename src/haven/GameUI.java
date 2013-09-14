@@ -413,6 +413,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    return(gettype(type).create(new Coord(2, 80), this, cargs));
 	} else if(place == "misc") {
 	    if(type.contains("ui/hrtptr")){
+                if(hrtptr != null)
+                {
+                    hrtptr.dispose();
+                    hrtptr = null;
+                }
 		hrtptr = new HomeTrackerFX.HTrackWdg(this, gettype(type).create((Coord)pargs[1], this, cargs));
 		return hrtptr;
 	    }
