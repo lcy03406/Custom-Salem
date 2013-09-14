@@ -122,7 +122,8 @@ public class Config {
     public static boolean tclaimv = Utils.getprefb("tclaimv", false);
     public static boolean wclaimv = Utils.getprefb("wclaimv", false);
     public static boolean hpointv = Utils.getprefb("hpointv", false);
-    
+    //project lazy tracker
+    public static boolean alwaystrack = Utils.getprefb("alwaystrack", false);
     
     static {
 	String p;

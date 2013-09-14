@@ -850,7 +850,7 @@ public class Session implements Owner {
 	}
     }
 	
-    public void sendmsg(Message msg) {
+    public void sendmsg(Message msg) {        
 	byte[] buf = new byte[msg.blob.length + 1];
 	buf[0] = (byte)msg.type;
 	System.arraycopy(msg.blob, 0, buf, 1, msg.blob.length);

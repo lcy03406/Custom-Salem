@@ -153,12 +153,18 @@ public class UI {
     }
 	
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
+        System.out.println("Making new widget for the UI: "+type);
 	synchronized(this) {
 	    Widget pwdg = widgets.get(parent);
 	    if(pwdg == null)
 		throw(new UIException("Null parent widget " + parent + " for " + id, type, cargs));
 	    Widget wdg = pwdg.makechild(type.intern(), pargs, cargs);
 	    bind(wdg, id);
+            
+            if(type.equals("gameui") && Config.alwaystrack){
+                String[] as = {"tracking"};
+                wdgmsg(wdg, "act", (Object[])as);
+            }
 	}
     }
 	

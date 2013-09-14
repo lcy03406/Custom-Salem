@@ -498,8 +498,21 @@ public class OptWnd2 extends Window {
 		
 	    }.a = Config.altprosp;
             
+            //project lazy tracker
+	    new CheckBox(new Coord(0, 270), tab, "Enable tracking on log-in"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.alwaystrack = val;
+		    Utils.setprefb("alwaystrack", val);
+		}
+
+		{tooltip = Text.render("Enable tracking as soon as a character logs in.");}
+		
+	    }.a = Config.alwaystrack;
+            
             //project locator
-//	    new CheckBox(new Coord(0, 270), tab, "Extra-precise locator"){
+//	    new CheckBox(new Coord(0, 290), tab, "Extra-precise locator"){
 //		@Override
 //		public void changed(boolean val) {
 //		    super.changed(val);
