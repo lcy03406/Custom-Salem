@@ -117,6 +117,12 @@ public class Config {
     public static boolean raidermodebraziers = Utils.getprefb("raidermodebraziers", false);
     //project ironborn
     public static boolean altprosp = Utils.getprefb("altprosp", false);
+    //project save the claim
+    public static boolean pclaimv = Utils.getprefb("pclaimv", false);
+    public static boolean tclaimv = Utils.getprefb("tclaimv", false);
+    public static boolean wclaimv = Utils.getprefb("wclaimv", false);
+    public static boolean hpointv = Utils.getprefb("hpointv", false);
+    
     
     static {
 	String p;

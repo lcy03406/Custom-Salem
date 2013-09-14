@@ -346,6 +346,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		ui.destroy(mmap);
 	    }
 	    mmap = new LocalMiniMap(new Coord(0, sz.y - 125), new Coord(125, 125), this, map);
+            
+            if(Config.pclaimv) map.enol(0,1);
+            if(Config.tclaimv) map.enol(2,3);
+            if(Config.wclaimv) map.enol(4);
+            
 	    return(map);
 	} else if(place == "fight") {
 	    fv = (Fightview)gettype(type).create(new Coord(sz.x - Fightview.width, 0), this, cargs);
@@ -791,7 +796,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public class MainMenu extends Widget {
 	public final MenuButton invb, equb, chrb, budb, polb, optb;
 	public final MenuButton clab, towb, warb, ptrb, chatb;
-	public boolean hpv = true, pv = hpv && !Config.hptr;
+	public boolean pv = Config.hpointv && !Config.hptr;
 
 	boolean full = true;
 	public MenuButton[] tohide = {
@@ -891,8 +896,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		    else
 			map.disol(0, 1);
 		    toggle();
+                    Utils.setprefb("pclaimv",  map.visol(0));
 		}
 	    };
+            clab.a = Config.pclaimv;
+            clab.render();
 	    x+=18;
 	    towb = new MenuButtonT(new Coord(x, y), this, "tow", -1, "Display town claims") {
 		public void click() {
@@ -901,8 +909,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		    else
 			map.disol(2, 3);
 		    toggle();
+                    Utils.setprefb("tclaimv",  map.visol(2));
 		}
 	    };
+            towb.a = Config.tclaimv;
+            towb.render();
 	    x+=18;
 	    warb = new MenuButtonT(new Coord(x, y), this, "war", -1, "Display waste claims") {
 		public void click() {
@@ -911,15 +922,19 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		    else
 			map.disol(4);
 		    toggle();
+                    Utils.setprefb("wclaimv",  map.visol(4));
 		}
 	    };
+            warb.a = Config.wclaimv;
+            warb.render();
 	    x+=18;
-	    ptrb = new MenuButton(new Coord(x, y), this, "ptr", -1, "Display homstead pointer") {
+	    ptrb = new MenuButton(new Coord(x, y), this, "ptr", -1, "Display homestead pointer") {
 		public void click() {
-		    hpv = !hpv;
-		    pv = hpv && !Config.hptr;
+                    Utils.setprefb("hpointv", !Config.hpointv);
+		    pv = Config.hpointv && !Config.hptr;
 		}
 	    };
+            pv = Config.hpointv && !Config.hptr;
 	    x+=18;
 	    new MenuButton(new Coord(x, y), this, "height", -1, "Display heightmap") {
 		{
