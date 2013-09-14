@@ -517,19 +517,6 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("Enable tracking as soon as a character logs in.");}
 		
 	    }.a = Config.alwaystrack;
-            
-            //project locator
-//	    new CheckBox(new Coord(0, 290), tab, "Extra-precise locator"){
-//		@Override
-//		public void changed(boolean val) {
-//		    super.changed(val);
-//		    Config.preciselocator = val;
-//		    Utils.setprefb("preciselocator", val);
-//		}
-//
-//		{tooltip = Text.render("The locator shows the location in tiles rather than hundreds of tiles.");}
-//		
-//	    }.a = Config.preciselocator;
         }
         
         /* RADAR TAB */
