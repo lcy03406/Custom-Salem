@@ -899,7 +899,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     Utils.setprefb("pclaimv",  map.visol(0));
 		}
 	    };
-            clab.a = Config.pclaimv;
+            if(Config.pclaimv) clab.toggle();
             clab.render();
 	    x+=18;
 	    towb = new MenuButtonT(new Coord(x, y), this, "tow", -1, "Display town claims") {
@@ -912,7 +912,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     Utils.setprefb("tclaimv",  map.visol(2));
 		}
 	    };
-            towb.a = Config.tclaimv;
+            if(Config.tclaimv) towb.toggle();
             towb.render();
 	    x+=18;
 	    warb = new MenuButtonT(new Coord(x, y), this, "war", -1, "Display waste claims") {
@@ -925,12 +925,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     Utils.setprefb("wclaimv",  map.visol(4));
 		}
 	    };
-            warb.a = Config.wclaimv;
+            if(Config.wclaimv) warb.toggle();
             warb.render();
 	    x+=18;
 	    ptrb = new MenuButton(new Coord(x, y), this, "ptr", -1, "Display homestead pointer") {
 		public void click() {
-                    Utils.setprefb("hpointv", !Config.hpointv);
+                    Config.hpointv = !Config.hpointv;
+                    Utils.setprefb("hpointv", Config.hpointv);
 		    pv = Config.hpointv && !Config.hptr;
 		}
 	    };
