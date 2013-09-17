@@ -35,13 +35,17 @@ public class GrowingPlant extends Sprite
     float f1 = gob.glob.map.getcz(gob.rc);
     Coord3f localCoord3f;
     int j;
-    int plantcount = Config.fieldfix?1:50;
+    int plantcount = Config.fieldfix?1:paramInt1;
     
     for (int i = 0; i < plantcount; i++)
     {
-      float offsetx = Config.fieldfix?0:((float) Math.random()*40 - 20);
-      float offsety = Config.fieldfix?0:((float) Math.random()*40 - 20);
+      float offsetx = Config.fieldfix?0:(((Random)rand).nextFloat() * 44.0F - 22.0F);
+      float offsety = Config.fieldfix?0:(((Random)rand).nextFloat() * 44.0F - 22.0F);
       localCoord3f = new Coord3f(offsetx, offsety, gob.glob.map.getcz(gob.rc.x + offsetx, gob.rc.y + offsety) - f1);
+      
+      double d = Config.fieldfix?0:((Random)rand).nextDouble() * 3.141592653589793D * 2.0D;
+      float f2 = (float)Math.sin(d);
+      float f3 = (float)Math.cos(d);
       
       if (!meshes.isEmpty()) {
         j = ((Integer)meshes.get(((Random)rand).nextInt(meshes.size()))).intValue();
@@ -57,11 +61,20 @@ public class GrowingPlant extends Sprite
               localVertex.pos.y *= Config.fieldproducescale;
               localVertex.pos.z *= Config.fieldproducescale;
               
+              if(!Config.fieldfix)
+              {
+                  float f6 = localVertex.pos.x; float f7 = localVertex.pos.y;
+                  localVertex.pos.x = (f6*f3 - f7*f2);
+                  localVertex.pos.y = (f7*f3 + f6*f2);
+              }
+              
               localVertex.pos.x += localCoord3f.x;
               localVertex.pos.y -= localCoord3f.y;
               localVertex.pos.z += localCoord3f.z;
-              localVertex.nrm.x = 0.0f;
-              localVertex.nrm.y = 0.0f;
+              
+              float f8 = localVertex.nrm.x; float f9 = localVertex.nrm.y;
+              localVertex.nrm.x = f8*f3 - f9*f2;
+              localVertex.nrm.y = f9*f3 - f8*f2;
             }
           }
         }
