@@ -122,6 +122,8 @@ public class Config {
     public static boolean hpointv = Utils.getprefb("hpointv", false);
     //project lazy tracker
     public static boolean alwaystrack = Utils.getprefb("alwaystrack", false);
+    //project silent witness
+    public static boolean slowmin = Utils.getprefb("slowmin", false);
     
     static {
 	String p;

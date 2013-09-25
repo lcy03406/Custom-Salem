@@ -517,6 +517,19 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("Enable tracking as soon as a character logs in.");}
 		
 	    }.a = Config.alwaystrack;
+            
+            //project silent witness
+	    new CheckBox(new Coord(0, 290), tab, "Lower framerate on unfocused instances"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.slowmin = val;
+		    Utils.setprefb("slowmin", val);
+		}
+
+		{tooltip = Text.render("Lowers the target framerate for unfocused windows from 50 to 10.");}
+		
+	    }.a = Config.slowmin;
         }
         
         /* RADAR TAB */

@@ -28,13 +28,13 @@ package haven;
 
 import java.awt.GraphicsConfiguration;
 import java.awt.Cursor;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import java.util.*;
 import javax.media.opengl.*;
 import javax.media.opengl.awt.*;
-import javax.media.opengl.glu.GLU;
 
 public class HavenPanel extends GLCanvas implements Runnable {
     UI ui;
@@ -423,12 +423,15 @@ public class HavenPanel extends GLCanvas implements Runnable {
 		}
 		if(curf != null)
 		    curf.tick("dsp");
+                
+                if(MainFrame.instance.getExtendedState() != Frame.ICONIFIED)        
 		uglyjoglhack();
 		ui.audio.cycle();
 		if(curf != null)
 		    curf.tick("aux");
 		frames++;
 		now = System.currentTimeMillis();
+                fd = Config.slowmin && !MainFrame.instance.isActive()?100:20;
 		if(now - then < fd) {
 		    synchronized(events) {
 			events.wait(fd - (now - then));
