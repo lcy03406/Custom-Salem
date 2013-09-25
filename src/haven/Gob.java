@@ -218,7 +218,7 @@ public class Gob implements Sprite.Owner, Rendered {
                 tree = rd.res.get().name.contains("tree");
             }
             
-            if(Config.raidermodebraziers && brazier && hlt.asfloat()>0.5)
+            if(Config.raidermodebraziers && hlt != null && brazier && hlt.asfloat()>0.5)
             {                
                 Material.Colors fx = new Material.Colors();
                 Color c = new Color(255, 105, 180, 200);
