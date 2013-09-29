@@ -152,7 +152,9 @@ public abstract class ItemInfo {
 	for(ItemInfo ii : info) {
 	    if(ii instanceof Tip) {
 		Tip tip = (Tip)ii;
+                try{
 		buf.add(tip.longtip());
+                }catch(IllegalArgumentException iae){}
 	    }
 	}
 	if(buf.size() < 1)
