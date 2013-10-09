@@ -573,6 +573,7 @@ public class Session implements Owner {
 		    }
 		    if(!p.getSocketAddress().equals(server))
 			continue;
+                    
 		    Message msg = new Message(p.getData()[0], p.getData(), 1, p.getLength() - 1);
 		    if(msg.type == MSG_SESS) {
 			if(state == "conn") {

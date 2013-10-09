@@ -404,7 +404,7 @@ public class OptWnd2 extends Window {
             tab = body.new Tab(new Coord(210,0), 60, "Latikai");
             
             //project overgrown
-	    new CheckBox(new Coord(0, 65), tab, "Enable 1x1 field fix"){
+	    new CheckBox(new Coord(0, 35), tab, "Enable 1x1 field fix"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -415,8 +415,8 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("Show paths of moving entities of the world.");}
 		
 	    }.a = Config.showgobpath;
-            final Label cropscale = new Label(new Coord(0, 90), tab, "Crop scaling: x"+Config.fieldproducescale);
-	    new HSlider(new Coord(15, 110), 200, tab, 0, 9, Config.fieldproducescale-1) {
+            final Label cropscale = new Label(new Coord(0, 60), tab, "Crop scaling: x"+Config.fieldproducescale);
+	    new HSlider(new Coord(15, 80), 200, tab, 0, 9, Config.fieldproducescale-1) {
 		public void changed() {
 		    Config.setFieldproducescale(val+1);
                     cropscale.settext("Crop scaling: x"+Config.fieldproducescale);
@@ -424,7 +424,7 @@ public class OptWnd2 extends Window {
 	    };
             
             //project marathon
-	    new CheckBox(new Coord(0, 130), tab, "Show gob paths"){
+	    new CheckBox(new Coord(0, 100), tab, "Show gob paths"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -437,7 +437,7 @@ public class OptWnd2 extends Window {
 	    }.a = Config.showgobpath;
             
             //project purity
-	    new CheckBox(new Coord(0, 150), tab, "Always show purity percentage/multiplier"){
+	    new CheckBox(new Coord(0, 120), tab, "Always show purity percentage/multiplier"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -450,7 +450,7 @@ public class OptWnd2 extends Window {
 	    }.a = Config.alwaysshowpurity;
             
             //project free the camera
-	    new CheckBox(new Coord(0, 170), tab, "Laptop mode for the mouse"){
+	    new CheckBox(new Coord(0, 140), tab, "Laptop mode for the mouse"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -462,12 +462,12 @@ public class OptWnd2 extends Window {
 		
 	    }.a = Config.laptopcontrols;
             
-            final Label laptopcontrol1 = new Label(new Coord(10, 190), tab, "Laptop controls: Move the camera by pressing LMB, then dragging RMB.");
-            final Label laptopcontrol2 = new Label(new Coord(10, 200), tab, "Zoom in with + and out with -, and rotate objects like that while pressing shift.");
-            final Label laptopcontrol3 = new Label(new Coord(10, 210), tab, "Rotate in precise mode by pressing shift-alt rather than shift-ctrl.");
+            final Label laptopcontrol1 = new Label(new Coord(10, 160), tab, "Laptop controls: Move the camera by pressing LMB, then dragging RMB.");
+            final Label laptopcontrol2 = new Label(new Coord(10, 170), tab, "Zoom in with + and out with -, and rotate objects like that while pressing shift.");
+            final Label laptopcontrol3 = new Label(new Coord(10, 180), tab, "Rotate in precise mode by pressing shift-alt rather than shift-ctrl.");
             
             //project raider trees
-	    new CheckBox(new Coord(0, 230), tab, "Raider mode trees"){
+	    new CheckBox(new Coord(0, 200), tab, "Raider mode trees"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -480,7 +480,7 @@ public class OptWnd2 extends Window {
 	    }.a = Config.raidermodetrees;
             
             //project raider braziers
-	    new CheckBox(new Coord(150, 230), tab, "Raider mode braziers"){
+	    new CheckBox(new Coord(150, 200), tab, "Raider mode braziers"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -493,7 +493,7 @@ public class OptWnd2 extends Window {
 	    }.a = Config.raidermodebraziers;
             
             //project ironborn
-	    new CheckBox(new Coord(0, 250), tab, "Alternate prospecting"){
+	    new CheckBox(new Coord(0, 220), tab, "Alternate prospecting"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -506,7 +506,7 @@ public class OptWnd2 extends Window {
 	    }.a = Config.altprosp;
             
             //project lazy tracker
-	    new CheckBox(new Coord(0, 270), tab, "Enable tracking on log-in"){
+	    new CheckBox(new Coord(0, 240), tab, "Enable tracking on log-in"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -519,7 +519,7 @@ public class OptWnd2 extends Window {
 	    }.a = Config.alwaystrack;
             
             //project silent witness
-	    new CheckBox(new Coord(0, 290), tab, "Lower framerate on unfocused instances"){
+	    new CheckBox(new Coord(0, 260), tab, "Lower framerate on unfocused instances"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -530,6 +530,19 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("Lowers the target framerate for unfocused windows from 50 to 10.");}
 		
 	    }.a = Config.slowmin;
+            
+            //project awareness
+	    new CheckBox(new Coord(0, 280), tab, "Always face the primary target"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.watchguard = val;
+		    Utils.setprefb("watchguard", val);
+		}
+
+		{tooltip = Text.render("Always face the target at the top of the aggro list. WARNING: will not work when not rendering, e.g. when minimized.");}
+		
+	    }.a = Config.watchguard;
         }
         
         /* RADAR TAB */

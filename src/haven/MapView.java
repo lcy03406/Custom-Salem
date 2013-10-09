@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.Fightview.Relation;
 import static haven.MCache.tilesz;
 
 import java.awt.Color;
@@ -931,6 +932,10 @@ public class MapView extends PView implements DTarget, Console.Directory {
             if(Config.showgobpath)
                 drawGobPath(g, dgpcam, dgpwxf);
             
+            //project awareness
+            if(Config.watchguard)
+                orientToEnemy();
+            
 	    glob.map.reqarea(cc.div(tilesz).sub(MCache.cutsz.mul(view + 1)),
 			     cc.div(tilesz).add(MCache.cutsz.mul(view + 1)));
 	} catch(Loading e) {
@@ -1026,6 +1031,29 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    }
 	}
 	g.chcolor();
+    }
+    
+    private void orientToEnemy()
+    {
+        if(this.ui.gui.fv != null && !this.ui.gui.fv.lsrel.isEmpty()){
+            
+            Moving m = this.player().getattr(Moving.class);
+            if(m!=null) return;
+            Relation r = this.ui.gui.fv.lsrel.getFirst();
+            Gob enemy=this.glob.oc.getgob(r.gobid);
+            if(!enemy.virtual)
+            {
+                double angle = this.player().rc.angle(enemy.rc);
+                double diff = Math.abs(this.player().a - angle);
+                if(diff > Math.PI) diff = 2*Math.PI-diff;
+                if(Math.abs(diff) > Math.PI/6)
+                {
+                    double cosa = Math.cos(angle);
+                    double sina = Math.sin(angle);
+                    this.wdgmsg(this, "click", this.player().sc, this.player().rc.add((int)Math.round(cosa), (int) Math.round(sina)), 1, 0);
+                }
+            }
+        }
     }
     
     public void tick(double dt) {

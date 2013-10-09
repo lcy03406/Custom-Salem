@@ -124,6 +124,8 @@ public class Config {
     public static boolean alwaystrack = Utils.getprefb("alwaystrack", false);
     //project silent witness
     public static boolean slowmin = Utils.getprefb("slowmin", false);
+    //project awareness
+    public static boolean watchguard = Utils.getprefb("watchguard", false);
     
     static {
 	String p;
