@@ -36,7 +36,7 @@ import java.util.*;
 import javax.media.opengl.*;
 import javax.media.opengl.awt.*;
 
-public class HavenPanel extends GLCanvas implements Runnable {
+public class HavenPanel extends GLCanvas implements Runnable, Console.Directory {
     UI ui;
     boolean inited = false, rdr = false;
     int w, h;
@@ -116,6 +116,7 @@ public class HavenPanel extends GLCanvas implements Runnable {
 				gl.glEnable(GL.GL_BLEND);
 				//gl.glEnable(GL.GL_LINE_SMOOTH);
 				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+				gl.glBlendEquationSeparate(GL.GL_FUNC_ADD, GL2.GL_MAX);
 				if(g.gc.havefsaa()) {
 				    /* Apparently, having sample
 				     * buffers in the config enables
@@ -253,6 +254,7 @@ public class HavenPanel extends GLCanvas implements Runnable {
 	ui.root.gprof = prof;
 	if(getParent() instanceof Console.Directory)
 	    ui.cons.add((Console.Directory)getParent());
+	ui.cons.add(this);
 	if(glconf != null)
 	    ui.cons.add(glconf);
 	return(ui);
@@ -422,6 +424,7 @@ public class HavenPanel extends GLCanvas implements Runnable {
 	    int frames = 0, waited = 0;
 	    fthen = System.currentTimeMillis();
 	    while(true) {
+		Debug.cycle();
 		UI ui = this.ui;
 		then = System.currentTimeMillis();
 		if(Config.profile)
@@ -473,5 +476,17 @@ public class HavenPanel extends GLCanvas implements Runnable {
 	
     public GraphicsConfiguration getconf() {
 	return(getGraphicsConfiguration());
+    }
+
+    private Map<String, Console.Command> cmdmap = new TreeMap<String, Console.Command>();
+    {
+	cmdmap.put("hz", new Console.Command() {
+		public void run(Console cons, String[] args) {
+		    fd = 1000 / Integer.parseInt(args[1]);
+		}
+	    });
+    }
+    public Map<String, Console.Command> findcmds() {
+	return(cmdmap);
     }
 }

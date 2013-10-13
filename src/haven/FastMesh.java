@@ -85,7 +85,7 @@ public class FastMesh implements FRendered, Disposable {
 	    GLProgram prog = g.st.prog;
 	    int i;
 	    for(i = 0; i < kcache.length; i++) {
-		if(kcache[i] == prog)
+		if(kcache[i] == prog && i < vcache.length)
 		    return(vcache[i]);
 	    }
 	    g.apply();
