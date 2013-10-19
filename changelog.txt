@@ -1,6 +1,9 @@
 $size[20]{$u{CHANGE LOG:}}
  
 $size[14]{$u{Update for 19.10.13 (Latikai):}}
+  * Second update today! Open the locator tool using CTRL+Q. Grab the attention of the locator, and then walk somewhere. The locator window will show the relative location of your target (in tiles). Notably handy when walking towards people in your party.
+
+$size[14]{$u{Update for 19.10.13 (Latikai):}}
   * Latikai shall try to use the changelog from now on as well!
   * Added a textbox for filtering the characters when choosing one. The filtered list will still be sorted according to your preferences: alphabetically or by last log-in.
  

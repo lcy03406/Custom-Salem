@@ -986,6 +986,11 @@ public class MapView extends PView implements DTarget, Console.Directory {
                             targetheight = reposstart.z;
                         }
                         reposend = new Coord3f(gobpath.t.x, gobpath.t.y, targetheight);
+                        
+                        if(gob.id == this.player().id)
+                        {
+                            LocatorTool.addPath(gobpath);
+                        }
                     }
                     else if(m instanceof Homing)
                     {
