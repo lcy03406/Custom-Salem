@@ -26,8 +26,11 @@
 
 package haven;
 
+import haven.Charlist.Char;
+import java.awt.event.KeyEvent;
 import java.util.*;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class Charlist extends Widget {
     public static final Tex bg = Resource.loadtex("gfx/hud/avakort");
@@ -50,6 +53,12 @@ public class Charlist extends Widget {
     //project alphabet
     private boolean charschanged = false;
     public List<Char> alphachars = new ArrayList<Char>();
+    
+    //project picky
+    private boolean filterchanged = false;
+    private boolean prefchanged = true;
+    private String filterstring = "";
+    public List<Char> filteredchars = new ArrayList<Char>();
     
     
     public static class Char {
@@ -107,11 +116,29 @@ public class Charlist extends Widget {
                 super.changed(val);
                 Config.alphasort = val;
                 Utils.setprefb("alphasort", val);
+                prefchanged = true;
             }
 
             {tooltip = Text.render("Sorts the list of characters alphabetically rather than by last log-in.");}
         };
         alphacheck.a = Config.alphasort;
+        
+        TextEntry filter = new TextEntry(new Coord(225, sz.y-30), new Coord(100,18), this, ""){
+            @Override
+            public void changed(){
+                super.changed();
+                filterchanged = true;
+                filterstring = this.text;
+            }
+            @Override
+            public boolean type(char c, KeyEvent ke){
+                if(c == ':'){
+                    ui.root.entercmd();
+                    return true;
+                }
+                return super.type(c, ke);
+            }
+        };
     }
     
     public void scroll(int amount) {
@@ -130,16 +157,34 @@ public class Charlist extends Widget {
             //project alphabet
             if(charschanged)
             {
-                    alphachars = new ArrayList<Char>(chars);
-                    Collections.sort(alphachars, new Char.CharComparator());
+                alphachars = new ArrayList<Char>(chars);
+                Collections.sort(alphachars, new Char.CharComparator());
+            }
+            
+            //project picky
+            if(filterchanged || charschanged || prefchanged)
+            {
+                filteredchars = new ArrayList<Char>();
+                for(Char c : (Config.alphasort?alphachars:chars))
+                {
+                    if(c.name.contains(filterstring))
+                        filteredchars.add(c);
+                }
             }
 
-            for(Char c : (Config.alphasort?alphachars:chars)) {
+            if(filterchanged)
+                filterchanged = false;
+            if(charschanged)
+                charschanged = false;
+            if(prefchanged)
+                prefchanged = false;
+            
+            for(Char c : chars) {
 		// c.ava.hide();
 		c.plb.hide();
 	    }
-	    for(int i = 0; (i < height) && (i + this.y < (Config.alphasort?alphachars:chars).size()); i++) {
-		Char c = (Config.alphasort?alphachars:chars).get(i + this.y);
+	    for(int i = 0; (i < height) && (i + this.y < filteredchars.size()); i++) {
+		Char c = filteredchars.get(i + this.y);
 		g.image(bg, cc);
 		// c.ava.show();
 		c.plb.show();
@@ -150,6 +195,14 @@ public class Charlist extends Widget {
 		g.image(c.nt.tex(), cc.add(15, 10));
 		cc = cc.add(0, bg.sz().y + margin);
 	    }
+            if(filteredchars.size() > height) {
+		    sau.show();
+		    sad.show();
+            }            
+            else{
+                sau.hide();
+                sad.hide();
+            }
 	}
 	super.draw(g);
     }
