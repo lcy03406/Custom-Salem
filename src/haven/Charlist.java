@@ -139,6 +139,8 @@ public class Charlist extends Widget {
                 return super.type(c, ke);
             }
         };
+        filter.settext(Utils.getpref("namefilt", ""));
+        filter.changed();
     }
     
     public void scroll(int amount) {
@@ -167,13 +169,16 @@ public class Charlist extends Widget {
                 filteredchars = new ArrayList<Char>();
                 for(Char c : (Config.alphasort?alphachars:chars))
                 {
-                    if(c.name.contains(filterstring))
+                    if("".equals(filterstring) || c.name.contains(filterstring))
                         filteredchars.add(c);
                 }
             }
 
             if(filterchanged)
+            {
                 filterchanged = false;
+                Utils.setpref("namefilt", filterstring);
+            }
             if(charschanged)
                 charschanged = false;
             if(prefchanged)

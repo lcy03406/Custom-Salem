@@ -1,5 +1,8 @@
 $size[20]{$u{CHANGE LOG:}}
- 
+
+$size[14]{$u{Update for <undecided> (Latikai):}}
+  * The name filter entry is now remembered between sessions.
+
 $size[14]{$u{Update for 19.10.13 (Latikai):}}
   * Second update today! Open the locator tool using CTRL+Q. Grab the attention of the locator, and then walk somewhere. The locator window will show the relative location of your target (in tiles). Notably handy when walking towards people in your party.
 
