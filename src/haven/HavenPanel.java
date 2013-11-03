@@ -116,7 +116,8 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
 				gl.glEnable(GL.GL_BLEND);
 				//gl.glEnable(GL.GL_LINE_SMOOTH);
 				gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-				gl.glBlendEquationSeparate(GL.GL_FUNC_ADD, GL2.GL_MAX);
+				if(g.gc.glmajver >= 2)
+				    gl.glBlendEquationSeparate(GL.GL_FUNC_ADD, GL2.GL_MAX);
 				if(g.gc.havefsaa()) {
 				    /* Apparently, having sample
 				     * buffers in the config enables
@@ -370,6 +371,10 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
 	    }
 	}
 	state.clean();
+	if(glconf.pref.dirty) {
+	    glconf.pref.save();
+	    glconf.pref.dirty = false;
+	}
     }
 	
     void dispatch() {

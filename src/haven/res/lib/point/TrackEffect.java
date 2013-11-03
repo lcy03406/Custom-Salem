@@ -16,8 +16,8 @@ public class TrackEffect extends Sprite
 {
   static Resource sres = Resource.load("gfx/fx/arrow", 1);
   Rendered fx;
-  public double a1;
-  public double a2;
+  public double a1, lasta1;
+  public double a2, lasta2;
   double ca;
   double oa;
   double da;
@@ -49,7 +49,12 @@ public class TrackEffect extends Sprite
     }
     
     this.ca = (this.oa + this.da * (this.t / this.tt));
-    
+        if(a1 != lasta1 || a2 != lasta2)
+        {
+            System.out.println("From "+a1+" to "+a2);
+            lasta1 = a1;
+            lasta2 = a2;
+        }
     return false;
   }
 

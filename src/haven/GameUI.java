@@ -605,7 +605,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     
     public void tick(double dt) {
 	super.tick(dt);
-	if(!afk && (System.currentTimeMillis() - ui.lastevent > 300000)) {
+	if(false && !afk && (System.currentTimeMillis() - ui.lastevent > 300000)) {
 	    afk = true;
 	    wdgmsg("afk");
 	} else if(afk && (System.currentTimeMillis() - ui.lastevent < 300000)) {
