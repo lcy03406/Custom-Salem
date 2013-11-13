@@ -186,7 +186,7 @@ public class Wiki {
     private static String do_search(String name) {
 	String content = null;
 	try {
-	    URI uri = new URI("http", null, "salemwiki.info", -1, "/api.php", String.format(SEARCH_URL, name), null);
+	    URI uri = new URI("http", null, "salem-wiki.com/mediawiki", -1, "/api.php", String.format(SEARCH_URL, name), null);
 
 	    URL url = uri.toURL();
 	    String data = stream2str(url.openStream());
@@ -203,7 +203,7 @@ public class Wiki {
 	    for(int i=0; i<pages.length(); i++){
 		JSONObject page = pages.getJSONObject(i);
 		String title = page.getString("title");
-		//URI link = new URI("http", null, "salemwiki.info", -1, "/index.php/"+title, null, null);
+		//URI link = new URI("http", null, "salem-wiki.com/mediawiki", -1, "/index.php/"+title, null, null);
 		String snip = page.getString("snippet");
 		if(snip.length() >0){snip+="<BR/>";}
 		content += String.format("<B><a href=\"/index.php/%s\">%s</a></B><BR/>%s<BR/>", title, title, snip);
@@ -310,7 +310,7 @@ public class Wiki {
     private static String get_content(String name){
 	String content = null;
 	try {
-	    URI uri = new URI("http", null, "salemwiki.info", -1, "/api.php", null, null);
+	    URI uri = new URI("http", null, "salem-wiki.com/mediawiki", -1, "/api.php", null, null);
 
 	    URL link = uri.toURL();
 	    HttpURLConnection conn = (HttpURLConnection) link.openConnection();
@@ -345,7 +345,7 @@ public class Wiki {
     private static String parse_wiki(Item item){
 	String content = null;
 	try {
-	    URI uri = new URI("http", null, "salemwiki.info", -1, "/api.php", null, null);
+	    URI uri = new URI("http", null, "salem-wiki.com/mediawiki", -1, "/api.php", null, null);
 
 	    URL link = uri.toURL();
 	    HttpURLConnection conn = (HttpURLConnection) link.openConnection();
@@ -523,7 +523,7 @@ public class Wiki {
 	try {
 	    if(date < update_date){return true;}//ignore old cache
 	    //String p = String.format("%s%s", WIKI_URL, name);
-	    URI uri = new URI("http","salemwiki.info","/index.php/"+name, null);
+	    URI uri = new URI("http","salem-wiki.com/mediawiki","/index.php/"+name, null);
 	    URL  url = uri.toURL();
 	    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	    conn.setRequestMethod("HEAD");

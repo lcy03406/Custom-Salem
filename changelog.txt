@@ -1,7 +1,11 @@
 $size[20]{$u{CHANGE LOG:}}
 
-$size[14]{$u{Update for <undecided> (Latikai):}}
-  * The name filter entry is now remembered between sessions.
+$size[14]{$u{Update for 13.11.13 (Latikai):}}
+  * The wiki will now interface with salem-wiki.com rather than salemwiki.info
+
+$size[14]{$u{Update for 08.11.13 (Latikai):}}
+  * The name filter entry is now remembered between sessions. Please keep this in mind if your characters ever "vanish".
+  * merged loftar's code
 
 $size[14]{$u{Update for 19.10.13 (Latikai):}}
   * Second update today! Open the locator tool using CTRL+Q. Grab the attention of the locator, and then walk somewhere. The locator window will show the relative location of your target (in tiles). Notably handy when walking towards people in your party.
