@@ -43,6 +43,7 @@ public class RootWidget extends ConsoleHost {
     public boolean globtype(char key, KeyEvent ev) {
 	int code = ev.getKeyCode();
 	boolean ctrl = ev.isControlDown();
+	boolean shift = ev.isShiftDown();
 	if(!super.globtype(key, ev)) {
 	    if(key == 0){return false;}
 	    if(Config.profile && (key == '`')) {
@@ -56,15 +57,24 @@ public class RootWidget extends ConsoleHost {
 	    }else if((code == KeyEvent.VK_L || code == KeyEvent.VK_F) && ctrl){
 		FlatnessTool ft = FlatnessTool.instance(ui);
                 if(ft!=null) ft.toggle();
-	    }else if((code == KeyEvent.VK_Q) && ctrl){
+	    }else if((code == KeyEvent.VK_Q) && ctrl && !shift){
 		LocatorTool lt = LocatorTool.instance(ui);
                 if(lt!=null) lt.toggle();
 	    }else if(code == KeyEvent.VK_D && ctrl){
 		DarknessWnd.toggle();
+	    }else if(code == KeyEvent.VK_A && ctrl && shift){
+		this.ui.gui.act(new String[] { "lo", "cs" });
+	    }else if(code == KeyEvent.VK_Q && ctrl && shift){
+		this.ui.gui.act(new String[] { "lo" });
 	    }else if(code == KeyEvent.VK_Z && ctrl){
 		Config.center = !Config.center;
 		ui.message(String.format("Tile centering in turned %s", Config.center?"ON":"OFF"));
-	    } else if(key != 0) {
+	    }else if(code == KeyEvent.VK_N && ctrl){
+                Config.alwaysbright = !Config.alwaysbright;
+                Utils.setprefb("alwaysbright", Config.alwaysbright);
+                this.ui.sess.glob.brighten();
+            }
+            else if(key != 0) {
 		wdgmsg("gk", (int)key);
 	    }
 	}

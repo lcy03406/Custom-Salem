@@ -1,19 +1,32 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 17.11.13 (Latikai, thanks to Trojanz):}}
+  * Town authority bar now also shows daily drain
+  * Ctrl+shift+A will switch characters, ctrl+shift+Q will log out completely
+  * Introduced a toggle to get rid of the delays on flower menus
+
+$size[14]{$u{Update for 16.11.13 (Latikai):}}
+  * Press ctrl+N while in darkness or a mine to reset to standard outside lighting.
+
+
 $size[14]{$u{Update for 13.11.13 (Latikai):}}
   * The wiki will now interface with salem-wiki.com rather than salemwiki.info
+
 
 $size[14]{$u{Update for 08.11.13 (Latikai):}}
   * The name filter entry is now remembered between sessions. Please keep this in mind if your characters ever "vanish".
   * merged loftar's code
 
+
 $size[14]{$u{Update for 19.10.13 (Latikai):}}
   * Second update today! Open the locator tool using CTRL+Q. Grab the attention of the locator, and then walk somewhere. The locator window will show the relative location of your target (in tiles). Notably handy when walking towards people in your party.
+
 
 $size[14]{$u{Update for 19.10.13 (Latikai):}}
   * Latikai shall try to use the changelog from now on as well!
   * Added a textbox for filtering the characters when choosing one. The filtered list will still be sorted according to your preferences: alphabetically or by last log-in.
  
+
 $size[14]{$u{Update for 30.08.13:}}
   * fixed flatness tool displaying
  

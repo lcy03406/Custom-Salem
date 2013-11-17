@@ -112,7 +112,7 @@ public class Polity extends Window {
 		g.chcolor();
 		if(rauth == null) {
 		    Color col = offline?Color.RED:Color.WHITE;
-		    rauth = new TexI(Utils.outline2(Text.render(String.format("%s/%s", auth, acap), col).img, Utils.contrast(col)));
+		    this.rauth = new TexI(Utils.outline2(Text.render(String.format("Drain: %s Auth: %s/%s", new Object[] { Integer.valueOf(this.adrain), Integer.valueOf(this.auth), Integer.valueOf(this.acap) }), col).img, Utils.contrast(col)));
 		}
 		g.aimage(rauth, new Coord(100, 33), 0.5, 0.5);
 	    }

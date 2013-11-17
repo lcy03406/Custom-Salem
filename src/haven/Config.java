@@ -126,6 +126,10 @@ public class Config {
     public static boolean slowmin = Utils.getprefb("slowmin", false);
     //project awareness
     public static boolean watchguard = Utils.getprefb("watchguard", false);
+    //project nighteye
+    public static boolean alwaysbright = Utils.getprefb("alwaysbright", false);
+    //project patience
+    public static boolean fast_menu = Utils.getprefb("fast_flowers", false);
     
     static {
 	String p;

@@ -295,8 +295,22 @@ public class Glob {
     }
 	
     public synchronized void brighten() {
-	float hsb[] = Color.RGBtoHSB(origamb.getRed(), origamb.getGreen(), origamb.getBlue(), null);
-	hsb[2] = 1.0f - (1.0f - hsb[2])/(Config.brighten*Config.maxbright + 1.0f);
+	float hsb[];
+        if(!Config.alwaysbright)
+        {
+            hsb = Color.RGBtoHSB(origamb.getRed(), origamb.getGreen(), origamb.getBlue(), null);
+            hsb[2] = 1.0f - (1.0f - hsb[2])/(Config.brighten*Config.maxbright + 1.0f);
+        }
+        else
+        {
+            lightang = 3*Math.PI/2;
+            lightelev = 56*Math.PI/180;
+            float hsb2[] = Color.RGBtoHSB(255,255,208, null);
+            lightdif = Color.getHSBColor(hsb2[0],hsb2[1],hsb2[2]);
+            hsb2 = Color.RGBtoHSB(255,255,255, null);
+            lightspc = Color.getHSBColor(hsb2[0],hsb2[1],hsb2[2]);
+            hsb = Color.RGBtoHSB(96,96,160, null);
+        }
 	lightamb = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
 	DarknessWnd.update();
     }

@@ -412,7 +412,7 @@ public class OptWnd2 extends Window {
 		    Utils.setprefb("fieldfix", val);
 		}
 
-		{tooltip = Text.render("Show paths of moving entities of the world.");}
+		{tooltip = Text.render("Only show a single instance of a crop, at the center of its field.");}
 		
 	    }.a = Config.showgobpath;
             final Label cropscale = new Label(new Coord(0, 60), tab, "Crop scaling: x"+Config.fieldproducescale);
@@ -543,6 +543,19 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("Always face the target at the top of the aggro list. WARNING: will not work when not rendering, e.g. when minimized.");}
 		
 	    }.a = Config.watchguard;
+            
+            //project patience
+	    new CheckBox(new Coord(0, 300), tab, "Fast flower menus"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.fast_menu = val;
+		    Utils.setprefb("fast_flowers", val);
+		}
+
+		{tooltip = Text.render("Get rid of the delays when opening flower menus.");}
+		
+	    }.a = Config.fast_menu;
         }
         
         /* RADAR TAB */

@@ -26,6 +26,8 @@
 
 package haven;
 
+import static haven.FlowerMenu.pbgm;
+import static haven.FlowerMenu.ptf;
 import java.awt.Color;
 import java.awt.Font;
 import static java.lang.Math.PI;
@@ -37,10 +39,11 @@ public class FlowerMenu extends Widget {
     static Color ptc = new Color(248, 240, 193);
     static Text.Foundry ptf = new Text.Foundry(new Font("SansSerif", Font.PLAIN, 12));
     static int ph = pbgm.sz().y, ppl = 8;
-    Petal[] opts;
+    FlowerMenu.Petal[] opts;
+    private double fast_menu1, fast_menu2;
 
-    @RName("sm")
-    public static class $_ implements Factory {
+    @Widget.RName("sm")
+    public static class $_ implements Widget.Factory {
 	public Widget create(Coord c, Widget parent, Object[] args) {
 	    if((c.x == -1) && (c.y == -1))
 		c = parent.ui.lcc;
@@ -63,6 +66,16 @@ public class FlowerMenu extends Widget {
 	    this.name = name;
 	    text = new TexI(Utils.outline2(ptf.render(name, ptc).img, Utils.contrast(ptc)));
 	    sz = new Coord(text.sz().x + 25, ph);
+            if (Config.fast_menu)
+            {
+              FlowerMenu.this.fast_menu1 = 0.0D;
+              FlowerMenu.this.fast_menu2 = 0.0D;
+            }
+            else
+            {
+              FlowerMenu.this.fast_menu1 = 0.25D;
+              FlowerMenu.this.fast_menu2 = 0.75D;
+            }
 	}
 		
 	public void move(Coord c) {
@@ -87,27 +100,27 @@ public class FlowerMenu extends Widget {
 	}
     }
 
-    public class Opening extends NormAnim {
-	Opening() {super(0.25);}
+    public class Opening extends Widget.NormAnim {
+	Opening() {super(FlowerMenu.this.fast_menu1);}
 		
 	public void ntick(double s) {
-	    for(Petal p : opts) {
+	    for(FlowerMenu.Petal p : opts) {
 		p.move(p.ta, p.tr * (2 - s));
 		p.a = s;
 	    }
 	}
     }
 
-    public class Chosen extends NormAnim {
-	Petal chosen;
+    public class Chosen extends Widget.NormAnim {
+	FlowerMenu.Petal chosen;
 		
-	Chosen(Petal c) {
-	    super(0.75);
+	Chosen(FlowerMenu.Petal c) {
+	    super(FlowerMenu.this.fast_menu2);
 	    chosen = c;
 	}
 		
 	public void ntick(double s) {
-	    for(Petal p : opts) {
+	    for(FlowerMenu.Petal p : opts) {
 		if(p == chosen) {
 		    if(s > 0.6) {
 			p.a = 1 - ((s - 0.6) / 0.4);
@@ -129,11 +142,11 @@ public class FlowerMenu extends Widget {
 	}
     }
 
-    public class Cancel extends NormAnim {
-	Cancel() {super(0.25);}
+    public class Cancel extends Widget.NormAnim {
+	Cancel() {super(FlowerMenu.this.fast_menu1);}
 
 	public void ntick(double s) {
-	    for(Petal p : opts) {
+	    for(FlowerMenu.Petal p : opts) {
 		p.move(p.ta, p.tr * (1 + s));
 		p.a = 1 - s;
 	    }
@@ -142,7 +155,7 @@ public class FlowerMenu extends Widget {
 	}
     }
 
-    private static void organize(Petal[] opts) {
+    private static void organize(FlowerMenu.Petal[] opts) {
 	int l = 1, p = 0, i = 0;
 	int lr = -1;
 	for(i = 0; i < opts.length; i++) {
@@ -162,29 +175,29 @@ public class FlowerMenu extends Widget {
 
     public FlowerMenu(Coord c, Widget parent, String... options) {
 	super(c, Coord.z, parent);
-	Petal study = null;
+	FlowerMenu.Petal study = null;
 	if(Config.flower_study){
 	    for(int i = 0; i < options.length; i++) {
 		if(options[i].equals("Study")){
-		    study = new Petal(options[i]);
+		    study = new FlowerMenu.Petal(options[i]);
 		    study.num = i;
 		    break;
 		}
 	    }
 	}
 	if(study == null) {
-	    opts = new Petal[options.length];
+	    opts = new FlowerMenu.Petal[options.length];
 	    for(int i = 0; i < options.length; i++) {
-		opts[i] = new Petal(options[i]);
+		opts[i] = new FlowerMenu.Petal(options[i]);
 		opts[i].num = i;
 	    }
 	} else {
-	    opts = new Petal[]{study};
+	    opts = new FlowerMenu.Petal[]{study};
 	}
 	organize(opts);
 	ui.grabmouse(this);
 	ui.grabkeys(this);
-	new Opening();
+	new FlowerMenu.Opening();
     }
 
     public boolean mousedown(Coord c, int button) {
@@ -197,11 +210,11 @@ public class FlowerMenu extends Widget {
 
     public void uimsg(String msg, Object... args) {
 	if(msg == "cancel") {
-	    new Cancel();
+	    new FlowerMenu.Cancel();
 	    ui.grabmouse(null);
 	    ui.grabkeys(null);
 	} else if(msg == "act") {
-	    new Chosen(opts[get((Integer)args[0])]);
+	    new FlowerMenu.Chosen(opts[get((Integer)args[0])]);
 	    ui.grabmouse(null);
 	    ui.grabkeys(null);
 	}
@@ -209,7 +222,7 @@ public class FlowerMenu extends Widget {
 
     private int get(int num) {
 	int i = 0;
-	for(Petal p : opts){
+	for(FlowerMenu.Petal p : opts){
 	    if(p.num == num){
 		return i;
 	    }
@@ -237,7 +250,7 @@ public class FlowerMenu extends Widget {
 	return(false);
     }
 
-    public void choose(Petal option) {
+    public void choose(FlowerMenu.Petal option) {
 	if(option == null) {
 	    wdgmsg("cl", -1);
 	} else {

@@ -994,7 +994,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
                         }
                         reposend = new Coord3f(gobpath.t.x, gobpath.t.y, targetheight);
                         
-                        if(gob.id == this.player().id)
+                        if(this.player()!=null && gob.id == this.player().id)
                         {
                             LocatorTool.addPath(gobpath);
                         }
