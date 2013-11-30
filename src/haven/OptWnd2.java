@@ -556,6 +556,20 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("Get rid of the delays when opening flower menus.");}
 		
 	    }.a = Config.fast_menu;
+            
+            //project silent lamb
+	    new CheckBox(new Coord(0, 320), tab, "Mute the violin player"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.mute_violin = val;
+		    Utils.setprefb("mute_violin", val);
+		}
+
+		{tooltip = Text.render("What it says on the tin. The violin player will never sound out loud.");}
+		
+	    }.a = Config.mute_violin;
+            
         }
         
         /* RADAR TAB */

@@ -130,6 +130,8 @@ public class Config {
     public static boolean alwaysbright = Utils.getprefb("alwaysbright", false);
     //project patience
     public static boolean fast_menu = Utils.getprefb("fast_flowers", false);
+    //project silent lamb
+    public static boolean mute_violin = Utils.getprefb("mute_violin", false);
     
     static {
 	String p;

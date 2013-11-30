@@ -1,5 +1,8 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 30.11.13 (Latikai):}}
+  * The violin player can now be muted for those too poor to buy him off. Please take his family into consideration, he deserves your support!
+
 $size[14]{$u{Update for 17.11.13 (Latikai, thanks to Trojanz):}}
   * Town authority bar now also shows daily drain
   * Ctrl+shift+A will switch characters, ctrl+shift+Q will log out completely
