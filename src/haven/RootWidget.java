@@ -63,9 +63,11 @@ public class RootWidget extends ConsoleHost {
 	    }else if(code == KeyEvent.VK_D && ctrl){
 		DarknessWnd.toggle();
 	    }else if(code == KeyEvent.VK_A && ctrl && shift){
-		this.ui.gui.act(new String[] { "lo", "cs" });
+                if(this.ui.gui.map!= null && this.ui.gui.map.player()!=null)
+                    this.ui.gui.act(new String[] { "lo", "cs" });
 	    }else if(code == KeyEvent.VK_Q && ctrl && shift){
-		this.ui.gui.act(new String[] { "lo" });
+                if(this.ui.gui.map!= null && this.ui.gui.map.player()!=null)
+                    this.ui.gui.act(new String[] { "lo" });
 	    }else if(code == KeyEvent.VK_Z && ctrl){
 		Config.center = !Config.center;
 		ui.message(String.format("Tile centering in turned %s", Config.center?"ON":"OFF"));
