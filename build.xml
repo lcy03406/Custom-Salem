@@ -103,9 +103,10 @@
 		<java jar="build/salem.jar" 
 				dir="build" 
 				fork="true" 
-				maxmemory="1024m"
+				maxmemory="100m"
 				classpath="java">
-			<arg line="-U http://plymouth.seatribe.se/res/ plymouth.seatribe.se" />
+			<arg line="-d -U http://plymouth.seatribe.se/res/ plymouth.seatribe.se"/>
+                        <jvmarg line="-XX:-UseGCOverheadLimit" />
 		</java>
 	</target>
 

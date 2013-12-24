@@ -1,5 +1,12 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 22.12.13 (Latikai):}}
+  * Waste claims will now be displayed in very bright red, so it's pretty obvious when one is around.
+  * Introduced a small button in the character list, which will allow you to reverse the sorting (Z->A when alphabetical, or last-log-in first).
+
+$size[14]{$u{Update for 20.12.13 (Latikai):}}
+  * Waste claim display functionality now fixed (for some people, it was always visible while for other people the behaviour was reversed).
+
 $size[14]{$u{Update for 30.11.13 (Latikai):}}
   * The violin player can now be muted for those too poor to buy him off. Please take his family into consideration, he deserves your support!
 

@@ -122,6 +122,17 @@ public class Charlist extends Widget {
             {tooltip = Text.render("Sorts the list of characters alphabetically rather than by last log-in.");}
         };
         alphacheck.a = Config.alphasort;
+        CheckBox reverselist = new CheckBox(new Coord(20,sz.y-30),this,""){
+            @Override
+            public void changed(boolean val) {
+                super.changed(val);
+                Config.reversesort = val;
+                Utils.setprefb("reversesort", val);
+            }
+
+            {tooltip = Text.render("Reverses sorting of the list.");}
+        };
+        reverselist.a = Config.reversesort;
         
         TextEntry filter = new TextEntry(new Coord(225, sz.y-30), new Coord(100,18), this, ""){
             @Override
@@ -188,8 +199,18 @@ public class Charlist extends Widget {
 		// c.ava.hide();
 		c.plb.hide();
 	    }
-	    for(int i = 0; (i < height) && (i + this.y < filteredchars.size()); i++) {
-		Char c = filteredchars.get(i + this.y);
+            int begin = Config.reversesort?filteredchars.size()-1:0;
+            int step = Config.reversesort?-1:1;
+            int end1 = Config.reversesort?1-this.y:filteredchars.size() - this.y;
+            int end1manip = Config.reversesort?-1:1;
+            int end2 = Config.reversesort?height+1-filteredchars.size():height;
+            int end2manip = Config.reversesort?-1:1;
+            int ymanip = Config.reversesort?-1:1;
+	    for(int i = begin; (i*end2manip < end2) && (i*end1manip < end1); i+=step) {
+                //TODO: this was easier than trying to guess the correct bounds right now
+                if(i+this.y*ymanip<0)
+                    continue;
+		Char c = filteredchars.get(i + this.y*ymanip);
 		g.image(bg, cc);
 		// c.ava.show();
 		c.plb.show();

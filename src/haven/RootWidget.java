@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.UI.UIException;
 import java.awt.event.KeyEvent;
 
 public class RootWidget extends ConsoleHost {
@@ -63,11 +64,13 @@ public class RootWidget extends ConsoleHost {
 	    }else if(code == KeyEvent.VK_D && ctrl){
 		DarknessWnd.toggle();
 	    }else if(code == KeyEvent.VK_A && ctrl && shift){
-                if(this.ui.gui.map!= null && this.ui.gui.map.player()!=null)
+                if(this.ui.rwidgets.containsKey(this.ui.gui))
                     this.ui.gui.act(new String[] { "lo", "cs" });
 	    }else if(code == KeyEvent.VK_Q && ctrl && shift){
-                if(this.ui.gui.map!= null && this.ui.gui.map.player()!=null)
+                if(this.ui.rwidgets.containsKey(this.ui.gui))
+                {
                     this.ui.gui.act(new String[] { "lo" });
+                }
 	    }else if(code == KeyEvent.VK_Z && ctrl){
 		Config.center = !Config.center;
 		ui.message(String.format("Tile centering in turned %s", Config.center?"ON":"OFF"));

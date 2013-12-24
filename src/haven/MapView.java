@@ -53,7 +53,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
     private int[] visol = new int[32];
     private Grabber grab;
     public static final Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
-    {visol[4] = 1;}
     
     {
 	camtypes.put("follow", FollowCam.class);
@@ -508,7 +507,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		mats[1] = new Material(new Color(0, 0, 255, 32));
 		mats[2] = new Material(new Color(255, 0, 0, 32));
 		mats[3] = new Material(new Color(128, 0, 255, 32));
-		mats[4] = new Material(new Color(0, 0, 0, 64));
+		mats[4] = new Material(new Color(255, 0, 0, 192));
 		mats[16] = new Material(new Color(0, 255, 0, 32));
 		mats[17] = new Material(new Color(255, 0, 255, 32));
 //		mats[WFOL] = new Material(new Color(0, 255, 0, 255));

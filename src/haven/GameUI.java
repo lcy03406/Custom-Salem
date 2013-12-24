@@ -892,12 +892,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    int x = 6;
 	    clab = new MenuButtonT(new Coord(x, y), this, "cla", -1, "Display personal claims") {
 		public void click() {
-		    if(!map.visol(0))
-			map.enol(0, 1);
-		    else
+		    if(Config.pclaimv)
 			map.disol(0, 1);
+		    else
+			map.enol(0, 1);
 		    toggle();
-                    Utils.setprefb("pclaimv",  map.visol(0));
+                    Config.pclaimv = !Config.pclaimv;
+                    Utils.setprefb("pclaimv", Config.pclaimv);
 		}
 	    };
             if(Config.pclaimv) clab.toggle();
@@ -905,12 +906,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    x+=18;
 	    towb = new MenuButtonT(new Coord(x, y), this, "tow", -1, "Display town claims") {
 		public void click() {
-		    if(!map.visol(2))
-			map.enol(2, 3);
-		    else
+		    if(Config.tclaimv)
 			map.disol(2, 3);
+		    else
+			map.enol(2, 3);
 		    toggle();
-                    Utils.setprefb("tclaimv",  map.visol(2));
+                    Config.tclaimv = !Config.tclaimv;
+                    Utils.setprefb("tclaimv",  Config.tclaimv);
 		}
 	    };
             if(Config.tclaimv) towb.toggle();
@@ -918,12 +920,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    x+=18;
 	    warb = new MenuButtonT(new Coord(x, y), this, "war", -1, "Display waste claims") {
 		public void click() {
-		    if(!map.visol(4))
-			map.enol(4);
-		    else
+		    if(Config.wclaimv)
 			map.disol(4);
+		    else
+			map.enol(4);
 		    toggle();
-                    Utils.setprefb("wclaimv",  map.visol(4));
+                    Config.wclaimv = !Config.wclaimv;
+                    Utils.setprefb("wclaimv", Config.wclaimv);
 		}
 	    };
             if(Config.wclaimv) warb.toggle();

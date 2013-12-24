@@ -108,6 +108,7 @@ public class Config {
     public static boolean alwaysshowpurity = Utils.getprefb("alwaysshowpurity", false);
     //project alphabet
     public static boolean alphasort = Utils.getprefb("alphasort", false);
+    public static boolean reversesort = Utils.getprefb("reversesort", false);
     //project free the camera
     public static boolean laptopcontrols = Utils.getprefb("laptopcontrols", false);
     //project raider
@@ -118,7 +119,7 @@ public class Config {
     //project save the claim
     public static boolean pclaimv = Utils.getprefb("pclaimv", false);
     public static boolean tclaimv = Utils.getprefb("tclaimv", false);
-    public static boolean wclaimv = Utils.getprefb("wclaimv", false);
+    public static boolean wclaimv = Utils.getprefb("wclaimv", true);
     public static boolean hpointv = Utils.getprefb("hpointv", false);
     //project lazy tracker
     public static boolean alwaystrack = Utils.getprefb("alwaystrack", false);
