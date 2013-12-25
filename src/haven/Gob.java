@@ -207,18 +207,16 @@ public class Gob implements Sprite.Owner, Rendered {
 	    if(blnk != null)
 		rl.prepc(blnk.getfx());
 	}
-        if(Config.raidermodetrees || Config.raidermodebraziers){
+        if(Config.raidermodebraziers){
             boolean brazier = false;
-            boolean tree = false;
             
             ResDrawable rd = this.getattr(ResDrawable.class);
             if(rd!=null && rd.res != null)
             {
                 brazier = rd.res.get().name.contains("brazier");
-                tree = rd.res.get().name.contains("tree");
             }
             
-            if(Config.raidermodebraziers && hlt != null && brazier && hlt.asfloat()>0.5)
+            if(brazier && hlt != null && hlt.asfloat()>0.5)
             {                
                 Material.Colors fx = new Material.Colors();
                 Color c = new Color(255, 105, 180, 200);
@@ -226,19 +224,6 @@ public class Gob implements Sprite.Owner, Rendered {
                 fx.dif = Utils.c2fa(c);
                 fx.emi = Utils.c2fa(c);
                 rl.prepc(fx);
-            }
-            
-            if(Config.raidermodetrees && tree)
-            {
-                if(rd.res.toString().contains("trunk"))
-                {
-                    String nn = rd.res.get().name;
-                    nn = nn.replace("trunk", "stump");    
-                    Resource rn = Resource.load(nn);
-                    //note! This invalidates rd
-                    //I do not use it anymore, so it is left alone
-                    this.setattr(new ResDrawable(this, rn.indir(), Message.nil));
-                }
             }
         }
         

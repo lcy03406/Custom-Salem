@@ -1,5 +1,8 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 25.12.13 (Latikai):}}
+  * Finally fixed the issues with raider mode trees. The effects have changed: trees will simply be scaled down to character height/width for better visibility. No more ugly resource hacks resulting in caching errors.
+
 $size[14]{$u{Update for 22.12.13 (Latikai):}}
   * Waste claims will now be displayed in very bright red, so it's pretty obvious when one is around.
   * Introduced a small button in the character list, which will allow you to reverse the sorting (Z->A when alphabetical, or last-log-in first).
