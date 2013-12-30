@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.Gob.Overlay;
 import static haven.Inventory.invsq;
 import static haven.Inventory.isqsz;
 import haven.res.lib.HomeTrackerFX;
@@ -796,7 +797,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     
     public class MainMenu extends Widget {
 	public final MenuButton invb, equb, chrb, budb, polb, optb;
-	public final MenuButton clab, towb, warb, ptrb, chatb;
+	public final MenuButton clab, towb, warb, ptrb, hwab, chatb;
 	public boolean pv = Config.hpointv && !Config.hptr;
 
 	boolean full = true;
@@ -941,6 +942,21 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    };
             pv = Config.hpointv && !Config.hptr;
 	    x+=18;
+            hwab = new MenuButton(new Coord(x,y), this, "hwa", -1, "Walk to your homestead") {
+                public void click() {
+                    if(map.player() != null)
+                    for(Overlay ol : map.player().ols)
+                    {
+                        if(ol.spr.getClass().equals(HomeTrackerFX.class))
+                        {
+                            HomeTrackerFX htfx = (HomeTrackerFX) ol.spr;
+                            // walk there!
+                            ui.wdgmsg(map, "click", map.player().sc, htfx.c, 1,0);
+                        }
+                    }
+                }
+            };
+	    x+=12;
 	    new MenuButton(new Coord(x, y), this, "height", -1, "Display heightmap") {
 		{
 		    hover = down;

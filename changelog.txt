@@ -1,5 +1,10 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 30.12.13 (Latikai):}}
+  * Lower bound on tree size, meaning trees in pots will now be visible again using the raider mode.
+  * Console commands are now much more visible when typing them, especially on white backgrounds.
+  * Introduced a new button in the main menu, allowing you to walk to your homestead (assuming you have one). Contributions for the icon on it are appreciated. Note that this will only get you a direction from Boston, and not an accurate location in conjunction with the locator.
+
 $size[14]{$u{Update for 25.12.13 (Latikai):}}
   * Finally fixed the issues with raider mode trees. The effects have changed: trees will simply be scaled down to character height/width for better visibility. No more ugly resource hacks resulting in caching errors.
 
