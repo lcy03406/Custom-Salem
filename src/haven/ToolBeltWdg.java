@@ -377,6 +377,8 @@ public class ToolBeltWdg extends Window implements DropTarget{
 		boolean ttl = (now - hoverstart) > 500;
 		try {
 		    Resource res = ir.get();
+                    if(res == null) return null;
+                    if(res.layer(Resource.action) == null) return null;
 		    Item itm = Wiki.get(res.layer(Resource.action).name);
 		    if((res != curttr) || (ttl != curttl) || itm != ttitem) {
 			ttitem = itm;
