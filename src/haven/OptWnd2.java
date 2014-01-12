@@ -566,7 +566,7 @@ public class OptWnd2 extends Window {
 		    Utils.setprefb("mute_violin", val);
 		}
 
-		{tooltip = Text.render("What it says on the tin. The violin player will never sound out loud.");}
+		{tooltip = Text.render("The violin player will lose his strings. Please remember that he has a family of his own to support!");}
 		
 	    }.a = Config.mute_violin;
             
