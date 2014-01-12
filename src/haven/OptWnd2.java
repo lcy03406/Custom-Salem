@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.BuddyWnd.CTextEntry;
 import haven.GLSettings.BoolSetting;
 
 import haven.minimap.ConfigGroup;
@@ -58,7 +59,7 @@ public class OptWnd2 extends Window {
     CheckBox opt_flight;
     CheckBox opt_cel;
     CheckBox opt_show_tempers;
-
+    
     private static class CamInfo {
 	String name, desc;
 	Tabs.Tab args;
@@ -71,9 +72,9 @@ public class OptWnd2 extends Window {
     }
 
     public OptWnd2(Coord c, Widget parent) {
-	super(c, new Coord(600, 340), parent, "Options");
+	super(c, new Coord(500, 340), parent, "Options");
 	justclose = true;
-	body = new Tabs(Coord.z, new Coord(400, 340), this) {
+	body = new Tabs(Coord.z, new Coord(500, 340), this) {
 		public void changed(Tab from, Tab to) {
 		    Utils.setpref("optwndtab", to.btn.text.text);
 		    from.btn.c.y = 0;
@@ -587,6 +588,52 @@ public class OptWnd2 extends Window {
         
         /* RADAR TAB */
         makeRadarTab();
+        
+        /* HOTKEY TAB */
+        {
+            
+	    tab = body.new Tab(new Coord(390, 0), 60, "Hotkeys");
+            
+            new Label(new Coord(10, 25), tab, "Enter commands to execute for configureable hotkeys.");
+            new Label(new Coord(10, 35), tab, "Use your hotkeys through shift+ctrl+<key>.");
+            new Label(new Coord(10, 45), tab, "Only single-character capitalized hotkeys will work.");
+            new Label(new Coord(10, 55), tab, "Hotkeys in use by the UI itself are fixed and immutable.");
+            
+            
+            int y = 85;
+            for(int i = 0; i < Config.hotkeynr; i++)
+            {
+                final String hname = String.format("hotkey%d", i+1);
+                final String hcommand = String.format("command%d", i+1);
+                final int idx = i;
+                
+                String lt = String.format("Hotkey %d:", i+1);
+                new Label(new Coord(10, y), tab, lt);
+                new TextEntry(new Coord(60, y), 30, tab, Config.hnames[i])
+                {
+                    @Override
+                    protected void changed()
+                    {
+                        Utils.setpref(hname, super.text);
+                        Config.hnames[idx] = super.text;
+                    }
+                };
+                
+                lt = String.format("Command %d:", i+1);
+                new Label(new Coord(105, y), tab, lt);
+                new TextEntry(new Coord(170, y), 150, tab, Config.hcommands[i])
+                {
+                    @Override
+                    protected void changed()
+                    {
+                        Utils.setpref(hcommand, super.text);
+                        Config.hcommands[idx] = super.text;
+                    }
+                };
+                
+                y+= 25;
+            }
+        }
         
 	//new Frame(new Coord(-10, 20), new Coord(420, 330), this);
 	String last = Utils.getpref("optwndtab", "");

@@ -36,6 +36,12 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
     }
 	
     public void rcvmsg(int id, String name, Object... args) {
+        System.out.println("Sending a message: ");
+            System.out.println("id: "+id);
+            System.out.println("\t"+name);
+            for(Object o : args)
+                System.out.println("\t"+o.toString());
+        
 	Message msg = new Message(Message.RMSG_WDGMSG);
 	msg.adduint16(id);
 	msg.addstring(name);

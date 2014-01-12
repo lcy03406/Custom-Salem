@@ -135,6 +135,12 @@ public class Config {
     public static boolean mute_violin = Utils.getprefb("mute_violin", false);
     //project librarian
     public static boolean chatlogs = Utils.getprefb("chatlogs", true);
+    //project macro
+    public final static int hotkeynr = 6;
+    public static final String[] defhotkeys = {"A", "Q","", "", "", ""};
+    public static final String[] defcommands = {"act lo cs", "act lo","", "", "", ""};
+    public static String[] hnames = new String[hotkeynr];
+    public static String[] hcommands = new String[hotkeynr];
     
     static {
 	String p;
@@ -165,6 +171,16 @@ public class Config {
 	window_props = loadProps("windows.conf");
 	
 	Wiki.init(getFile("cache"), 3);
+        
+        //fill in the hnames and hcommands
+        for(int i = 0; i < hotkeynr; i++)
+        {
+            String hname = String.format("hotkey%d", i+1);
+            String hcommand = String.format("command%d", i+1);
+            
+            hnames[i] = Utils.getpref(hname, defhotkeys[i]);
+            hcommands[i] = Utils.getpref(hcommand, defcommands[i]);
+        }
     }
     
     public static void setCharName(String name){

@@ -28,6 +28,8 @@ package haven;
 
 import haven.UI.UIException;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RootWidget extends ConsoleHost {
     public static Resource defcurs = Resource.load("gfx/hud/curs/arw");
@@ -63,13 +65,17 @@ public class RootWidget extends ConsoleHost {
                 if(lt!=null) lt.toggle();
 	    }else if(code == KeyEvent.VK_D && ctrl){
 		DarknessWnd.toggle();
-	    }else if(code == KeyEvent.VK_A && ctrl && shift){
-                if(this.ui.rwidgets.containsKey(this.ui.gui))
-                    this.ui.gui.act(new String[] { "lo", "cs" });
-	    }else if(code == KeyEvent.VK_Q && ctrl && shift){
-                if(this.ui.rwidgets.containsKey(this.ui.gui))
+	    }else if(ctrl && shift && this.ui.rwidgets.containsKey(this.ui.gui)){
+                for(int i = 0; i < Config.hotkeynr; i++)
                 {
-                    this.ui.gui.act(new String[] { "lo" });
+                    if(Config.hnames[i].length() == 1 && ev.getKeyCode()==Config.hnames[i].charAt(0))
+                    {
+                        try {
+                            this.ui.cons.run(Config.hcommands[i]);
+                        } catch (Exception ex) {
+                            System.out.println("Console not cooperating!");
+                        }
+                    }
                 }
 	    }else if(code == KeyEvent.VK_Z && ctrl){
 		Config.center = !Config.center;
