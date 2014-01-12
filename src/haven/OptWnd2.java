@@ -71,7 +71,7 @@ public class OptWnd2 extends Window {
     }
 
     public OptWnd2(Coord c, Widget parent) {
-	super(c, new Coord(400, 340), parent, "Options");
+	super(c, new Coord(600, 340), parent, "Options");
 	justclose = true;
 	body = new Tabs(Coord.z, new Coord(400, 340), this) {
 		public void changed(Tab from, Tab to) {
@@ -570,6 +570,19 @@ public class OptWnd2 extends Window {
 		
 	    }.a = Config.mute_violin;
             
+            //project librarian
+            //chatlogs
+	    new CheckBox(new Coord(0, 340), tab, "Log all chat messages to file"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.chatlogs = val;
+		    Utils.setprefb("chatlogs", val);
+		}
+
+		{tooltip = Text.render("Chat messages will be available in \"C:\\Users\\<account>\\Salem\\logs\\<character>\\<channel>\\\" or similar.\nChanges only apply to new channels.");}
+		
+	    }.a = Config.chatlogs;
         }
         
         /* RADAR TAB */

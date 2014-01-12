@@ -207,7 +207,6 @@ public class Charlist extends Widget {
             int end2manip = Config.reversesort?-1:1;
             int ymanip = Config.reversesort?-1:1;
 	    for(int i = begin; (i*end2manip < end2) && (i*end1manip < end1); i+=step) {
-                //TODO: this was easier than trying to guess the correct bounds right now
                 if(i+this.y*ymanip<0)
                     continue;
 		Char c = filteredchars.get(i + this.y*ymanip);

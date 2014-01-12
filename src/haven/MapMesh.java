@@ -546,7 +546,6 @@ public class MapMesh implements Rendered, Disposable {
 		}
 	    }
 	    if(h) {
-	    	//TODO: check whether i == MapView.WFOL is required
 		final FastMesh mesh = buf.mkmesh(i == MapView.WFOL);;
 		class OL implements Rendered, Disposable {
 		    public void draw(GOut g) {

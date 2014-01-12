@@ -133,6 +133,8 @@ public class Config {
     public static boolean fast_menu = Utils.getprefb("fast_flowers", false);
     //project silent lamb
     public static boolean mute_violin = Utils.getprefb("mute_violin", false);
+    //project librarian
+    public static boolean chatlogs = Utils.getprefb("chatlogs", true);
     
     static {
 	String p;

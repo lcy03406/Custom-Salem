@@ -40,6 +40,11 @@ import java.net.URL;
 import java.util.regex.*;
 import java.io.IOException;
 import java.awt.datatransfer.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ChatUI extends Widget {
     public static final RichText.Foundry fnd = new RichText.Foundry(new ChatParser(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 12, TextAttribute.FOREGROUND, Color.BLACK));
@@ -136,8 +141,9 @@ public class ChatUI extends Widget {
     public static abstract class Channel extends Widget {
 	public final List<Message> msgs = new LinkedList<Message>();
 	private final Scrollbar sb;
+        private FileOutputStream fos = null;
 	public IButton cbtn;
-	
+        
         //project alert
         protected boolean read = true;
         
@@ -192,6 +198,27 @@ public class ChatUI extends Widget {
 	public Channel(Widget parent) {
 	    this(new Coord(selw, 0), parent.sz.sub(selw, 0), parent);
 	}
+        
+        protected final void startLogging()
+        {
+            if(Config.chatlogs)
+            {
+                try {
+                    String path = String.format("%s\\logs\\%s\\%s\\", Config.userhome, Config.currentCharName, name());
+                    String filename = String.format("%s.txt", Utils.current_date());
+                    File pathf = new File(path);
+                    if(pathf.mkdirs() || pathf.isDirectory())//easiest code-wise, but not exactly efficient :) Only called once for all channels anyways
+                    {
+                        fos = new FileOutputStream(path+filename);
+                    }
+                    else{
+                        throw new FileNotFoundException("Failed to create parent directories!");
+                    }
+                } catch (FileNotFoundException ex) {
+                    this.ui.message("Could not open file for chat logging!");
+                }
+            }
+        }
 	
 	public void append(Message msg) {
 	    synchronized(msgs) {
@@ -203,6 +230,15 @@ public class ChatUI extends Widget {
 		sb.max = y - ih();
 		if(b)
 		    sb.val = sb.max;
+                
+                if(fos != null)
+                {
+                    try {
+                        fos.write((msg.text().text+"\n").getBytes());
+                    } catch (IOException ex) {
+                        Logger.getLogger(ChatUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
 	    }
 	}
 
@@ -545,6 +581,14 @@ public class ChatUI extends Widget {
 	public void wdgmsg(Widget sender, String msg, Object... args) {
 	    if(sender == cbtn) {
 		wdgmsg("close");
+                if(fos != null)
+                {
+                    try {
+                        fos.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(ChatUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
 	    } else {
 		super.wdgmsg(sender, msg, args);
 	    }
@@ -651,6 +695,7 @@ public class ChatUI extends Widget {
 	    super(parent);
 	    this.name = name;
 	    this.notify = notify;
+            super.startLogging();
 	}
 	
 	public void uimsg(String msg, Object... args) {
@@ -711,9 +756,9 @@ public class ChatUI extends Widget {
     public static class PrivChat extends EntryChannel {
 	private final int other;
 	public static final Color[] gc = new Color[] {
-	new Color(230,48,32),
-	new Color(64,180,200),
-    };
+            new Color(230,48,32),
+            new Color(64,180,200),
+        };
 	
 	public class InMessage extends SimpleMessage {
 	    public InMessage(String text, int w) {
@@ -730,6 +775,7 @@ public class ChatUI extends Widget {
 	public PrivChat(Widget parent, int other) {
 	    super(parent);
 	    this.other = other;
+            super.startLogging();
 	}
 	
 	public void uimsg(String msg, Object... args) {
@@ -843,8 +889,6 @@ public class ChatUI extends Widget {
 			g.frect(new Coord(0, y), new Coord(sz.x, 19));
 		    }
 		    g.chcolor(255, 255, 255, 255);
-                    
-                    //project alert
                     
                     //project safari
 		    if((ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) ||ch.rread != ch.chan.read)
