@@ -298,7 +298,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    super(mv);
 	}
 
-	private float dist = 50.0f;
+	private float dist = 500.0f;
 	private float elev = (float)Math.PI / 4.0f;
 	private float angl = 0.0f;
 	private Coord dragorig = null;
@@ -507,7 +507,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		mats[1] = new Material(new Color(0, 0, 255, 32));
 		mats[2] = new Material(new Color(255, 0, 0, 32));
 		mats[3] = new Material(new Color(128, 0, 255, 32));
-		mats[4] = new Material(new Color(255, 0, 0, 192));
+		mats[4] = new Material(new Color(255, 0, 0, 96));
 		mats[16] = new Material(new Color(0, 255, 0, 32));
 		mats[17] = new Material(new Color(255, 0, 255, 32));
 //		mats[WFOL] = new Material(new Color(0, 255, 0, 255));
@@ -1059,7 +1059,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
             if(m!=null) return;
             Relation r = this.ui.gui.fv.lsrel.getFirst();
             Gob enemy=this.glob.oc.getgob(r.gobid);
-            if(!enemy.virtual)
+            if(enemy!=null && !enemy.virtual)
             {
                 double angle = this.player().rc.angle(enemy.rc);
                 double diff = Math.abs(this.player().a - angle);
