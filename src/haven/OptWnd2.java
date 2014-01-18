@@ -72,9 +72,9 @@ public class OptWnd2 extends Window {
     }
 
     public OptWnd2(Coord c, Widget parent) {
-	super(c, new Coord(500, 340), parent, "Options");
+	super(c, new Coord(500, 360), parent, "Options");
 	justclose = true;
-	body = new Tabs(Coord.z, new Coord(500, 340), this) {
+	body = new Tabs(Coord.z, new Coord(500, 360), this) {
 		public void changed(Tab from, Tab to) {
 		    Utils.setpref("optwndtab", to.btn.text.text);
 		    from.btn.c.y = 0;
