@@ -1,9 +1,10 @@
 $size[20]{$u{CHANGE LOG:}}
 
-$size[14]{$u{Update for <undecided> (Latikai):}}
+$size[14]{$u{Update for 18.01.14 (Latikai):}}
   * The camera will start off further from your character upon log in.
   * The button to mute the violin player now tries to guilt trip you into not doing it.
   * Chat messages are now logged by default. They will end up in "C:\Users\<account>\Salem\logs\<character>\<channel>\".
+  * Customizeable hotkeys! Check the new tab in the options for more details.
 
 $size[14]{$u{Update for 30.12.13 (Latikai):}}
   * Lower bound on tree size, meaning trees in pots will now be visible again using the raider mode.
