@@ -96,10 +96,10 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	}
     }
 
-    private BufferedImage tileimg(int t, BufferedImage[] texes) {
+    private static BufferedImage tileimg(int t, BufferedImage[] texes) {
 	BufferedImage img = texes[t];
 	if(img == null) {
-	    Resource r = ui.sess.glob.map.tilesetr(t);
+	    Resource r = UI.instance.sess.glob.map.tilesetr(t);
 	    if(r == null)
 		return(null);
 	    try{
@@ -115,9 +115,9 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	return(img);
     }
 
-    public BufferedImage drawmap(Coord ul, Coord sz) {
+    public static BufferedImage drawmap(Coord ul, Coord sz) {
 	BufferedImage[] texes = new BufferedImage[256];
-	MCache m = ui.sess.glob.map;
+	MCache m = UI.instance.sess.glob.map;
 	BufferedImage buf = TexI.mkbuf(sz);
 	Coord c = new Coord();
 	for(c.y = 0; c.y < sz.y; c.y++) {

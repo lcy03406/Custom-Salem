@@ -204,7 +204,7 @@ public class ChatUI extends Widget {
             if(Config.chatlogs)
             {
                 try {
-                    String path = String.format("%s\\logs\\%s\\%s\\", Config.userhome, Config.currentCharName, name());
+                    String path = String.format("%s/logs/%s/%s/", Config.userhome, Config.currentCharName, name());
                     String filename = String.format("%s.txt", Utils.current_date());
                     File pathf = new File(path);
                     if(pathf.mkdirs() || pathf.isDirectory())//easiest code-wise, but not exactly efficient :) Only called once for all channels anyways

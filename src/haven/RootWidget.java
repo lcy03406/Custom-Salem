@@ -57,13 +57,15 @@ public class RootWidget extends ConsoleHost {
 		    new Profwnd(new Coord(100, 100), this, gi.map.prof, "MV prof");
 	    } else if(key == ':') {
 		entercmd();
-	    }else if((code == KeyEvent.VK_L || code == KeyEvent.VK_F) && ctrl){
+	    }else if((code == KeyEvent.VK_L || code == KeyEvent.VK_F) && ctrl && !shift){
 		FlatnessTool ft = FlatnessTool.instance(ui);
                 if(ft!=null) ft.toggle();
 	    }else if((code == KeyEvent.VK_Q) && ctrl && !shift){
 		LocatorTool lt = LocatorTool.instance(ui);
                 if(lt!=null) lt.toggle();
-	    }else if(code == KeyEvent.VK_D && ctrl){
+	    }else if((code == KeyEvent.VK_X) && ctrl && !shift){
+		CartographWindow.toggle();
+	    }else if(code == KeyEvent.VK_D && ctrl && !shift){
 		DarknessWnd.toggle();
 	    }else if(ctrl && shift && this.ui.rwidgets.containsKey(this.ui.gui)){
                 for(int i = 0; i < Config.hotkeynr; i++)
@@ -77,10 +79,10 @@ public class RootWidget extends ConsoleHost {
                         }
                     }
                 }
-	    }else if(code == KeyEvent.VK_Z && ctrl){
+	    }else if(code == KeyEvent.VK_Z && ctrl && !shift){
 		Config.center = !Config.center;
 		ui.message(String.format("Tile centering in turned %s", Config.center?"ON":"OFF"));
-	    }else if(code == KeyEvent.VK_N && ctrl){
+	    }else if(code == KeyEvent.VK_N && ctrl && !shift){
                 Config.alwaysbright = !Config.alwaysbright;
                 Utils.setprefb("alwaysbright", Config.alwaysbright);
                 this.ui.sess.glob.brighten();

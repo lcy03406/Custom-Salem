@@ -33,9 +33,9 @@ import java.util.*;
 import static haven.PUtils.*;
 
 public class Window extends Widget implements DTarget {
-    private static final Tex tleft = Resource.loadtex("gfx/hud/wnd/tleft");
-    private static final Tex tmain = Resource.loadtex("gfx/hud/wnd/tmain");
-    private static final Tex tright = Resource.loadtex("gfx/hud/wnd/tright");
+    protected static final Tex tleft = Resource.loadtex("gfx/hud/wnd/tleft");
+    protected static final Tex tmain = Resource.loadtex("gfx/hud/wnd/tmain");
+    protected static final Tex tright = Resource.loadtex("gfx/hud/wnd/tright");
     public static final BufferedImage[] cbtni = new BufferedImage[] {
 	Resource.loadimg("gfx/hud/wnd/cbtn"),
 	Resource.loadimg("gfx/hud/wnd/cbtnd"),
@@ -57,17 +57,17 @@ public class Window extends Widget implements DTarget {
     public static final IBox fbox = new IBox("gfx/hud", "ftl", "ftr", "fbl", "fbr", "fl", "fr", "ft", "fb");
     public static final IBox swbox = new IBox("gfx/hud", "stl", "str", "sbl", "sbr", "sl", "sr", "st", "sb");
     public static final IBox wbox = new IBox("gfx/hud/wnd", "tl", "tr", "bl", "br", "vl", "vr", "ht", "hb");
-    private static final IBox topless = new IBox(Tex.empty, Tex.empty, wbox.cbl, wbox.cbr, wbox.bl, wbox.br, Tex.empty, wbox.bb);
-    private static final int th = tleft.sz().y, tdh = th - tmain.sz().y, tc = tdh + 18;
-    private static final Coord capc = new Coord(20, th - 3);
+    protected static final IBox topless = new IBox(Tex.empty, Tex.empty, wbox.cbl, wbox.cbr, wbox.bl, wbox.br, Tex.empty, wbox.bb);
+    protected static final int th = tleft.sz().y, tdh = th - tmain.sz().y, tc = tdh + 18;
+    protected static final Coord capc = new Coord(20, th - 3);
     public Coord mrgn = new Coord(5, 5);
     protected Text cap;
-    private boolean dt = false;
+    protected boolean dt = false;
     protected boolean dm = false;
     public Coord ctl, csz, atl, asz, ac;
     protected Coord doff;
     protected final IButton cbtn;
-    private final Collection<Widget> twdgs = new LinkedList<Widget>();
+    protected final Collection<Widget> twdgs = new LinkedList<Widget>();
 
 // ******************************
     private static final String OPT_POS = "_pos";
