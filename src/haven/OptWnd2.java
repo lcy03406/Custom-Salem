@@ -415,7 +415,7 @@ public class OptWnd2 extends Window {
 
 		{tooltip = Text.render("Only show a single instance of a crop, at the center of its field.");}
 		
-	    }.a = Config.showgobpath;
+	    }.a = Config.fieldfix;
             final Label cropscale = new Label(new Coord(0, 60), tab, "Crop scaling: x"+Config.fieldproducescale);
 	    new HSlider(new Coord(15, 80), 200, tab, 0, 9, Config.fieldproducescale-1) {
 		public void changed() {
@@ -584,6 +584,29 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("Chat messages will be available in \"C:\\Users\\<account>\\Salem\\logs\\<character>\\<channel>\\\" or similar.\nChanges only apply to new channels.");}
 		
 	    }.a = Config.chatlogs;
+            
+            //scalable chat UI
+	    final RadioGroup fontsizes = new RadioGroup(tab) {
+                    public void changed(int btn, String lbl) {
+                        int basesize = 12;
+                        if(lbl.equals("Base size 14"))
+                        {
+                            basesize=14;
+                        }
+                        else if(lbl.equals("Base size 16"))
+                        {
+                            basesize=16;
+                        }
+                        OptWnd2.this.ui.gui.chat.setbasesize(basesize);
+                        Utils.setpreff("chatfontsize", basesize);
+                    }
+                };
+            new Label(new Coord(280,40),tab, "Chat font size:");
+            fontsizes.add("Base size 12", new Coord(300,60));
+            fontsizes.add("Base size 14", new Coord(300,85));
+            fontsizes.add("Base size 16", new Coord(300,110));
+            int basesize = (int) Utils.getpreff("chatfontsize", 12);
+	    fontsizes.check("Base size "+basesize);	    
         }
         
         /* RADAR TAB */

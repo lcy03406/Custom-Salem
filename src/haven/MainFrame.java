@@ -100,8 +100,12 @@ public class MainFrame extends Frame implements Runnable, Console.Directory {
 	    setUndecorated(true);
 	    setVisible(true);
 	    dev.setFullScreenWindow(this);
+            //TODO FIX FULLSCREEN
+            System.out.println("Fullscreen support: "+dev.isFullScreenSupported());
+            System.out.println("Display mode change support: "+dev.isDisplayChangeSupported());
+            DisplayMode[] t = dev.getDisplayModes();
 	    dev.setDisplayMode(fsmode);
-	    pack();
+//	    pack();
 	} catch(Exception e) {
 	    throw(new RuntimeException(e));
 	}

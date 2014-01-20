@@ -100,7 +100,7 @@ public class Config {
     
     /*LATIKAI settings*/
     //project marathon
-    public static boolean showgobpath = Utils.getprefb("showgobpath", false);
+    public static boolean showgobpath = Utils.getprefb("showgobpath", true);
     //project overgrown
     public static boolean fieldfix = Utils.getprefb("fieldfix", true);
     public static int fieldproducescale = (int) Utils.getpreff("fieldproducescale", 1.0f);

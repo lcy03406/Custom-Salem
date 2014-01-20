@@ -47,16 +47,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ChatUI extends Widget {
-    public static final RichText.Foundry fnd = new RichText.Foundry(new ChatParser(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 12, TextAttribute.FOREGROUND, Color.BLACK));
-    public static final Text.Foundry qfnd = new Text.Foundry(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 14), new java.awt.Color(192, 255, 192));
-    public static final int selw = 100;
+    public static RichText.Foundry fnd = new RichText.Foundry(new ChatParser(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 12, TextAttribute.FOREGROUND, Color.BLACK));
+    public static Text.Foundry qfnd = new Text.Foundry(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 14), new java.awt.Color(192, 255, 192));
+    public static int selw = 100;
     public Channel sel = null;
     private final Selector chansel;
     public boolean expanded = false;
     private Coord base;
+    private int basesize = 12;
     private QuickLine qline = null;
     private final LinkedList<Notification> notifs = new LinkedList<Notification>();
-
+    
     public ChatUI(Coord c, int w, Widget parent) {
 	super(c.add(0, -50), new Coord(w, 50), parent);
 	chansel = new Selector(Coord.z, new Coord(selw, sz.y));
@@ -64,6 +65,22 @@ public class ChatUI extends Widget {
 	base = c;
 	setfocusctl(true);
 	setcanfocus(false);
+        this.setbasesize((int) Utils.getpreff("chatfontsize", 12));
+    }
+    
+    public final void setbasesize(int basesize)
+    {
+        ChatUI.fnd = new RichText.Foundry(new ChatParser(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, basesize, TextAttribute.FOREGROUND, Color.BLACK));
+        ChatUI.qfnd = new Text.Foundry(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, basesize+2), new java.awt.Color(192, 255, 192));
+        ChatUI.selw = 100+(basesize-12)*6;
+        this.c = this.base.add(0, -100-(basesize-12)*24);
+        this.resize(new Coord(this.sz.x,100+(basesize-12)*24));
+        this.chansel.nf = new Text.Foundry("SansSerif", basesize);
+        this.chansel.nfunread = new Text.Foundry("SansSerif", basesize+2, Font.BOLD);
+        this.chansel.ymod = (basesize-12)*3;
+        this.chansel.rerender = true;
+        
+        this.basesize = basesize;
     }
     
     private static Color lighter(Color col){
@@ -292,14 +309,16 @@ public class ChatUI extends Widget {
 		sb.move(new Coord(sz.x, 0));
 		int y = 0;
 		for(Message m : msgs)
+                {
 		    y += m.sz().y;
+                }
 		boolean b = sb.val >= sb.max;
 		sb.max = y - ih();
 		if(b)
 		    sb.val = sb.max;
 	    }
 	    if(cbtn != null)
-		cbtn.c = new Coord(sz.x - cbtn.sz.x - sb.sz.x - 3, 0);
+		cbtn.c = new Coord(sz.x - cbtn.sz.x - (sb!=null?sb.sz.x:0) - 3, 0);
 	}
 	
 	public void notify(Message msg) {
@@ -837,12 +856,14 @@ public class ChatUI extends Widget {
     }
 
     private class Selector extends Widget {
-	public final Text.Foundry nf = new Text.Foundry("SansSerif", 10);
+	public Text.Foundry nf = new Text.Foundry("SansSerif", 12);
 	private final List<DarkChannel> chls = new ArrayList<DarkChannel>();
 	private int s = 0;
+        public int ymod = 0;
+        public boolean rerender = false;
         
         //project alert
-        public final Text.Foundry nfunread = new Text.Foundry("SansSerif", 12, Font.BOLD);
+        public Text.Foundry nfunread = new Text.Foundry("SansSerif", 14, Font.BOLD);
 	
 	private class DarkChannel {
 	    public final Channel chan;
@@ -886,12 +907,12 @@ public class ChatUI extends Widget {
 		    DarkChannel ch = chls.get(i);
 		    if(ch.chan == sel) {
 			g.chcolor(128, 128, 192, 255);
-			g.frect(new Coord(0, y), new Coord(sz.x, 19));
+			g.frect(new Coord(0, y), new Coord(sz.x, 19+ymod));
 		    }
 		    g.chcolor(255, 255, 255, 255);
                     
                     //project safari
-		    if((ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) ||ch.rread != ch.chan.read)
+		    if(rerender || (ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) ||ch.rread != ch.chan.read)
                     {
                         ch.rread = ch.chan.read;
                         if(ch.rread)
@@ -904,13 +925,19 @@ public class ChatUI extends Widget {
                         }
                     }
                     
-		    g.aimage(ch.rname.tex(), new Coord(sz.x / 2, y + 10), 0.5, 0.5);
-		    g.line(new Coord(5, y + 19), new Coord(sz.x - 5, y + 19), 1);
-		    y += 20;
+                    if(rerender)
+                    {
+                        ch.chan.c = new Coord(selw, 0);
+                    }
+                    
+		    g.aimage(ch.rname.tex(), new Coord(sz.x / 2, y + 10 + ymod/2), 0.5, 0.5);
+		    g.line(new Coord(5, y + 19+ymod), new Coord(sz.x - 5, y + 19+ymod), 1);
+		    y += 20+ymod;
 		    if(y >= sz.y)
 			break;
 		    i++;
 		}
+                rerender = false;
 	    }
 	    g.chcolor();
 	}
@@ -947,7 +974,7 @@ public class ChatUI extends Widget {
 	}
 	
 	private Channel bypos(Coord c) {
-	    int i = (c.y / 20) + s;
+	    int i = (c.y / (20+ymod)) + s;
 	    if((i >= 0) && (i < chls.size()))
 		return(chls.get(i).chan);
 	    return(null);
@@ -1080,7 +1107,7 @@ public class ChatUI extends Widget {
     }
 
     private void expand() {
-	resize(new Coord(sz.x, 100));
+	resize(new Coord(sz.x, 100+(basesize-12)*24));
 	setcanfocus(true);
 	if(sel != null)
 	    sel.show();
@@ -1173,8 +1200,8 @@ public class ChatUI extends Widget {
 	    parent.setfocus(this);
 	} else {
 	    if(hasfocus) {
-		if(sz.y == 100)
-		    resize(new Coord(sz.x, 300));
+		if(sz.y == 100+(basesize-12)*24)
+		    resize(new Coord(sz.x, 300+(basesize-12)*48));
 		else
 		    contract();
 	    } else {
