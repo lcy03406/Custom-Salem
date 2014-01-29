@@ -14,7 +14,7 @@
     <j2se version="1.6+" max-heap-size="256M" />
     <jar href="haven.jar" />
     <property name="haven.errorhandler" value="on" />
-    <property name="haven.defserv" value="sh.seatribe.se" />
+    <property name="haven.defserv" value="sh.salemthegame.com" />
     <property name="haven.fullscreen" value="off" />
     <extension name="res" href="http://www.havenandhearth.com/java/haven-res.jnlp" />
     <extension name="jogl" href="http://www.havenandhearth.com/java/jogl/jogl.jnlp" />
