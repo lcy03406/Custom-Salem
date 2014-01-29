@@ -3,6 +3,7 @@ $size[20]{$u{CHANGE LOG:}}
 $size[14]{$u{Update for <undecided> (Latikai):}}
   * <WIP> cartographer
   * Scalable chat font sizes: three options available. It shouldn't break.
+  * small fix: antialiasing was not working correctly
 
 $size[14]{$u{Update for 18.01.14 (Latikai):}}
   * The camera will start off further from your character upon log in.

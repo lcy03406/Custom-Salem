@@ -476,7 +476,7 @@ public class OptWnd2 extends Window {
 		    Utils.setprefb("raidermodetrees", val);
 		}
 
-		{tooltip = Text.render("All trees are rendered as stumps. Re-load after disabling.");}
+		{tooltip = Text.render("All trees are rendered as tiny versions of themselves. Re-load your area after changing.");}
 		
 	    }.a = Config.raidermodetrees;
             
