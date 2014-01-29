@@ -4,19 +4,53 @@ import haven.Defer.Future;
 import haven.LocalMiniMap.MapTile;
 import static haven.MCache.cmaps;
 import static haven.MCache.tilesz;
+import haven.OptWnd2.Frame;
+import haven.Screenshooter.Shot;
+import java.awt.Color;
 
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CartographWindow extends Window {
     public static CartographWindow instance = null;
+        
+    private final ArrayList<Marker> markers = new ArrayList<Marker>();
     
-    private static final RichText.Foundry foundry = new RichText.Foundry(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 10);
+    private Marker selected_marker = null;
+    
+    private class Marker{
+        Coord loc;
+        String name;
+        Text t;
+        Color co;
+        
+        public Marker(Coord c, String s)
+        {
+            loc = c;
+            name = s;
+            co = Color.WHITE;
+            t = foundry.render(s);
+        }
+        
+        public void changeName(String s)
+        {
+            name = s;
+            t = foundry.render(s);
+        }
+    }
+    
+    private static final RichText.Foundry foundry = new RichText.Foundry(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 12);
     private static DrawnMap drawn;
     private CheckBox gridlines;
+    private Button recenter, save;
+    private Frame marker_info;
     
+    boolean mmv = false;
     boolean rsm = false;
     private static Coord gzsz = new Coord(15,15);
     private static Coord minsz = new Coord(500,360);
@@ -24,6 +58,7 @@ public class CartographWindow extends Window {
     private class DrawnMap extends Widget {
         Coord off = new Coord();
         boolean draw_grid = false;
+        boolean save_image = false;
         
         private final Map<Coord, Future<MapTile>> pcache = new LinkedHashMap<Coord, Defer.Future<MapTile>>(9, 0.75f, true) {
             private static final long serialVersionUID = 2L;
@@ -35,6 +70,9 @@ public class CartographWindow extends Window {
 
         @Override
 	public void draw(GOut og) {
+            if(ui == null || ui.gui == null || ui.gui.map == null || ui.gui.map.player()==null)
+                return;
+            
             Coord cc = ui.gui.map.player().rc.div(tilesz);
             final Coord plg = cc.div(cmaps);
             
@@ -104,7 +142,31 @@ public class CartographWindow extends Window {
                 }
             }
             
+            for(Marker m : markers)
+            {
+                Coord onscreen = m.loc.sub(off).sub(cc).add(sz.mul(0.5));
+                if(onscreen.x < 15 || onscreen.y < 30 || onscreen.x > sz.x - m.t.sz().x + 11 || onscreen.y > sz.y )
+                    continue;
+                g.chcolor(24,24,16,200);
+                g.frect(onscreen.add(-15,-30), m.t.sz().add(4,4));
+                g.chcolor(m.co);
+                g.rect(onscreen.add(-15,-30), m.t.sz().add(4,4));
+                g.line(onscreen.add(-5,-30+m.t.sz().y+4),onscreen,2);
+                g.aimage(m.t.tex(), onscreen.add(-13,-28), 0,0);
+            }
+            
             g.gl.glPopMatrix();
+            
+            if(save_image)
+            {
+                String path = String.format("%s/map/", Config.userhome);
+                String filename = String.format("%s.png", Utils.current_date());
+                try {
+                    BufferedImage bi = g.getimage();
+                    Screenshooter.png.write(new FileOutputStream(path+filename), bi, new Shot(new TexI(bi), null));
+                } catch (IOException ex) {}
+                save_image = false;
+            }
 	}
         
         @Override
@@ -112,10 +174,30 @@ public class CartographWindow extends Window {
             parent.setfocus(this);
             raise();
 
+            if(button == 2){
+                //check whether there is something
+                //on the click's location
+                Marker selected = null;
+                for(Marker m : markers)
+                {
+                    Coord onscreen = m.loc.sub(off).add(sz.mul(0.5)).sub(ui.gui.map.player().rc.div(tilesz));
+                    if(onscreen.x < 15 || onscreen.y < 30 || onscreen.x > sz.x - m.t.sz().x + 11 || onscreen.y > sz.y )
+                        continue;
+                    Coord c1 = onscreen.add(-15,-30);
+                    Coord c2 = c1.add(m.t.sz().add(4,4));
+                    if(c.x > c1.x && c.y > c1.y && c.y < c2.y && c.x < c2.x)
+                    {
+                        selected = m;
+                    }
+                }
+                setSelectedMarker(selected);
+            }
+            
             if(button == 3){
                 dm = true;
                 ui.grabmouse(this);
                 doff = c;
+                mmv = false;
                 return true;
             }
 
@@ -124,14 +206,22 @@ public class CartographWindow extends Window {
         
         @Override
         public boolean mouseup(Coord c, int button) {
-            if(button == 2){
-                off.x = off.y = 0;
-                return true;
-            }
-
             if(button == 3){
-                dm = false;
-                ui.grabmouse(null);
+                if(!mmv)
+                {
+                    if(selected_marker != null)
+                    {
+                        selected_marker.loc = c.sub(sz.div(2)).add(off).add(ui.gui.map.player().rc.div(tilesz));
+                    }
+                    else
+                    {
+                        Marker newm = new Marker(c.sub(sz.div(2)).add(off).add(ui.gui.map.player().rc.div(tilesz)), "Marker");
+                        markers.add(newm);
+                        setSelectedMarker(newm);                        
+                    }
+                }
+                dm = false; 
+                ui.grabmouse(null);  
                 return true;
             }
            
@@ -140,6 +230,8 @@ public class CartographWindow extends Window {
         
         @Override
         public void mousemove(Coord c) {
+            mmv = true;
+            
             Coord d;
             if(dm){
                 d = c.sub(doff);
@@ -150,6 +242,11 @@ public class CartographWindow extends Window {
                 
             super.mousemove(c);
         }
+        
+        public void savePicture()
+        {
+            save_image = true;
+        }
     }
     
     public CartographWindow(Coord c, Widget parent) {
@@ -158,14 +255,82 @@ public class CartographWindow extends Window {
         drawn = new DrawnMap();
         
         //checkbox for the grid drawing
-        gridlines = new CheckBox(new Coord(15,sz.y-100), this, "Display grid lines"){
+        gridlines = new CheckBox(new Coord(15,sz.y-145), this, "Display grid lines")
+        {
             @Override
             public void changed(boolean val) {
-                super.changed(val);
                 drawn.draw_grid = val;
             }
         };
         gridlines.a = false;
+        
+        recenter = new Button(new Coord(15,sz.y-120), 100, this, "Recenter"){
+            @Override
+            public void click() {
+                drawn.off = Coord.z;
+            }
+        };
+        
+        save = new Button(new Coord(15,sz.y-80), 100, this, "Save map to file"){
+            @Override
+            public void click() {
+                drawn.savePicture();
+            }
+        };
+        
+        setSelectedMarker(selected_marker);
+    }
+    
+    private void setSelectedMarker(Marker selected)
+    {
+        selected_marker = selected;
+        
+        if(marker_info != null) marker_info.destroy();
+        marker_info = new Frame(new Coord(130, sz.y-145), new Coord(350,85), this){
+            @Override
+            public void draw(GOut og) {
+                super.draw(og);
+                
+            }
+        };
+        new Label(new Coord(10,10), marker_info, "Marker info:");
+        
+        if(selected_marker != null)        
+        {
+            new Label(new Coord(30,30), marker_info, "Marker name:");
+            new TextEntry(new Coord(110,30),100,marker_info,selected_marker.name){
+                public void activate(String text) {
+                    selected_marker.changeName(text);
+                }
+            };
+            new Label(new Coord(30,60), marker_info, "Marker color:");
+            
+            new TextEntry(new Coord(110,60),100,marker_info,colorHex(selected_marker.co)){
+                public void activate(String text) {
+                    Color c = null;
+                    try{
+                        c = Color.decode(text);
+                    }
+                    catch(NumberFormatException nfe){}
+                    if(c!=null)
+                        selected_marker.co = c;
+                }
+            };
+            
+            new Button(new Coord(250, 45), 50, marker_info, "Delete")
+            {
+                @Override
+                public void click() {
+                    markers.remove(selected_marker);
+                    setSelectedMarker(null);
+                }
+            };
+        }
+    }
+        
+    private String colorHex(Color co){
+        String s = "#" + Integer.toHexString(co.getRed()) + Integer.toHexString(co.getGreen())+ Integer.toHexString(co.getBlue());
+        return s;
     }
     
     public void wdgmsg(Widget sender, String msg, Object... args) {
@@ -259,6 +424,9 @@ public class CartographWindow extends Window {
 	for(Widget ch = child; ch != null; ch = ch.next)
 	    ch.presize();
         
-        gridlines.c = new Coord(15,sz.y-100);
+        gridlines.c = new Coord(15,sz.y-145);
+        recenter.c = new Coord(15,sz.y-120);
+        save.c = new Coord(15,sz.y-80);
+        marker_info.c = new Coord(130, sz.y-145);
     }
 }

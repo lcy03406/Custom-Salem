@@ -591,6 +591,13 @@ public abstract class GLState {
 	    return(ret);
 	}
 
+	public TexUnit texalloc(GOut g, TexMS tex) {
+	    TexUnit ret = texalloc();
+	    ret.act();
+	    gl.glBindTexture(GL3.GL_TEXTURE_2D_MULTISAMPLE, tex.glid(g));
+	    return(ret);
+	}
+
 	/* Program internation */
 	public static class SavedProg {
 	    public final int hash;
@@ -714,17 +721,35 @@ public abstract class GLState {
 	public void unapply(GOut g) {}
     }
 
-    public static GLState compose(final GLState... states) {
-	for(GLState st : states) {
-	    if(st == null)
-		throw(new RuntimeException("null state in list of " + Arrays.asList(states)));
+    public static class Composed extends Abstract {
+	public final GLState[] states;
+
+	public Composed(GLState... states) {
+	    for(GLState st : states) {
+		if(st == null)
+		    throw(new RuntimeException("null state in list of " + Arrays.asList(states)));
+	    }
+	    this.states = states;
 	}
-	return(new Abstract() {
-		public void prep(Buffer buf) {
-		    for(GLState st : states)
-			st.prep(buf);
-		}
-	    });
+
+	public boolean equals(Object o) {
+	    if(!(o instanceof Composed))
+		return(false);
+	    return(Arrays.equals(states, ((Composed)o).states));
+	}
+
+	public int hashCode() {
+	    return(Arrays.hashCode(states));
+	}
+
+	public void prep(Buffer buf) {
+	    for(GLState st : states)
+		st.prep(buf);
+	}
+    }
+
+    public static GLState compose(GLState... states) {
+	return(new Composed(states));
     }
     
     public static class Delegate extends Abstract {
