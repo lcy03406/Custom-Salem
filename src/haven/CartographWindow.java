@@ -264,7 +264,7 @@ public class CartographWindow extends Window {
         };
         gridlines.a = false;
         
-        recenter = new Button(new Coord(15,sz.y-120), 100, this, "Recenter"){
+        recenter = new Button(new Coord(15,sz.y-120), 100, this, "Re-center"){
             @Override
             public void click() {
                 drawn.off = Coord.z;
