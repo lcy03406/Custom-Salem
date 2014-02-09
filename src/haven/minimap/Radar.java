@@ -7,6 +7,7 @@ import haven.*;
 import haven.Utils;
 
 public class Radar {
+    private static Resource borkasound = Resource.load("sfx/hud/reset");
     private final MarkerFactory factory;
     private final Map<Long, Marker> markers = new HashMap<Long, Marker>();
     private final Map<Long, GobRes> undefined = new HashMap<Long, GobRes>();
@@ -53,6 +54,10 @@ public class Radar {
             markers.put(gob.id, m);
             gob.setattr(new GobBlink(gob));
             //System.out.println("Marker added: " + name);
+            if(name.contains("borka"))
+            {
+                Audio.playres(borkasound);
+            }
         }
     }
 
