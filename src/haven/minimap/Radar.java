@@ -54,10 +54,11 @@ public class Radar {
             markers.put(gob.id, m);
             gob.setattr(new GobBlink(gob));
             //System.out.println("Marker added: " + name);
-            if(name.contains("borka"))
-            {
-                Audio.playres(borkasound);
-            }
+            //TODO: sound version of the radar markers!
+//            if(name.contains("borka"))
+//            {
+//                Audio.playres(borkasound);
+//            }
         }
     }
 
