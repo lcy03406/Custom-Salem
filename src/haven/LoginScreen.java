@@ -129,7 +129,7 @@ public class LoginScreen extends Widget {
 	public void wdgmsg(Widget sender, String name, Object... args) {
 	}
 		
-	boolean enter() {
+	boolean enter() {            
 	    if(user.text.equals("")) {
 		setfocus(user);
 		return(false);
