@@ -36,6 +36,7 @@ import haven.minimap.Radar;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -45,6 +46,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
+
+import java.util.*;
+import haven.resutil.RidgeTile;
 
 public class LocalMiniMap extends Window implements Console.Directory{
     private static final String OPT_SZ = "_sz";
@@ -130,6 +134,7 @@ public class LocalMiniMap extends Window implements Console.Directory{
 		    return null;
 		}
 		BufferedImage tex = tileimg(t, texes);
+                
 		if(tex != null){
 		    buf.setRGB(c.x, c.y, tex.getRGB(Utils.floormod(c.x, tex.getWidth()),
 			    Utils.floormod(c.y, tex.getHeight())));
