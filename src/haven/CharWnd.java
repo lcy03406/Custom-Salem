@@ -26,11 +26,14 @@
 
 package haven;
 
+import java.awt.Color;
 import java.util.*;
+import java.util.Map.Entry;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 public class CharWnd extends Window {
+    private static final Coord SZ_FULL = new Coord(640, 360);
     public static final Map<String, String> attrnm;
     public static final List<String> attrorder;
     public final Map<String, Attr> attrs = new HashMap<String, Attr>();
@@ -40,7 +43,23 @@ public class CharWnd extends Window {
     public boolean skavail;
     private final SkillInfo ski;
     private final Label tmexpl;
-
+    
+    public static final Color GREEN = new Color(0xaaeeaa);
+    public static final Color GRAY = new Color(0xbda3a3);
+    
+    public static final Color METER_BORDER = new Color(133, 92, 62, 255);
+    public static final Color METER_BACK = new Color(28, 28, 28, 255);
+    
+    public static final Color REQ_ENOUGH = new Color(0x991616);
+    public static final Color REQ_NOT_ENOUGH = new Color(0xFF3A3A);
+    public static final Color FILL = new Color(0x006AA3);
+    public static final Color FILL_ENOUGH = new Color(0x4EA320);
+    public static final Color FILL_FULL = new Color(0x4DD300);
+    public static final Color FILL_GHOST = new Color(0x6E91A3);
+    public static final Color GAIN_FULL = new Color(0x6BA050);
+    public static final Color GAIN_ENOUGH = new Color(0xA09740);
+    public static final Color GAIN_SMALL = new Color(0xA36751);
+    
     @RName("chr")
     public static class $_ implements Factory {
 	public Widget create(Coord c, Widget parent, Object[] args) {
@@ -75,6 +94,15 @@ public class CharWnd extends Window {
 	attrorder = Collections.unmodifiableList(ao);
     }
     
+    public static String attrbyname(String name){
+	for(Entry<String, String> entry : attrnm.entrySet()){
+	    if(entry.getValue().equals(name)){
+		return entry.getKey();
+	    }
+	}
+	return null;
+    }
+    
     public class Skill {
 	public final String nm;
 	public final Indir<Resource> res;
@@ -96,10 +124,12 @@ public class CharWnd extends Window {
 	public int afforded() {
 	    int ret = 0;
 	    for(int i = 0; i < costa.length; i++) {
-		if(attrs.get(costa[i]).attr.base * 100 < costv[i])
+		if(attrs.get(costa[i]).attr.comp * 100 < costv[i])
 		    return(3);
-		if(attrs.get(costa[i]).exp < costv[i])
+		if(attrs.get(costa[i]).sexp < costv[i])
 		    ret = Math.max(ret, 2);
+		else if(attrs.get(costa[i]).hexp < costv[i])
+		    ret = Math.max(ret, 1);
 	    }
 	    return(ret);
 	}
@@ -144,6 +174,7 @@ public class CharWnd extends Window {
 	    d = (sk != null);
 	    cur = sk;
 	    settext("");
+	    GItem.infoUpdated = System.currentTimeMillis();
 	}
     }
     
@@ -161,7 +192,31 @@ public class CharWnd extends Window {
 	    r[i] = o[i];
 	return(r);
     }
-
+    
+    public Color[] attrcols(final String[] attrs){
+	Color[] c = new Color[attrs.length];
+	int i=0;
+	for (String attr : attrs){
+	    c[i] = Color.WHITE;
+	    if(ski.cur != null){
+		for(int j = 0; j<ski.cur.costa.length; j++){
+		    String costa = ski.cur.costa[j];
+		    int costv = ski.cur.costv[j];
+		    if(costa.equals(attr)){
+			if(this.attrs.get(costa).sexp < costv){
+			    c[i] = GREEN;
+			} else {
+			    c[i] = GRAY;
+			}
+			break;
+		    }
+		}
+	    }
+	    i++;
+	}
+	return c;
+    }
+    
     public static class SkillList extends Listbox<Skill> {
 	public Skill[] skills = new Skill[0];
 	private boolean loading = false;
@@ -195,7 +250,7 @@ public class CharWnd extends Window {
 		for(int i = 0; i < skills.length; i++)
 		    skills[i].listidx = i;
 	    }
-	}
+		}
 
 	protected Skill listitem(int idx) {return(skills[idx]);}
 	protected int listitems() {return(skills.length);}
@@ -242,7 +297,8 @@ public class CharWnd extends Window {
 	PUtils.monochromize(Resource.loadimg("gfx/hud/skills/plusu"), new Color(192, 192, 192)),
 	PUtils.glowmask(PUtils.glowmask(Resource.loadimg("gfx/hud/skills/plusu").getRaster()), 4, new Color(32, 255, 32)),
     };
-    public class Attr extends Widget {
+	
+    public class Attr extends Widget implements Observer {
 	public final Coord
 	    imgc = new Coord(0, 1),
 	    nmc = new Coord(17, 1),
@@ -253,7 +309,7 @@ public class CharWnd extends Window {
 	public final String nm;
 	public final Resource res;
 	public final Glob.CAttr attr;
-	public int exp, cap = 500;
+	public int sexp, hexp;
 	public boolean av = false;
 	private Text rnm, rv, rexp;
 	private int cv;
@@ -269,6 +325,7 @@ public class CharWnd extends Window {
 		this.tooltip = RichText.render(pag.text, 300);
 	    this.attr = ui.sess.glob.cattr.get(nm);
 	    this.rnm = Text.render(attrnm.get(attr));
+	    this.attr.addObserver(this);
 	    this.pb = new IButton(btnc, this, pbtn[0], pbtn[1], pbtn[2]) {
 		    public void draw(GOut g) {
 			if(av) {
@@ -289,15 +346,10 @@ public class CharWnd extends Window {
 	}
 	
 	public void drawmeter(GOut g, Coord c, Coord sz) {
-	    g.chcolor(133, 92, 62, 255);
+	    g.chcolor(METER_BORDER);
 	    g.frect(c, sz);
-	    g.chcolor(0, 0, 0, 255);
+	    g.chcolor(METER_BACK);
 	    g.frect(c.add(1, 1), sz.sub(2, 2));
-	    if(av)
-		g.chcolor(0, (a == 1)?255:128, 0, 255);
-	    else
-		g.chcolor(0, 0, 128, 255);
-	    g.frect(c.add(1, 1), new Coord(((sz.x - 2) * Math.min(exp, cap)) / cap, sz.y - 2));
 	    if(ui.lasttip instanceof WItem.ItemTip) {
 		try {
 		    GItem item = ((WItem.ItemTip)ui.lasttip).item();
@@ -305,12 +357,13 @@ public class CharWnd extends Window {
 		    if(insp != null) {
 			for(int i = 0; i < insp.attrs.length; i++) {
 			    if(insp.attrs[i].equals(nm)) {
-				int w = Math.min(((sz.x - 2) * insp.exp[i]) / cap,
-						 sz.x - 2);
-				if(insp.exp[i] > cap)
-				    g.chcolor(255, 255, 0, 255);
-				else
-				    g.chcolor(255, 192, 0, 255);
+				int w = ((sz.x - 2) * (insp.exp[i] + sexp)) / (attr.comp * 100);
+				if(w >= expsz.x - 2) {
+				    w = expsz.x - 2;
+				    g.chcolor(GAIN_ENOUGH);
+				} else {
+				    g.chcolor(GAIN_SMALL);
+				}
 				g.frect(c.add(1, 1), new Coord(w, (sz.y / 2)));
 				break;
 			    }
@@ -318,16 +371,27 @@ public class CharWnd extends Window {
 		    }
 		} catch(Loading e) {}
 	    }
+	    
+	    g.chcolor(FILL_GHOST);
+	    g.frect(c.add(1, 1), new Coord(((sz.x - 2) * sexp) / (attr.comp * 100), sz.y - 2));
+	    if(av) {
+		g.chcolor((a == 1)?FILL_FULL:FILL_ENOUGH);
+	    } else {
+		g.chcolor(FILL);
+	    }
+//	    g.frect(c.add(1, 1), new Coord(((sz.x - 2) * hexp) / (attr.comp * 100), sz.y - 2));
+	    
 	    if(nsk.sel != null) {
 		Skill sk = nsk.sel;
 		for(int i = 0; i < sk.costa.length; i++) {
 		    if(sk.costa[i].equals(nm)) {
-			int w = Math.min(((sz.x - 2) * sk.costv[i]) / cap,
+			int w = Math.min(((sz.x - 2) * sk.costv[i]) / (attr.comp * 100),
 					 sz.x - 2);
-			if(sk.costv[i] > (attr.base * 100))
-			    g.chcolor(255, 0, 0, 255);
+			if(sk.costv[i] > (attr.comp * 100))
+			    g.chcolor(REQ_NOT_ENOUGH);
 			else
-			    g.chcolor(128, 0, 0, 255);
+			    g.chcolor(REQ_ENOUGH);
+
 			g.frect(c.add(1, sz.y / 2), new Coord(w, (sz.y / 2)));
 			break;
 		    }
@@ -335,9 +399,10 @@ public class CharWnd extends Window {
 	    }
 	    g.chcolor();
 	    if(rexp == null)
-		rexp = Text.render(String.format("%d/%d", exp, cap));
+		rexp = Text.render(String.format("%d/%d", sexp, attr.comp * 100));
 	    g.aimage(rexp.tex(), c.add(sz.x / 2, 1), 0.5, 0);
 	}
+
 
 	public void draw(GOut g) {
 	    g.image(res.layer(Resource.imgc).tex(), imgc);
@@ -377,10 +442,21 @@ public class CharWnd extends Window {
 	public void buy() {
 	    CharWnd.this.wdgmsg("sattr", nm);
 	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+	    int delta = attr.comp - (Integer) arg;
+	    if(delta == 0){return;}
+	    rexp = null;
+	    ui.message(String.format("Your '%s' profficiency %s to %d",
+		    attrnm.get(nm),
+		    (delta>0?"increased":"decreased"),
+		    attr.comp));
+	}
     }
 
     public CharWnd(Coord c, Widget parent) {
-	super(c, new Coord(640, 360), parent, "Character");
+	super(c, SZ_FULL, parent, "Character");
 	new Label(new Coord(0, 0), this, "Proficiencies:");
 	attrwdgs = new Widget(new Coord(0, 30), Coord.z, this);
 	int y = 0;
@@ -389,17 +465,17 @@ public class CharWnd extends Window {
 	    y += 20;
 	}
 	attrwdgs.pack();
-	y = attrwdgs.c.y + attrwdgs.sz.y + 15;
-	tmexpl = new Label(new Coord(0, y + 5), this, "Inspiration: ") {
-		Glob.CAttr ac = ui.sess.glob.cattr.get("scap"), ar = ui.sess.glob.cattr.get("srate");
-		int lc = -1, lr = -1;
-		Tex tt = null;
-		public Object tooltip(Coord c, Widget prev) {
-		    if((tt == null) || (ac.comp != lc) || (ar.comp != lr))
-			tt = Text.renderf(Color.WHITE, "Cap: %,d, Rate: %.2f/s", lc = ac.comp, 3 * (lr = ar.comp) / 1000.0).tex();
-		    return(tt);
-		}
-	    };
+	y = attrwdgs.c.y + attrwdgs.sz.y + 15;	
+        tmexpl = new Label(new Coord(0, y + 5), this, "Inspiration: ") {
+            Glob.CAttr ac = ui.sess.glob.cattr.get("scap"), ar = ui.sess.glob.cattr.get("srate");
+            int lc = -1, lr = -1;
+            Tex tt = null;
+            public Object tooltip(Coord c, Widget prev) {
+                if((tt == null) || (ac.comp != lc) || (ar.comp != lr))
+                    tt = Text.renderf(Color.WHITE, "Cap: %,d, Rate: %.2f/s", lc = ac.comp, 3 * (lr = ar.comp) / 1000.0).tex();
+                return(tt);
+            }
+        };
 	new Label(new Coord(270, 0), this, "Skills:");
 	new Label(new Coord(270, 30), this, "Current:");
 	this.csk = new SkillList(new Coord(270, 45), 170, 6, this) {
@@ -409,7 +485,7 @@ public class CharWnd extends Window {
 		    if(sk != null)
 			nsk.change(null);
 		    if((sk != null) || (p != null))
-			ski.setsk(sk);
+		    ski.setsk(sk);
 		}
 	    };
 	new Label(new Coord(270, 180), this, "Available:");
@@ -439,7 +515,7 @@ public class CharWnd extends Window {
 		    if(sk != null)
 			csk.change(null);
 		    if((sk != null) || (p != null))
-			ski.setsk(sk);
+		    ski.setsk(sk);
 		}
 	    };
 	new Button(new Coord(270, 340), 50, this, "Buy") {
@@ -486,15 +562,15 @@ public class CharWnd extends Window {
 	if(msg == "exp") {
 	    for(int i = 0; i < args.length; i += 4) {
 		String nm = (String)args[i];
-		int c = (Integer)args[i + 1];
-		int e = (Integer)args[i + 2];
+		int s = (Integer)args[i + 1];
+		int h = (Integer)args[i + 2];
 		boolean av = ((Integer)args[i + 3]) != 0;
 		Attr a = attrs.get(nm);
-		a.cap = c;
-		a.exp = e;
+		a.sexp = s;
 		a.rexp = null;
 		a.av = av;
 	    }
+	    GItem.infoUpdated = System.currentTimeMillis();
 	    checkexp();
 	} else if(msg == "csk") {
 	    /* One could argue that rmessages should have some
@@ -526,9 +602,9 @@ public class CharWnd extends Window {
 		accnsk = buf;
 	    else
 		nsk.pop(buf);
-	} else if (msg == "tmexp") {
-	    tmexp = (Integer)args[0];
-	    tmexpl.settext(String.format("Inspiration: %,d", tmexp));
+	} else if(msg == "tmexp") {
+            tmexp = (Integer)args[0];
+            tmexpl.settext(String.format("Inspiration: %,d", tmexp));
 	}
     }
 }
