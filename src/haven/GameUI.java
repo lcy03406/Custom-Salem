@@ -461,7 +461,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	OptWnd2.close();
 	TimerPanel.close();
 	DarknessWnd.close();
-        LocatorTool.close();
 	FlatnessTool.close();
 	WikiBrowser.close();
     }
@@ -606,7 +605,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     
     public void tick(double dt) {
 	super.tick(dt);
-	if(false && !afk && (System.currentTimeMillis() - ui.lastevent > 300000)) {
+	if(!afk && (System.currentTimeMillis() - ui.lastevent > 300000)) {
 	    afk = true;
 	    wdgmsg("afk");
 	} else if(afk && (System.currentTimeMillis() - ui.lastevent < 300000)) {
@@ -793,8 +792,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     
     public class MainMenu extends Widget {
 	public final MenuButton invb, equb, chrb, budb, polb, optb;
-	public final MenuButton clab, towb, warb, ptrb, hwab, chatb;
-	public boolean pv = Config.hpointv && !Config.hptr;
+ 	public final MenuButton clab, towb, warb, ptrb, hwab, chatb;
+	public boolean hpv = true, pv = hpv && !Config.hptr;
 
 	boolean full = true;
 	public MenuButton[] tohide = {
@@ -889,10 +888,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    int x = 6;
 	    clab = new MenuButtonT(new Coord(x, y), this, "cla", -1, "Display personal claims") {
 		public void click() {
-		    if(Config.pclaimv)
-			map.disol(0, 1);
-		    else
+		    if(!map.visol(0))
 			map.enol(0, 1);
+		    else
+			map.disol(0, 1);
 		    toggle();
                     Config.pclaimv = !Config.pclaimv;
                     Utils.setprefb("pclaimv", Config.pclaimv);
@@ -903,10 +902,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    x+=18;
 	    towb = new MenuButtonT(new Coord(x, y), this, "tow", -1, "Display town claims") {
 		public void click() {
-		    if(Config.tclaimv)
-			map.disol(2, 3);
-		    else
+		    if(!map.visol(2))
 			map.enol(2, 3);
+		    else
+			map.disol(2, 3);
 		    toggle();
                     Config.tclaimv = !Config.tclaimv;
                     Utils.setprefb("tclaimv",  Config.tclaimv);
@@ -917,10 +916,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    x+=18;
 	    warb = new MenuButtonT(new Coord(x, y), this, "war", -1, "Display waste claims") {
 		public void click() {
-		    if(Config.wclaimv)
-			map.disol(4);
-		    else
+		    if(!map.visol(4))
 			map.enol(4);
+		    else
+			map.disol(4);
 		    toggle();
                     Config.wclaimv = !Config.wclaimv;
                     Utils.setprefb("wclaimv", Config.wclaimv);
@@ -933,7 +932,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		public void click() {
                     Config.hpointv = !Config.hpointv;
                     Utils.setprefb("hpointv", Config.hpointv);
-		    pv = Config.hpointv && !Config.hptr;
+                    pv = Config.hpointv && !Config.hptr;
 		}
 	    };
             pv = Config.hpointv && !Config.hptr;

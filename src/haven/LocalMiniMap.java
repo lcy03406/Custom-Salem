@@ -47,9 +47,6 @@ import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
-import java.util.*;
-import haven.resutil.RidgeTile;
-
 public class LocalMiniMap extends Window implements Console.Directory{
     private static final String OPT_SZ = "_sz";
     static Tex bg = Resource.loadtex("gfx/hud/bgtex");

@@ -233,12 +233,12 @@ public class Glob {
 	    switch(t) {
 	    case GMSG_TIME:
 		time = msg.int32();
-		Timer.server = 1000*time;
-		Timer.local = System.currentTimeMillis();
 		epoch = System.currentTimeMillis();
 		if(!inc)
 		    lastrep = 0;
-                break;
+		Timer.server = 1000*time;
+		Timer.local = System.currentTimeMillis();
+		break;
 	    case GMSG_LIGHT:
 		synchronized(this) {
 		    tlightamb = msg.color();

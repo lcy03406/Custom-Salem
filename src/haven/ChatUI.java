@@ -623,6 +623,7 @@ public class ChatUI extends Widget {
 		super.wdgmsg(sender, msg, args);
 	    }
 	}
+        
 	public void uimsg(String name, Object... args) {
 	    if(name == "sel") {
 		select();
@@ -1192,7 +1193,7 @@ public class ChatUI extends Widget {
 	this.c = (this.base = base).add(0, -sz.y);
     }
 
-    private void expand() {
+    public void expand() {
 	if(expanded)
 	    return;
 	resize(new Coord(sz.x, 100+(basesize-12)*24));

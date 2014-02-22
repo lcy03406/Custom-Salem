@@ -1,5 +1,8 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 21.02.14 (Latikai):}}
+  * The client should now be ready for the new world!
+
 $size[14]{$u{Update for <undecided> (Latikai):}}
   * <WIP> cartographer
   * Scalable chat font sizes: three options available. It shouldn't break.
@@ -55,7 +58,6 @@ $size[14]{$u{Update for 19.10.13 (Latikai):}}
   * Latikai shall try to use the changelog from now on as well!
   * Added a textbox for filtering the characters when choosing one. The filtered list will still be sorted according to your preferences: alphabetically or by last log-in.
  
-
 $size[14]{$u{Update for 30.08.13:}}
   * fixed flatness tool displaying
  
