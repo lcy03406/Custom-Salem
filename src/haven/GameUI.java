@@ -26,7 +26,6 @@
 
 package haven;
 
-import haven.Gob.Overlay;
 import static haven.Inventory.invsq;
 import static haven.Inventory.isqsz;
 import haven.res.lib.HomeTrackerFX;
@@ -347,11 +346,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		ui.destroy(mmap);
 	    }
 	    mmap = new LocalMiniMap(new Coord(0, sz.y - 125), new Coord(125, 125), this, map);
-            
-            if(Config.pclaimv) map.enol(0,1);
-            if(Config.tclaimv) map.enol(2,3);
-            if(Config.wclaimv) map.enol(4);
-            
 	    return(map);
 	} else if(place == "fight") {
 	    fv = (Fightview)gettype(type).create(new Coord(sz.x - Fightview.width, 0), this, cargs);
@@ -419,11 +413,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    return(gettype(type).create(new Coord(2, 80), this, cargs));
 	} else if(place == "misc") {
 	    if(type.contains("ui/hrtptr")){
-                if(hrtptr != null)
-                {
-                    hrtptr.dispose();
-                    hrtptr = null;
-                }
 		hrtptr = new HomeTrackerFX.HTrackWdg(this, gettype(type).create((Coord)pargs[1], this, cargs));
 		return hrtptr;
 	    }
@@ -461,7 +450,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	OptWnd2.close();
 	TimerPanel.close();
 	DarknessWnd.close();
-        LocatorTool.close();
 	FlatnessTool.close();
 	WikiBrowser.close();
     }
@@ -519,6 +507,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		}
     
 		public void draw(GOut g) {
+		    if(cmod != cw.tmexp){
+			cmod = cw.tmexp;
+			la.settext(String.format("LA: %d", cmod));
+		    }
 		    if((fv != null) && !fv.lsrel.isEmpty())
 			return;
 		    g.chcolor(0, 0, 0, 128);
@@ -602,7 +594,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     
     public void tick(double dt) {
 	super.tick(dt);
-	if(false && !afk && (System.currentTimeMillis() - ui.lastevent > 300000)) {
+	if(!afk && (System.currentTimeMillis() - ui.lastevent > 300000)) {
 	    afk = true;
 	    wdgmsg("afk");
 	} else if(afk && (System.currentTimeMillis() - ui.lastevent < 300000)) {
@@ -789,8 +781,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     
     public class MainMenu extends Widget {
 	public final MenuButton invb, equb, chrb, budb, polb, optb;
-	public final MenuButton clab, towb, warb, ptrb, hwab, chatb;
-	public boolean pv = Config.hpointv && !Config.hptr;
+	public final MenuButton clab, towb, warb, ptrb, chatb;
+	public boolean hpv = true, pv = hpv && !Config.hptr;
 
 	boolean full = true;
 	public MenuButton[] tohide = {
@@ -885,70 +877,41 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    int x = 6;
 	    clab = new MenuButtonT(new Coord(x, y), this, "cla", -1, "Display personal claims") {
 		public void click() {
-		    if(Config.pclaimv)
-			map.disol(0, 1);
-		    else
+		    if(!map.visol(0))
 			map.enol(0, 1);
+		    else
+			map.disol(0, 1);
 		    toggle();
-                    Config.pclaimv = !Config.pclaimv;
-                    Utils.setprefb("pclaimv", Config.pclaimv);
 		}
 	    };
-            if(Config.pclaimv) clab.toggle();
-            clab.render();
 	    x+=18;
 	    towb = new MenuButtonT(new Coord(x, y), this, "tow", -1, "Display town claims") {
 		public void click() {
-		    if(Config.tclaimv)
-			map.disol(2, 3);
-		    else
+		    if(!map.visol(2))
 			map.enol(2, 3);
+		    else
+			map.disol(2, 3);
 		    toggle();
-                    Config.tclaimv = !Config.tclaimv;
-                    Utils.setprefb("tclaimv",  Config.tclaimv);
 		}
 	    };
-            if(Config.tclaimv) towb.toggle();
-            towb.render();
 	    x+=18;
 	    warb = new MenuButtonT(new Coord(x, y), this, "war", -1, "Display waste claims") {
 		public void click() {
-		    if(Config.wclaimv)
-			map.disol(4);
-		    else
+		    if(!map.visol(4))
 			map.enol(4);
+		    else
+			map.disol(4);
 		    toggle();
-                    Config.wclaimv = !Config.wclaimv;
-                    Utils.setprefb("wclaimv", Config.wclaimv);
 		}
 	    };
-            if(Config.wclaimv) warb.toggle();
-            warb.render();
 	    x+=18;
-	    ptrb = new MenuButton(new Coord(x, y), this, "ptr", -1, "Display homestead pointer") {
+	    ptrb = new MenuButton(new Coord(x, y), this, "ptr", -1, "Display homstead pointer") {
 		public void click() {
-                    Config.hpointv = !Config.hpointv;
-                    Utils.setprefb("hpointv", Config.hpointv);
-		    pv = Config.hpointv && !Config.hptr;
+		    hpv = !hpv;
+		    pv = hpv && !Config.hptr;
 		}
 	    };
-            pv = Config.hpointv && !Config.hptr;
 	    x+=18;
-            hwab = new MenuButton(new Coord(x,y), this, "hwa", -1, "Walk to your homestead") {
-                public void click() {
-                    if(map.player() != null)
-                    for(Overlay ol : map.player().ols)
-                    {
-                        if(ol.spr.getClass().equals(HomeTrackerFX.class))
-                        {
-                            HomeTrackerFX htfx = (HomeTrackerFX) ol.spr;
-                            // walk there!
-                            ui.wdgmsg(map, "click", map.player().sc, htfx.c, 1,0);
-                        }
-                    }
-                }
-            };
-	    x+=12;
 	    new MenuButton(new Coord(x, y), this, "height", -1, "Display heightmap") {
 		{
 		    hover = down;
