@@ -521,7 +521,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		public void draw(GOut g) {
 		    if(cmod != cw.tmexp){
 			cmod = cw.tmexp;
-			la.settext(String.format("Insp: %d%%", cmod));
+			la.settext(String.format("Insp: %d", cmod));
 		    }
 		    if((fv != null) && !fv.lsrel.isEmpty())
 			return;
