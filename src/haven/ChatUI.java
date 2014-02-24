@@ -607,7 +607,6 @@ public class ChatUI extends Widget {
 		    break;
 	    }
 	}
-	
 	public void wdgmsg(Widget sender, String msg, Object... args) {
 	    if(sender == cbtn) {
 		wdgmsg("close");

@@ -35,6 +35,7 @@ import java.lang.ref.*;
 
 public class Session implements Owner {
     public static final int PVER = 33;
+    
     public static final int MSG_SESS = 0;
     public static final int MSG_REL = 1;
     public static final int MSG_ACK = 2;

@@ -1,9 +1,26 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 24.02.14 (Latikai):}}
+  * Merged in Ender's changes.
+  * Fixed some outstanding issues.
+  * Made the displaying of ridge tiles in the minimap optional.
+  * Made the promise to clean up my option screen some day.
+
+$size[14]{$u{Update for 24.02.14 (Ender):}}
+  * returned ability to save screenshots to disk
+  * fixed path to screenshot upload server
+  * fixed degree symbol in darkness tool
+  * added new radar shape - pentagon
+  * updated radar config - added spiders, wells and mines (to get new config delete $b{Salem/radar.xml} and client will recreate it)
+ 
+$size[14]{$u{Update for 21.02.14 (Ender):}}
+  * merged loftar's code
+  * disabled food info on craft icons tooltip for now
+ 
 $size[14]{$u{Update for 21.02.14 (Latikai):}}
   * The client should now be ready for the new world!
 
-$size[14]{$u{Update for <undecided> (Latikai):}}
+$size[14]{$u{Update for 18.01.14 (Latikai):}}
   * <WIP> cartographer
   * Scalable chat font sizes: three options available. It shouldn't break.
   * small fix: antialiasing was not working correctly
@@ -47,6 +64,8 @@ $size[14]{$u{Update for 13.11.13 (Latikai):}}
 
 $size[14]{$u{Update for 08.11.13 (Latikai):}}
   * The name filter entry is now remembered between sessions. Please keep this in mind if your characters ever "vanish".
+
+$size[14]{$u{Update for 03.02.14 (Ender):}}
   * merged loftar's code
 
 

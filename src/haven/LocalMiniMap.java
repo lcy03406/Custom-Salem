@@ -37,7 +37,6 @@ import haven.resutil.RidgeTile;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -45,6 +44,7 @@ import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import haven.resutil.RidgeTile;
 
 import javax.imageio.ImageIO;
 
