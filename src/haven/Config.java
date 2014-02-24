@@ -141,6 +141,8 @@ public class Config {
     public static final String[] defcommands = {"act lo cs", "act lo","", "", "", ""};
     public static String[] hnames = new String[hotkeynr];
     public static String[] hcommands = new String[hotkeynr];
+    //project climber
+    public static boolean localmm_ridges = Utils.getprefb("localmm_ridges", false);
     
     static {
 	String p;

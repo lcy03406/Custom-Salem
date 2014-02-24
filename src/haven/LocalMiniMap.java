@@ -32,6 +32,7 @@ import haven.Defer.Future;
 import haven.MCache.LoadingMap;
 import haven.minimap.Marker;
 import haven.minimap.Radar;
+import haven.resutil.RidgeTile;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -116,7 +117,7 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	return(img);
     }
 
-    public static BufferedImage drawmap(Coord ul, Coord sz) {
+    public BufferedImage drawmap(Coord ul, Coord sz) {
 	BufferedImage[] texes = new BufferedImage[256];
 	MCache m = UI.instance.sess.glob.map;
 	BufferedImage buf = TexI.mkbuf(sz);
@@ -150,9 +151,34 @@ public class LocalMiniMap extends Window implements Console.Directory{
 		}
 	    }
 	}
+        if(Config.localmm_ridges)
+            drawRidges(ul, sz, m, buf, c);
 	return(buf);
     }
 
+    private void drawRidges(Coord ul, Coord sz, MCache m, BufferedImage buf, Coord c) {
+        for(c.y = 1; c.y < sz.y - 1; c.y++) {
+        for(c.x = 1; c.x < sz.x - 1; c.x++) {
+            int t = m.gettile(ul.add(c));
+            Tiler tl = m.tiler(t);
+            if(tl instanceof RidgeTile) {
+                if(((RidgeTile)tl).ridgep(m, ul.add(c))) {
+                    for(int y = c.y; y <= c.y + 1; y++) {
+                    for(int x = c.x; x <= c.x + 1; x++) {
+                        int rgb = buf.getRGB(x, y);
+                        rgb = (rgb & 0xff000000) |
+                        (((rgb & 0x00ff0000) >> 17) << 16) |
+                        (((rgb & 0x0000ff00) >> 9) << 8) |
+                        (((rgb & 0x000000ff) >> 1) << 0);
+                        buf.setRGB(x, y, rgb);
+                    }
+                    }
+                }
+            }
+        }
+        }
+    }
+    
     private Future<BufferedImage> getheightmap(final Coord plg){
 	Future<BufferedImage> f = Defer.later(new Defer.Callable<BufferedImage> () {
 	    public BufferedImage call() {

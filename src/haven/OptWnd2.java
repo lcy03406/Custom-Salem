@@ -493,6 +493,16 @@ public class OptWnd2 extends Window {
 		
 	    }.a = Config.raidermodebraziers;
             
+            //project climber
+	    new CheckBox(new Coord(150, 220), tab, "Show ridges on the minimap."){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.localmm_ridges = val;
+		    Utils.setprefb("localmm_ridges", val);
+		}
+	    }.a = Config.localmm_ridges;
+            
             //project ironborn
 	    new CheckBox(new Coord(0, 220), tab, "Alternate prospecting"){
 		@Override
