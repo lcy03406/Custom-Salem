@@ -117,7 +117,7 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	return(img);
     }
 
-    public BufferedImage drawmap(Coord ul, Coord sz) {
+    public static BufferedImage drawmap(Coord ul, Coord sz) {
 	BufferedImage[] texes = new BufferedImage[256];
 	MCache m = UI.instance.sess.glob.map;
 	BufferedImage buf = TexI.mkbuf(sz);
@@ -156,7 +156,7 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	return(buf);
     }
 
-    private void drawRidges(Coord ul, Coord sz, MCache m, BufferedImage buf, Coord c) {
+    private static void drawRidges(Coord ul, Coord sz, MCache m, BufferedImage buf, Coord c) {
         for(c.y = 1; c.y < sz.y - 1; c.y++) {
         for(c.x = 1; c.x < sz.x - 1; c.x++) {
             int t = m.gettile(ul.add(c));
