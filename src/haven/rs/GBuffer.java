@@ -45,7 +45,9 @@ public class GBuffer {
 	private GLState.Applier state;
 
 	public Context() {
-	    this.prof = GLProfile.getDefault();
+            //TODO: testing
+//	    this.prof = GLProfile.getDefault();
+            this.prof = GLProfile.get(GLProfile.GL2);
 	    GLDrawableFactory df = GLDrawableFactory.getFactory(prof);
 	    gstate = new GLState() {
 		    public void apply(GOut g) {

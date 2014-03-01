@@ -35,7 +35,7 @@ public class FBConfig {
     public final PView.ConfContext ctx;
     public Coord sz;
     public boolean hdr, tdepth;
-    public int ms = 8;
+    public int ms = 1;
     public GLFrameBuffer fb;
     public PView.RenderState wnd;
     public Attachment color[], depth;

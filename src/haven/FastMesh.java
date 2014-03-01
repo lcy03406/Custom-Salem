@@ -26,7 +26,6 @@
 
 package haven;
 
-import java.util.*;
 import java.nio.*;
 import javax.media.opengl.*;
 
