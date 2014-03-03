@@ -1,74 +1,85 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 03.03.14 (Latikai):}}
+  * Merged in loftar's changes, mainly on chat colours. Hotfixed so only bright colours will be chosen.
+  * Merged in Ender's changes.
+ 
+$size[14]{$u{Update for 03.03.14 (Ender):}}
+  * merged loftar's changes
+  * made flower menu always fit the screen
+  * added proficiency delta displaying to proficiency increased/decreased message
+ 
+$size[14]{$u{Update for 27.02.14 (Ender):}}
+  * added safeguard to MenuGrid tooltips with data from wiki
+  * fixed FlatnessTool not releasing map grab properly if closed while grabbing mouse
+  * added cranberries to radar
+ 
 $size[14]{$u{Update for 24.02.14 (Latikai):}}
   * Merged in Ender's changes.
   * Fixed some outstanding issues.
   * Made the displaying of ridge tiles in the minimap optional.
   * Made the promise to clean up my option screen some day.
-
+ 
 $size[14]{$u{Update for 24.02.14 (Ender):}}
   * returned ability to save screenshots to disk
   * fixed path to screenshot upload server
   * fixed degree symbol in darkness tool
   * added new radar shape - pentagon
   * updated radar config - added spiders, wells and mines (to get new config delete $b{Salem/radar.xml} and client will recreate it)
- 
+  
 $size[14]{$u{Update for 21.02.14 (Ender):}}
   * merged loftar's code
   * disabled food info on craft icons tooltip for now
  
 $size[14]{$u{Update for 21.02.14 (Latikai):}}
   * The client should now be ready for the new world!
-
+ 
 $size[14]{$u{Update for 18.01.14 (Latikai):}}
   * <WIP> cartographer
   * Scalable chat font sizes: three options available. It shouldn't break.
   * small fix: antialiasing was not working correctly
-
+ 
 $size[14]{$u{Update for 18.01.14 (Latikai):}}
   * The camera will start off further from your character upon log in.
   * The button to mute the violin player now tries to guilt trip you into not doing it.
   * Chat messages are now logged by default. They will end up in "C:\Users\<account>\Salem\logs\<character>\<channel>\".
   * Customizeable hotkeys! Check the new tab in the options for more details.
-
+ 
 $size[14]{$u{Update for 30.12.13 (Latikai):}}
   * Lower bound on tree size, meaning trees in pots will now be visible again using the raider mode.
   * Console commands are now much more visible when typing them, especially on white backgrounds.
   * Introduced a new button in the main menu, allowing you to walk to your homestead (assuming you have one). Contributions for the icon on it are appreciated. Note that this will only get you a direction from Boston, and not an accurate location in conjunction with the locator.
-
+ 
 $size[14]{$u{Update for 25.12.13 (Latikai):}}
   * Finally fixed the issues with raider mode trees. The effects have changed: trees will simply be scaled down to character height/width for better visibility. No more ugly resource hacks resulting in caching errors.
-
+ 
 $size[14]{$u{Update for 22.12.13 (Latikai):}}
   * Waste claims will now be displayed in very bright red, so it's pretty obvious when one is around.
   * Introduced a small button in the character list, which will allow you to reverse the sorting (Z->A when alphabetical, or last-log-in first).
-
+ 
 $size[14]{$u{Update for 20.12.13 (Latikai):}}
   * Waste claim display functionality now fixed (for some people, it was always visible while for other people the behaviour was reversed).
-
+ 
 $size[14]{$u{Update for 30.11.13 (Latikai):}}
   * The violin player can now be muted for those too poor to buy him off. Please take his family into consideration, he deserves your support!
-
+ 
 $size[14]{$u{Update for 17.11.13 (Latikai, thanks to Trojanz):}}
   * Town authority bar now also shows daily drain
   * Ctrl+shift+A will switch characters, ctrl+shift+Q will log out completely
   * Introduced a toggle to get rid of the delays on flower menus
-
+ 
 $size[14]{$u{Update for 16.11.13 (Latikai):}}
   * Press ctrl+N while in darkness or a mine to reset to standard outside lighting.
-
-
+ 
 $size[14]{$u{Update for 13.11.13 (Latikai):}}
   * The wiki will now interface with salem-wiki.com rather than salemwiki.info
-
-
+ 
 $size[14]{$u{Update for 08.11.13 (Latikai):}}
   * The name filter entry is now remembered between sessions. Please keep this in mind if your characters ever "vanish".
-
+ 
 $size[14]{$u{Update for 03.02.14 (Ender):}}
   * merged loftar's code
-
-
+ 
 $size[14]{$u{Update for 19.10.13 (Latikai):}}
   * Second update today! Open the locator tool using CTRL+Q. Grab the attention of the locator, and then walk somewhere. The locator window will show the relative location of your target (in tiles). Notably handy when walking towards people in your party.
 

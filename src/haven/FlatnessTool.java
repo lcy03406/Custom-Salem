@@ -1,7 +1,6 @@
 package haven;
 
 import haven.MCache.LoadingMap;
-import haven.MapView.GrabXL;
 
 import java.awt.event.KeyEvent;
 
@@ -126,7 +125,7 @@ class FlatnessTool extends Window implements MapView.Grabber {
 	if (this.ol != null)
 	    this.ol.destroy();
 	this.mv.disol(MapView.WFOL);
-	this.mv.release(this);
+	this.mv.release(grab);
 	instance = null;
 	super.destroy();
     }
