@@ -1,6 +1,6 @@
 package haven.res.lib.point;
 
-import haven.FastMesh;
+import haven.FastMesh.MeshRes;
 import haven.RenderList;
 import haven.Rendered;
 import haven.Resource;
@@ -13,8 +13,8 @@ public class NFEffect extends Sprite
 
   public NFEffect(Sprite.Owner paramOwner)
   {
-    super(paramOwner, Resource.classres(TrackEffect.class));
-    FastMesh.MeshRes localMeshRes = (FastMesh.MeshRes)sres.layer(FastMesh.MeshRes.class);
+    super(paramOwner, null);//Resource.classres(TrackEffect.class));
+    MeshRes localMeshRes = (MeshRes)sres.layer(MeshRes.class);
     this.fx = localMeshRes.mat.get().apply(localMeshRes.m);
   }
 
