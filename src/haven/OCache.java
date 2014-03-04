@@ -26,7 +26,9 @@
 
 package haven;
 
+import haven.minimap.Marker;
 import haven.minimap.Radar;
+import java.awt.Color;
 
 import java.util.*;
 
@@ -306,6 +308,11 @@ public class OCache implements Iterable<Gob> {
 	    } else {
 		b.update(name, group, type);
 	    }
+            Marker m = radar.getMarker(g.id);
+            if(m != null)
+            {
+                m.override(name, BuddyWnd.gc[group]);
+            }
 	}
     }
 

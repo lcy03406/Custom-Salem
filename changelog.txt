@@ -1,5 +1,8 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 0.03.14 (Latikai):}}
+  * The radar will now override the color and tooltip of markers with kin info, if such is available.
+ 
 $size[14]{$u{Update for 03.03.14 (Latikai):}}
   * Merged in loftar's changes, mainly on chat colours. Hotfixed so only bright colours will be chosen.
   * Merged in Ender's changes.

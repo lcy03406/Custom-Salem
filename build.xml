@@ -21,12 +21,12 @@
 	<target name="salem-client" depends="build-env">
 		<javac srcdir="src" destdir="build/classes" debug="on" source="1.5" target="1.5" includeantruntime="no">
 			<classpath>
-				<pathelement path="lib/jogl.jar" />
-				<pathelement path="lib/gluegen-rt.jar" />
-				<pathelement path="lib/jnlp.jar" />
-				<pathelement path="lib/jorbis.jar" />
-				<pathelement path="lib/jogg.jar" />
-				<pathelement path="lib/jglob.jar" />
+                            <pathelement path="lib/jogl-all.jar" />
+                            <pathelement path="lib/gluegen-rt.jar" />
+                            <pathelement path="lib/jnlp.jar" />
+                            <pathelement path="lib/jorbis.jar" />
+                            <pathelement path="lib/jogg.jar" />
+                            <pathelement path="lib/jglob.jar" />
 			</classpath>
 			<compilerarg value="-Xlint:unchecked" />
 			<!-- <compilerarg value="-Xbarda" /> -->

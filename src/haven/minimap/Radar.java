@@ -49,6 +49,11 @@ public class Radar {
     private void add(String name, Gob gob) {
         Marker m = factory.makeMarker(name, gob);
         if (m != null) {
+            KinInfo ki = gob.getattr(KinInfo.class);
+            if(ki != null)
+            {
+                m.override(ki.name, BuddyWnd.gc[ki.group]);
+            }
             markers.put(gob.id, m);
             gob.setattr(new GobBlink(gob));
             //System.out.println("Marker added: " + name);
@@ -85,6 +90,14 @@ public class Radar {
         synchronized (markerLock) {
             checkUndefined();
             return markers.values().toArray(new Marker[markers.size()]);
+        }
+    }
+    
+    public Marker getMarker(Long gobid)
+    {
+        synchronized (markerLock) {
+            checkUndefined();
+            return markers.get(gobid);
         }
     }
 

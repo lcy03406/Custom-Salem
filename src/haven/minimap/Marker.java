@@ -1,12 +1,17 @@
 package haven.minimap;
 
 import haven.*;
+import java.awt.Color;
 
 public class Marker {
     public final String name;
     public final Gob gob;
     public final MarkerTemplate template;
 
+    private boolean override=false;
+    private String override_name;
+    private Color override_color;
+    
     public static enum Shape{
 	CIRCLE(10),
 	TRIANGLE(13),
@@ -59,6 +64,24 @@ public class Marker {
 	return (c.x - p.x) * (c.x - p.x) + (c.y - p.y) * (c.y - p.y) < radius * radius * MCache.tilesz.x * MCache.tilesz.y;
     }
 
+    public void override(String name, Color c)
+    {
+        this.override = true;
+        this.override_name = name;
+        this.override_color = c;
+    }
+    
+    public String getTooltip()
+    {
+        if(override)
+        {
+            return override_name;
+        }
+        else{
+            return this.template.tooltip;
+        }
+    }
+    
     public void draw(GOut g, Coord c) {
         Coord3f ptc3f = gob.getc();
         if (ptc3f == null)
@@ -76,6 +99,8 @@ public class Marker {
             } catch(Loading l) {}
         }
         g.chcolor(template.color);
+        if(override)
+            g.chcolor(override_color);
         Tex tex = template.shape.tex;
 	g.image(tex, ptc.sub(tex.sz().div(2)));
         g.chcolor();

@@ -635,7 +635,7 @@ public class LocalMiniMap extends Window implements Console.Directory{
     public Object tooltip(Coord c, boolean again) {
 	Marker m = getmarkerat(c);
 	if (m != null)
-	    return m.template.tooltip;
+	    return m.getTooltip();
 	return null;
     }
 
