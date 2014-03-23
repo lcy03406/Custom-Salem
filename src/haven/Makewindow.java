@@ -37,6 +37,7 @@ public class Makewindow extends Widget {
     Spec[] inputs = {};
     Spec[] outputs = {};
     static LinkedList<String> list = new LinkedList<String>();
+    static boolean requested_restore=false;
     static Coord boff = new Coord(7, 9);
     final int xoff = 40, yoff = 60;
     public static final Text.Foundry nmf = new Text.Foundry(new Font("Serif", Font.PLAIN, 20));
@@ -78,6 +79,7 @@ public class Makewindow extends Widget {
     }
 
     public void uimsg(String msg, Object... args) {
+        System.out.println("UIMSG for makewindow, "+msg);
 	if(msg == "inpop") {
 	    Spec[] inputs = new Spec[args.length / 2];
 	    for(int i = 0, a = 0; a < args.length; i++, a += 2)
@@ -178,23 +180,36 @@ public class Makewindow extends Widget {
 	if (tt != null || tt instanceof String){
 	    Pagina p = ui.mnu.paginafor((String)tt);
 	    if(p != null){
-		store();
+                store();
 		ui.mnu.use(p);
 		return true;
 	    }
 	}
 	return super.mousedown(c, button);
     }
+    
+    @Override
+    public void destroy()
+    {
+        if(!requested_restore){
+            store();
+        }
+        requested_restore = false;
+        super.destroy();
+    }
 
     private void store() {
 	try {
-	    list.push(outputs[0].res.get().layer(Resource.tooltip).t);
+            String t = outputs[0].res.get().layer(Resource.tooltip).t;
+	    if(list.isEmpty() || !list.getFirst().equals(t))
+                list.push(t);
 	} catch (Exception e){e.printStackTrace();}
     }
 
     private void restore(){
 	try{
 	    String name = list.pop();
+            requested_restore = true;
 	    Pagina p = ui.mnu.paginafor(name);
 	    ui.mnu.use(p);
 	} catch (Exception e){e.printStackTrace();}

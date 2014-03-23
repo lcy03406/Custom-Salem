@@ -36,11 +36,11 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
     }
 	
     public void rcvmsg(int id, String name, Object... args) {
-        System.out.println("Sending a message: ");
-            System.out.println("id: "+id);
-            System.out.println("\t"+name);
-            for(Object o : args)
-                System.out.println("\t"+o.toString());
+//        System.out.println("Sending a message: ");
+//            System.out.println("id: "+id);
+//            System.out.println("\t"+name);
+//            for(Object o : args)
+//                System.out.println("\t"+o.toString());
         
 	Message msg = new Message(Message.RMSG_WDGMSG);
 	msg.adduint16(id);
@@ -85,6 +85,9 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 		} else if(msg.type == Message.RMSG_DSTWDG) {
 		    int id = msg.uint16();
 		    ui.destroy(id);
+                    
+//                    System.out.println("Receiving RMSG_DSTWDG: ");
+//                        System.out.println("id: "+id);
 		}
 	    }
 	    synchronized(sess) {
