@@ -617,6 +617,20 @@ public class OptWnd2 extends Window {
             fontsizes.add("Base size 16", new Coord(300,110));
             int basesize = (int) Utils.getpreff("chatfontsize", 12);
 	    fontsizes.check("Base size "+basesize);	    
+            
+            
+	    new CheckBox(new Coord(300, 240), tab, "Remove all animations"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.remove_animations = val;
+		    Utils.setprefb("remove_animations", val);
+		}
+
+		{tooltip = Text.render("Removes all animations of more than a single frame, should ease processing times.");}
+		
+	    }.a = Config.remove_animations;
+            
         }
         
         /* RADAR TAB */

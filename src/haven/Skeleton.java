@@ -685,9 +685,10 @@ public class Skeleton {
 	public final double nspeed;
 	public final WrapMode defmode;
 	
-	private static Track.Frame[] parseframes(byte[] buf, int[] off) {
-	    Track.Frame[] frames = new Track.Frame[Utils.uint16d(buf, off[0])]; off[0] += 2;
-	    for(int i = 0; i < frames.length; i++) {
+	private static Track.Frame[] parseframes(byte[] buf, int[] off) {            
+            int nrframes=Utils.uint16d(buf, off[0]); off[0] += 2;
+	    Track.Frame[] frames = new Track.Frame[Config.remove_animations?1:nrframes];
+	    for(int i = 0; i < nrframes; i++) {
 		float tm = (float)Utils.floatd(buf, off[0]); off[0] += 5;
 		float[] trans = new float[3];
 		for(int o = 0; o < 3; o++) {
@@ -698,7 +699,8 @@ public class Skeleton {
 		for(int o = 0; o < 3; o++) {
 		    rax[o] = (float)Utils.floatd(buf, off[0]); off[0] += 5;
 		}
-		frames[i] = new Track.Frame(tm, trans, rotasq(new float[4], rax, rang));
+                if(!Config.remove_animations || i == 0)
+                    frames[i] = new Track.Frame(tm, trans, rotasq(new float[4], rax, rang));
 	    }
 	    return(frames);
 	}

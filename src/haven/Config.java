@@ -143,6 +143,8 @@ public class Config {
     public static String[] hcommands = new String[hotkeynr];
     //project climber
     public static boolean localmm_ridges = Utils.getprefb("localmm_ridges", false);
+    //project peace and quiet
+    public static boolean remove_animations = Utils.getprefb("remove_animations", false);
     
     static {
 	String p;

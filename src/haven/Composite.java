@@ -112,6 +112,10 @@ public class Composite extends Drawable {
 	} else if(!retainequ) {
 	    updequ();
 	}
+        
+        if(Config.remove_animations)
+            return;
+            
 	Moving mv = gob.getattr(Moving.class);
 	double v = 0;
 	if(mv != null)
