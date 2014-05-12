@@ -1,15 +1,37 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 10.05.14 (Latikai):}}
+  * Finally got round to the long-due merge of loftar's and Ender's changes.
+ 
 $size[14]{$u{Update for 23.03.14 (Latikai):}}
   * The make window will now remember recipe windows that have been closed for whatever reason (suggested by dakoo).
  
+$size[14]{$u{Update for 25.03.14 (Ender):}}
+  * added displaying of new Gluttony values to MenuGrid tooltips
+  * added coloring to food heal and glutton values
+ 
+$size[14]{$u{Update for 14.03.14 (Ender):}}
+  * fixed 'null' in inspirational tooltips in crafting menu
+  * made inspirational tooltips in crafting menu show uses if available
+  * changed gobble event debuffs tooltip to show reduce/restore in different color
+  * changed gobble event debuffs tooltip to show food category name
+ 
+$size[14]{$u{Update for 13.03.14 (Ender):}}
+  * made brightness slider work only in darker places
+  * added ability to transfer item to and from building sign with clicks:
+      $b{SHIFT} - transfer 1 item into sign
+      $b{SHIFT+ALT} - transfer all items into sign
+      $b{CTRL} - transfer 1 item out
+      $b{CTRL+ALT} - transfer all items out
+  * moved skill lists to different tabs (available and learned)
+
 $size[14]{$u{Update for 10.03.14 (Latikai):}}
   * The radar will now override the color and tooltip of markers with kin info, if such is available.
  
 $size[14]{$u{Update for 03.03.14 (Latikai):}}
   * Merged in loftar's changes, mainly on chat colours. Hotfixed so only bright colours will be chosen.
   * Merged in Ender's changes.
- 
+  
 $size[14]{$u{Update for 03.03.14 (Ender):}}
   * merged loftar's changes
   * made flower menu always fit the screen

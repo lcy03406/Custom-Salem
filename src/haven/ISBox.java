@@ -31,9 +31,11 @@ public class ISBox extends Widget implements DTarget {
     static Text.Foundry lf;
     private Resource res;
     private Text label;
+    private int rem = 0;
+    private int av = 0;
     static {
-        lf = new Text.Foundry(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 18), java.awt.Color.WHITE);
-        lf.aa = true;
+	lf = new Text.Foundry(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 18), java.awt.Color.WHITE);
+	lf.aa = true;
     }
     
     @RName("isbox")
@@ -44,23 +46,25 @@ public class ISBox extends Widget implements DTarget {
     }
     
     private void setlabel(int rem, int av, int bi) {
-        label = lf.renderf("%d/%d/%d", rem, av, bi);
+	this.rem = rem;
+	this.av = av;
+	label = lf.renderf("%d/%d/%d", rem, av, bi);
     }
     
     public ISBox(Coord c, Widget parent, Resource res, int rem, int av, int bi) {
-        super(c, bg.sz(), parent);
-        this.res = res;
-        setlabel(rem, av, bi);
+	super(c, bg.sz(), parent);
+	this.res = res;
+	setlabel(rem, av, bi);
     }
     
     public void draw(GOut g) {
-        g.image(bg, Coord.z);
-        if(!res.loading) {
-            Tex t = res.layer(Resource.imgc).tex();
-            Coord dc = new Coord(6, (bg.sz().y / 2) - (t.sz().y / 2));
-            g.image(t, dc);
-        }
-        g.image(label.tex(), new Coord(40, (bg.sz().y / 2) - (label.tex().sz().y / 2)));
+	g.image(bg, Coord.z);
+	if(!res.loading) {
+	    Tex t = res.layer(Resource.imgc).tex();
+	    Coord dc = new Coord(6, (bg.sz().y / 2) - (t.sz().y / 2));
+	    g.image(t, dc);
+	}
+	g.image(label.tex(), new Coord(40, (bg.sz().y / 2) - (label.tex().sz().y / 2)));
     }
     
     public Object tooltip(Coord c, Widget prev) {
@@ -70,14 +74,18 @@ public class ISBox extends Widget implements DTarget {
     }
     
     public boolean mousedown(Coord c, int button) {
-        if(button == 1) {
-            if(ui.modshift)
-                wdgmsg("xfer");
-            else
-                wdgmsg("click");
-            return(true);
-        }
-        return(false);
+	if(button == 1) {
+	    if(ui.modshift ^ ui.modctrl){	//SHIFT or CTRL means pull
+		int dir = ui.modctrl?-1:1;	//CTRL means pull out, SHIFT pull in
+		int all = (dir > 0)?rem:av;	//count depends on direction
+		int k = ui.modmeta?all:1;	//ALT means pull all
+		for(int i=0; i<k; i++){wdgmsg("xfer2", dir, 1);} //modflags set to 1 to emulate only SHIFT pressed
+	    } else {
+		wdgmsg("click");
+	    }
+	    return(true);
+	}
+	return(false);
     }
     
     public boolean mousewheel(Coord c, int amount) {
@@ -89,20 +97,20 @@ public class ISBox extends Widget implements DTarget {
     }
     
     public boolean drop(Coord cc, Coord ul) {
-        wdgmsg("drop");
-        return(true);
+	wdgmsg("drop");
+	return(true);
     }
     
     public boolean iteminteract(Coord cc, Coord ul) {
-        wdgmsg("iact");
-        return(true);
+	wdgmsg("iact");
+	return(true);
     }
     
     public void uimsg(String msg, Object... args) {
-        if(msg == "chnum") {
-            setlabel((Integer)args[0], (Integer)args[1], (Integer)args[2]);
-        } else {
-            super.uimsg(msg, args);
-        }
+	if(msg == "chnum") {
+	    setlabel((Integer)args[0], (Integer)args[1], (Integer)args[2]);
+	} else {
+	    super.uimsg(msg, args);
+	}
     }
 }
