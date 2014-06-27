@@ -1,5 +1,8 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 27.06.14 (Latikai):}}
+  * Merged in nikelin's fix for invisible homestead pointers.
+ 
 $size[14]{$u{Update for 10.05.14 (Latikai):}}
   * Finally got round to the long-due merge of loftar's and Ender's changes.
  
