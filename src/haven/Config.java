@@ -26,22 +26,17 @@
 
 package haven;
 
-import static haven.Utils.getprop;
 import haven.GLSettings.SettingException;
 import haven.error.ErrorHandler;
+import org.ender.wiki.Wiki;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.ender.wiki.Wiki;
+import static haven.Utils.getprop;
 
 public class Config {
     public static String authuser = getprop("haven.authuser", null);
@@ -97,7 +92,6 @@ public class Config {
     protected static boolean ss_silent = Utils.getprefb("ss_slent", false);
     protected static boolean ss_compress = Utils.getprefb("ss_compress", true);
     protected static boolean ss_ui = Utils.getprefb("ss_ui", false);
-    public static boolean hptr = Utils.getprefb("hptr", false);
     
     /*LATIKAI settings*/
     //project marathon

@@ -1,23 +1,9 @@
 package haven.res.lib;
 
-import haven.Config;
-import haven.Coord;
-import haven.Coord3f;
-import haven.FastMesh;
-import haven.GLState;
-import haven.GOut;
-import haven.Gob;
-import haven.Location;
-import haven.Material;
+import haven.*;
 import haven.Material.Colors;
-import haven.RenderList;
-import haven.Rendered;
-import haven.Resource;
-import haven.Sprite;
-import haven.UI;
-import haven.Widget;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class HomeTrackerFX extends Sprite {
     private static final Location SCALE = Location.scale(new Coord3f(1.2f, 1.2f ,1));
@@ -39,7 +25,7 @@ public class HomeTrackerFX extends Sprite {
     @Override
     public boolean setup(RenderList d) {
 
-	if(!Config.hptr || UI.instance == null || !Config.hpointv ){
+	if( !Config.hpointv ){
 	    return false;
 	}
 	if(fx == null){

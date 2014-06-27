@@ -26,16 +26,16 @@
 
 package haven;
 
-import haven.BuddyWnd.CTextEntry;
 import haven.GLSettings.BoolSetting;
-
 import haven.minimap.ConfigGroup;
 import haven.minimap.ConfigMarker;
 import haven.minimap.MarkerFactory;
 import haven.minimap.RadarConfig;
-import java.util.*;
-import java.awt.Color;
+
+import java.awt.*;
 import java.awt.font.TextAttribute;
+import java.util.*;
+import java.util.List;
 
 public class OptWnd2 extends Window {
     public static final RichText.Foundry foundry = new RichText.Foundry(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 10);
@@ -227,13 +227,13 @@ public class OptWnd2 extends Window {
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
-		    Config.hptr = val;
-		    Utils.setprefb("hptr", val);
+		    Config.hpointv = val;
+		    Utils.setprefb("hpointv", val);
 		    ui.gui.mainmenu.pv = Config.hpointv && !val; 
 		}
 
 		{tooltip = Text.render("Makes home pointer display as green arrow over character head");}
-	    }.a = Config.hptr;
+	    }.a = Config.hpointv;
 	}
 
 	

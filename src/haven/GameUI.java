@@ -27,24 +27,18 @@
 package haven;
 
 import haven.Gob.Overlay;
-import static haven.Inventory.invsq;
-import static haven.Inventory.isqsz;
 import haven.res.lib.HomeTrackerFX;
+import org.ender.timer.TimerController;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import org.ender.timer.TimerController;
+import static haven.Inventory.invsq;
+import static haven.Inventory.isqsz;
 
 public class GameUI extends ConsoleHost implements Console.Directory {
     public final String chrid;
@@ -793,7 +787,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public class MainMenu extends Widget {
 	public final MenuButton invb, equb, chrb, budb, polb, optb;
  	public final MenuButton clab, towb, warb, ptrb, hwab, chatb;
-	public boolean hpv = true, pv = hpv && !Config.hptr;
+	public boolean hpv = true, pv = hpv;
 
 	boolean full = true;
 	public MenuButton[] tohide = {
@@ -932,10 +926,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		public void click() {
                     Config.hpointv = !Config.hpointv;
                     Utils.setprefb("hpointv", Config.hpointv);
-                    pv = Config.hpointv && !Config.hptr;
+                    pv = Config.hpointv;
 		}
 	    };
-            pv = Config.hpointv && !Config.hptr;
+            pv = Config.hpointv;
 	    x+=18;
             hwab = new MenuButton(new Coord(x,y), this, "hwa", -1, "Walk to your homestead") {
                 public void click() {
