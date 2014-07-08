@@ -76,7 +76,7 @@ class OverviewTool extends Window{
         {
             height += 15;
             ls.add(new Label(new Coord(0,height), this, "   "+e.getKey()+":"));
-            ls.add(new Label(new Coord(100, height),this,"+" + e.getValue()));
+            ls.add(new Label(new Coord(150, height),this,"+" + e.getValue()));
         }
         
         this.pack();
