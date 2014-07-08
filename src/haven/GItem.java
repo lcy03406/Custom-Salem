@@ -132,6 +132,9 @@ public class GItem extends AWidget implements ItemInfo.ResOwner {
 	} else if(name == "tt") {
 	    info = null;
 	    rawinfo = args;
+            //this might be an update to artifices for the clothing
+            //notify the abacus: it should update
+            OverviewTool.instance(ui).notifyClothingChanged();
 	} else if(name == "meter") {
 	    meter = (Integer)args[0];
 	}

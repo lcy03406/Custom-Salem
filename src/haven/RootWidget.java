@@ -47,6 +47,7 @@ public class RootWidget extends ConsoleHost {
 	int code = ev.getKeyCode();
 	boolean ctrl = ev.isControlDown();
 	boolean shift = ev.isShiftDown();
+        boolean isgui = ui!=null&&ui.gui!=null;
 	if(!super.globtype(key, ev)) {
 	    if(key == 0){return false;}
 	    if(Config.profile && (key == '`')) {
@@ -57,17 +58,20 @@ public class RootWidget extends ConsoleHost {
 		    new Profwnd(new Coord(100, 100), this, gi.map.prof, "MV prof");
 	    } else if(key == ':') {
 		entercmd();
-	    }else if((code == KeyEvent.VK_L || code == KeyEvent.VK_F) && ctrl && !shift){
+	    }else if(isgui && (code == KeyEvent.VK_L || code == KeyEvent.VK_F) && ctrl && !shift){
 		FlatnessTool ft = FlatnessTool.instance(ui);
                 if(ft!=null) ft.toggle();
-	    }else if((code == KeyEvent.VK_Q) && ctrl && !shift){
+	    }else if(isgui && (code == KeyEvent.VK_Q) && ctrl && !shift){
 		LocatorTool lt = LocatorTool.instance(ui);
                 if(lt!=null) lt.toggle();
-	    }else if((code == KeyEvent.VK_X) && ctrl && !shift){
+	    }else if(isgui && (code == KeyEvent.VK_A) && ctrl && !shift){
+		OverviewTool ot = OverviewTool.instance(ui);
+                if(ot!=null) ot.toggle();
+	    }else if(isgui && (code == KeyEvent.VK_X) && ctrl && !shift){
 		CartographWindow.toggle();
-	    }else if(code == KeyEvent.VK_D && ctrl && !shift){
+	    }else if(isgui && code == KeyEvent.VK_D && ctrl && !shift){
 		DarknessWnd.toggle();
-	    }else if(ctrl && shift && this.ui.rwidgets.containsKey(this.ui.gui)){
+	    }else if(isgui && ctrl && shift && this.ui.rwidgets.containsKey(this.ui.gui)){
                 for(int i = 0; i < Config.hotkeynr; i++)
                 {
                     if(Config.hnames[i].length() == 1 && ev.getKeyCode()==Config.hnames[i].charAt(0))
@@ -79,10 +83,10 @@ public class RootWidget extends ConsoleHost {
                         }
                     }
                 }
-	    }else if(code == KeyEvent.VK_Z && ctrl && !shift){
+	    }else if(isgui && code == KeyEvent.VK_Z && ctrl && !shift){
 		Config.center = !Config.center;
 		ui.message(String.format("Tile centering in turned %s", Config.center?"ON":"OFF"));
-	    }else if(code == KeyEvent.VK_N && ctrl && !shift){
+	    }else if(isgui && code == KeyEvent.VK_N && ctrl && !shift){
                 Config.alwaysbright = !Config.alwaysbright;
                 Utils.setprefb("alwaysbright", Config.alwaysbright);
                 this.ui.sess.glob.brighten();

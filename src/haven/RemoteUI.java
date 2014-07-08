@@ -82,6 +82,11 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 		    int id = msg.uint16();
 		    String name = msg.string();
 		    ui.uimsg(id, name, msg.list());
+                    
+//                    System.out.println("Receiving RMSG_WDGMSG: ");
+//                        System.out.println("id: "+id);
+//                        System.out.println("\t"+name);
+                        
 		} else if(msg.type == Message.RMSG_DSTWDG) {
 		    int id = msg.uint16();
 		    ui.destroy(id);

@@ -213,6 +213,7 @@ public class UI {
 	synchronized(this) {
 	    if(widgets.containsKey(id)) {
 		Widget wdg = widgets.get(id);
+                System.out.println("Destroying widget of type "+wdg.getClass().getName());
 		destroy(wdg);
 	    }
 	}

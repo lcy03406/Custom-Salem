@@ -59,6 +59,7 @@ public abstract class ItemInfo {
 	public Tip(Owner owner) {
 	    super(owner);
 	}
+        
     }
     
     public static class AdHoc extends Tip {

@@ -1,5 +1,13 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 08.07.14 (Latikai):}}
+  * Included an abacus window (open with ctrl+A). It lists the scalp score and artifice overview of the current character. The scalp score will only update by closing and reopening the window, but artifice information will be recalculated when you (un)equip an item.
+  * Got rid of some crashes by trying to open tool windows before entering the world.
+  * Got rid of an annoying bug where some tool windows did not close correctly on log-out, preventing them from being opened on other characters.
+
+$size[14]{$u{Update for 30.06.14 (Latikai):}}
+  * Migrated to github for file hosting, updater issues should be solved now.
+ 
 $size[14]{$u{Update for 27.06.14 (Latikai):}}
   * Merged in nikelin's fix for invisible homestead pointers.
  

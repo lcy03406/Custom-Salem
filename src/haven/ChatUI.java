@@ -1022,7 +1022,7 @@ public class ChatUI extends Widget {
 		    }
 		    g.chcolor(255, 255, 255, 255);
                     
-                    //project safari
+                    //project alert
 		    if(rerender || (ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) ||ch.rread != ch.chan.read)
                     {
                         ch.rread = ch.chan.read;
