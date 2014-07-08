@@ -227,13 +227,13 @@ public class OptWnd2 extends Window {
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
-		    Config.hpointv = val;
-		    Utils.setprefb("hpointv", val);
+                    Config.hptr = val;
+                    Utils.setprefb("hptr", val);
 		    ui.gui.mainmenu.pv = Config.hpointv && !val; 
 		}
 
 		{tooltip = Text.render("Makes home pointer display as green arrow over character head");}
-	    }.a = Config.hpointv;
+	    }.a = Config.hptr;
 	}
 
 	

@@ -92,6 +92,7 @@ public class Config {
     protected static boolean ss_silent = Utils.getprefb("ss_slent", false);
     protected static boolean ss_compress = Utils.getprefb("ss_compress", true);
     protected static boolean ss_ui = Utils.getprefb("ss_ui", false);
+    public static boolean hptr = Utils.getprefb("hptr", false);
     
     /*LATIKAI settings*/
     //project marathon

@@ -789,7 +789,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public class MainMenu extends Widget {
 	public final MenuButton invb, equb, chrb, budb, polb, optb;
  	public final MenuButton clab, towb, warb, ptrb, hwab, chatb;
-	public boolean hpv = true, pv = hpv;
+	public boolean hpv = true, pv = hpv && !Config.hptr;
 
 	boolean full = true;
 	public MenuButton[] tohide = {
@@ -928,10 +928,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		public void click() {
                     Config.hpointv = !Config.hpointv;
                     Utils.setprefb("hpointv", Config.hpointv);
-                    pv = Config.hpointv;
+                    pv = Config.hpointv && !Config.hptr;
 		}
 	    };
-            pv = Config.hpointv;
+            pv = Config.hpointv && !Config.hptr;
 	    x+=18;
             hwab = new MenuButton(new Coord(x,y), this, "hwa", -1, "Walk to your homestead") {
                 public void click() {
