@@ -70,6 +70,7 @@
 	<marker match="gfx/terobjs/leanto" text="Leanto" color="#ffff00" />
 	<marker match="gfx/terobjs/mineentrance" text="Mine" color="#5C2E00" />
 	<marker match="gfx/terobjs/well" text="Well" color="#1093E5" />
+	<marker match="gfx/fx/clue" text="Scent" color="#00ff00" />
 </group>
 
 
