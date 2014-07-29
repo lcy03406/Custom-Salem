@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.ChatUI.MultiChat.NamedMessage;
 import static haven.Window.cbtni;
 
 import java.util.*;

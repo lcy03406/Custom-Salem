@@ -459,6 +459,24 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         OverviewTool.close();
         LocatorTool.close();
 	WikiBrowser.close();
+        if (menu!= null) menu.destroy();
+        if (tm!= null) tm.destroy();
+        if (gobble!= null) gobble.destroy();
+        if (map!= null) map.destroy();
+        if (mmap!= null) mmap.destroy();
+        if (fv!= null) fv.destroy();
+        if (invwnd!= null) invwnd.destroy();
+        if (equwnd!= null) equwnd.destroy();
+        if (makewnd!= null) makewnd.destroy();
+        if (maininv!= null) maininv.destroy();
+        if (mainmenu!= null) mainmenu.destroy();
+        if (buddies!= null) buddies.destroy();
+        if (chrwdg!= null) chrwdg.destroy();
+        if (polity!= null) polity.destroy();
+        if (help!= null) help.destroy();
+        if (chat!= null) chat.destroy();
+        if (syslog!= null) syslog.destroy();
+        if (hrtptr!= null) hrtptr.destroy();
     }
 
     private Widget attrview;

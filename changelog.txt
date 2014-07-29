@@ -1,7 +1,8 @@
 $size[20]{$u{CHANGE LOG:}}
 
-$size[14]{$u{Update for <TBD> (Latikai):}}
+$size[14]{$u{Update for 29.07.14 (Latikai):}}
   * Lowered the buff icons a bit for better visibility.
+  * Manually wasted some allocated resources upon log-out. Out of memory crashes seem rare to non-existent on my build now.
  
 $size[14]{$u{Update for 08.07.14 (Latikai):}}
   * Included an abacus window (open with ctrl+A). It lists the scalp score and artifice overview of the current character. The scalp score will only update by closing and reopening the window, but artifice information will be recalculated when you (un)equip an item.
