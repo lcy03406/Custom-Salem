@@ -217,9 +217,17 @@ public class MenuGrid extends Widget {
 		Map<String, Float[]> food = itm.food;
 		if(food != null){
 		    float[] def = new float[]{0, 0, 0, 0};
+                    String[] names = {"Blood", "Phlegm", "Yellow Bile", "Black Bile"};
 		    float[] heal = safeFloat(food.get("Heals"), def);
-		    float[] gmax = safeFloat(food.get("GluttonMax"), def);
-		    float[] gmin = safeFloat(food.get("GluttonMin"), def);
+		    float[] gmax = new float[4];
+		    float[] gmin = new float[4];
+                    for(int i = 0; i<4; i++)
+                    {
+                        float[] maxarr = safeFloat(food.get("Max "+names[i]), def);
+                        gmax[i]=maxarr[0];
+                        float[] minarr = safeFloat(food.get("Min "+names[i]), def);
+                        gmin[i]=minarr[0];
+                    }
 		    int[] low = new int[4];
 		    int[] high = new int[4];
 		    int[] tempers = new int[4];

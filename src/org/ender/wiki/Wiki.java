@@ -42,7 +42,7 @@ public class Wiki {
     private static final String CONTENT_URL = "action=query&prop=revisions&titles=%s&rvprop=content&format=json";
     private static final String SEARCH_URL = "action=query&list=search&format=json&srprop=snippet&srsearch=%s";
     
-    private static final String[] FOOD_ATTRS = new String[]{"Heals", "GluttonMin", "GluttonMax"};
+    private static final String[] FOOD_ATTRS = new String[]{"Heals", "Min Blood", "Max Blood", "Min Phlegm", "Max Phlegm", "Min Yellow Bile", "Max Yellow Bile", "Min Black Bile", "Max Black Bile"};
     
     static private final Map<String, String> imap = new HashMap<String, String>(15);
     static private final LinkedBlockingQueue<Request> requests = new LinkedBlockingQueue<Request>();
@@ -78,7 +78,7 @@ public class Wiki {
 	imap.put("Thread & Needle", "thread");
 	imap.put("Natural Philosophy", "natp");
 	imap.put("Perennial Philosophy", "perp");
-	imap.put("uses", "uses");
+	imap.put("Uses", "uses");
 
 	folder = cfg;
 	if(!folder.exists()){folder.mkdirs();}
@@ -292,7 +292,7 @@ public class Wiki {
 	    food.put(key,  vals);
 	}
 	try{
-	    item.food_full = Integer.parseInt(args.get("FullAndFedUp"));
+	    item.food_full = parseTime(args.get("Gluttony Time"));
 	} catch (NumberFormatException ex){}
 	try{
 	    item.food_uses = Integer.parseInt(args.get("Uses"));
@@ -300,6 +300,15 @@ public class Wiki {
 	item.food = food;
     }
 
+    //should return the number of minutes
+    private static Integer parseTime(String time)
+    {
+        int mid = time.indexOf(':');
+        Integer hours = Integer.parseInt(time.substring(0, mid));
+        Integer minutes = Integer.parseInt(time.substring(mid+1));
+        return hours*60+minutes;
+    }
+    
     private static void item_parse_cloth(Item item, Map<String, String> args) {
 	if(args == null){ return; }
 	String difficulty = args.containsKey("Difficulty")?args.get("Difficulty"):args.get("difficulty");
@@ -480,20 +489,23 @@ public class Wiki {
 	    NamedNodeMap attrs = node.getAttributes();
 	    for(String name : FOOD_ATTRS){
 		Node attr = attrs.getNamedItem(name);
-		String svals[] = attr.getNodeValue().split(" ");
-		Float[] vals = new Float[4];
-		for(int j=0; j<4; j++){
-		    try{
-			vals[j] = Float.parseFloat(svals[j]);
-		    }catch (NumberFormatException ex){
-			vals[j] = 0.0f;
-		    }
-		}
-		food.put(name, vals);
+                if(attr != null && attr.getNodeValue()!=null)
+                {
+                    String svals[] = attr.getNodeValue().split(" ");
+                    Float[] vals = new Float[4];
+                    for(int j=0; j<4; j++){
+                        try{
+                            vals[j] = Float.parseFloat(svals[j]);
+                        }catch (NumberFormatException ex){
+                            vals[j] = 0.0f;
+                        }
+                    }
+                    food.put(name, vals);
+                }
 	    }
 	    item.food = food;
 	    try{
-		item.food_full = Integer.parseInt(attrs.getNamedItem("full").getNodeValue());
+		item.food_full = parseTime(attrs.getNamedItem("full").getNodeValue());
 	    } catch (NumberFormatException ex){}
 	    try{
 		item.food_uses = Integer.parseInt(attrs.getNamedItem("uses").getNodeValue());

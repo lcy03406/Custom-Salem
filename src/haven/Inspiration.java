@@ -64,7 +64,7 @@ public class Inspiration extends ItemInfo.Tip {
 	    Color c = cs[o[i]];
 	    buf.append(String.format("\n$col[%d,%d,%d]{%s: %d}",c.getRed(), c.getGreen(), c.getBlue(), attr, exp[o[i]] ));
 	}
-	buf.append(String.format("   $b{$col[192,192,64]{Inspiration required: %d}}\n", total()));
+	buf.append(String.format("   $b{$col[192,192,64]{Base inspiration required: %d}}\n", total()));
 	if(uses > 0){ buf.append(String.format("$b{$col[192,192,64]{Uses: %d}}\n", uses)); }
 	return RichText.stdf.render(buf.toString(), 0).img;
     }
