@@ -36,8 +36,10 @@ import haven.ItemInfo.Tip;
 import haven.Resource.AButton;
 import haven.Glob.Pagina;
 import haven.ItemInfo.InfoFactory;
+import static haven.ItemInfo.catimgsh;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import org.ender.wiki.Item;
 import org.ender.wiki.Wiki;
@@ -239,9 +241,58 @@ public class MenuGrid extends Widget {
 		    FoodInfo fi = new FoodInfo(null, tempers);
 		    int ft = itm.food_full*60;
 		    GobbleInfo gi = new GobbleInfo(null, low, high, new int[0], ft, new LinkedList<Event>());
-		    String uses = String.format("$b{$col[192,192,64]{Uses: %d}}\n", itm.food_uses);
+		    String uses = String.format("Uses: %d\n", itm.food_uses);
 		    BufferedImage uses_img = RichText.stdf.render(uses).img;
-		    return ItemInfo.catimgs(3, fi.longtip(), gi.longtip(), uses_img);
+                    
+                    Color debuff_color = new Color(255, 192, 192);
+                    Color undebuff_color = new Color(192, 255, 192);
+                    
+                    BufferedImage currimg = ItemInfo.catimgs(3, fi.longtip(), uses_img, gi.longtip());
+                    //first, debuffs
+                    for(Entry<String,Integer[]> e : itm.food_reduce.entrySet())
+                    {
+                        Integer[] values = e.getValue();
+                        BufferedImage head = RichText.render(String.format("-%d%%", values[0]), debuff_color).img;
+                        Resource iconres = Resource.load("gfx/invobjs/"+Wiki.buffmap.get(e.getKey()));
+                        if(iconres != null)
+                        {
+                            BufferedImage icon, tail;
+                            icon = PUtils.convolvedown(iconres.layer(Resource.imgc).img, new Coord(16, 16), GobIcon.filter);
+                            String classname = iconres.layer(Resource.tooltip).t;
+                            tail = RichText.render(classname + " [" + values[1] + "%]").img;   
+                            currimg = ItemInfo.catimgs(0, currimg, ItemInfo.catimgsh(0, head, icon, tail));
+                        }
+                        else
+                        {//issue getting the res: print what we know
+                            BufferedImage tail;
+                            String classname = e.getKey() + " [" + values[1] + "%]";
+                            tail = RichText.render(classname).img;
+                            currimg = ItemInfo.catimgs(0, currimg, ItemInfo.catimgsh(0, head, tail));
+                        }
+                    }
+                    //then, undebuffs
+                    for(Entry<String,Integer[]> e : itm.food_restore.entrySet())
+                    {
+                        Integer[] values = e.getValue();
+                        BufferedImage head = RichText.render(String.format("+%d%%", values[0]), undebuff_color).img;
+                        Resource iconres = Resource.load("gfx/invobjs/"+Wiki.buffmap.get(e.getKey()));
+                        if(iconres != null)
+                        {
+                            BufferedImage icon, tail;
+                            icon = PUtils.convolvedown(iconres.layer(Resource.imgc).img, new Coord(16, 16), GobIcon.filter);
+                            String classname = iconres.layer(Resource.tooltip).t;
+                            tail = RichText.render(classname + " [" + values[1] + "%]").img;   
+                            currimg = ItemInfo.catimgs(0, currimg, ItemInfo.catimgsh(0, head, icon, tail));
+                        }
+                        else
+                        {//issue getting the res: print what we know
+                            BufferedImage tail;
+                            String classname = e.getKey() + " [" + values[1] + "%]";
+                            tail = RichText.render(classname).img;
+                            currimg = ItemInfo.catimgs(0, currimg, ItemInfo.catimgsh(0, head, tail));
+                        }
+                    }
+		    return currimg;
 		}
 	    }
 	} catch (Exception e) {e.printStackTrace();}

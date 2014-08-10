@@ -45,6 +45,7 @@ public class Wiki {
     private static final String[] FOOD_ATTRS = new String[]{"Heals", "Min Blood", "Max Blood", "Min Phlegm", "Max Phlegm", "Min Yellow Bile", "Max Yellow Bile", "Min Black Bile", "Max Black Bile"};
     
     static private final Map<String, String> imap = new HashMap<String, String>(15);
+    static public final Map<String, String> buffmap = new HashMap<String, String>(21);
     static private final LinkedBlockingQueue<Request> requests = new LinkedBlockingQueue<Request>();
     static private File folder;
     private static long update_date;
@@ -79,15 +80,37 @@ public class Wiki {
 	imap.put("Natural Philosophy", "natp");
 	imap.put("Perennial Philosophy", "perp");
 	imap.put("Uses", "uses");
+        
+        buffmap.put("Bread", "bread");
+        buffmap.put("Vegetables and Greens", "vegfood");
+        buffmap.put("Offal", "offal");
+        buffmap.put("Foraged", "forage");
+        buffmap.put("Poultry", "poultry");
+        buffmap.put("Cabbages", "cabbage");
+        buffmap.put("Candy", "candy");
+        buffmap.put("Pies", "pies");
+        buffmap.put("Cereal", "cereal");
+        buffmap.put("Meat", "meat");
+        buffmap.put("Cookies and Crackers", "cookies");
+        buffmap.put("Berries", "berry");
+        buffmap.put("Flowers and Herbs", "flowerfood");
+        buffmap.put("Seafood", "seafood");
+        buffmap.put("Fishrd", "fish");
+        buffmap.put("Game", "game");
+        buffmap.put("Slugs Bugs and Kritters", "slugsnbugs");
+        buffmap.put("Nuts and Seeds", "nut");
+        buffmap.put("Crustacea and Shellfish", "shellfish");
+        buffmap.put("Pumpkins and Gourds", "pumpkin");
+        buffmap.put("Mushrooms", "shroom");
 
 	folder = cfg;
 	if(!folder.exists()){folder.mkdirs();}
 
 	for(int i=0; i<workers; i++){
 	    Thread t = new Thread(new Runnable() {
-
 		@Override
 		public void run() {
+                    try{
 		    while(true){
 			try {
 			    load(requests.take());
@@ -95,6 +118,11 @@ public class Wiki {
 			    e.printStackTrace();
 			}
 		    }
+                    } catch(Exception e)
+                    {
+                        e.printStackTrace();
+                        System.out.println("This thread has just died!");
+                    }
 		}
 	    }, "Wiki loader "+i);
 	    t.setDaemon(true);
@@ -286,11 +314,32 @@ public class Wiki {
 		try{
 		    val = Float.parseFloat(sval);
 		} catch (NumberFormatException ex){}
+                if(i>3)
+                    System.out.println("Higher? Oo");
 		vals[i] = val;
 		i++;
 	    }
 	    food.put(key,  vals);
 	}
+        Map<String, Integer[]> food_reduce = new HashMap<String, Integer[]>(3);
+        Map<String, Integer[]> food_restore = new HashMap<String, Integer[]>(3);
+        for(int i = 0;i<3;i++)
+        {
+            String namerestore = args.get("FoodRestore"+(i+1));
+            String namereduce = args.get("FoodReduce"+(i+1));
+            if(namerestore.length()>0)
+            {
+                Integer[] restore = {Integer.parseInt(args.get("%Restore"+(i+1))),Integer.parseInt(args.get("%ChanceRestore"+(i+1)))};
+                food_restore.put(namerestore, restore);
+            }
+            if(namereduce.length()>0)
+            {
+                Integer[] reduce = {Integer.parseInt(args.get("%Reduce"+(i+1))),Integer.parseInt(args.get("%ChanceReduce"+(i+1)))};
+                food_reduce.put(namereduce, reduce);
+            }
+        }
+        item.food_restore = food_restore;
+        item.food_reduce = food_reduce;
 	try{
 	    item.food_full = parseTime(args.get("Gluttony Time"));
 	} catch (NumberFormatException ex){}
@@ -504,6 +553,21 @@ public class Wiki {
                 }
 	    }
 	    item.food = food;
+            Map<String, Integer[]> food_reduce = new HashMap<String, Integer[]>(3);
+            Map<String, Integer[]> food_restore = new HashMap<String, Integer[]>(3);
+            for(int i = 0;i<3;i++)
+            {
+                String namerestore = attrs.getNamedItem("FoodRestore"+(i+1)).getNodeValue();
+                Integer[] restore = {Integer.parseInt(attrs.getNamedItem("%Restore"+(i+1)).getNodeValue()),Integer.parseInt(attrs.getNamedItem("%ChanceRestore"+(i+1)).getNodeValue())};
+                String namereduce = attrs.getNamedItem("FoodReduce"+(i+1)).getNodeValue();
+                Integer[] reduce = {Integer.parseInt(attrs.getNamedItem("%Reduce"+(i+1)).getNodeValue()),Integer.parseInt(attrs.getNamedItem("%ChanceReduce"+(i+1)).getNodeValue())};
+                if(namerestore.length()>0)
+                    food_restore.put(namerestore, restore);
+                if(namereduce.length()>0)
+                    food_reduce.put(namereduce, reduce);
+            }
+            item.food_restore = food_restore;
+            item.food_reduce = food_reduce;
 	    try{
 		item.food_full = parseTime(attrs.getNamedItem("full").getNodeValue());
 	    } catch (NumberFormatException ex){}

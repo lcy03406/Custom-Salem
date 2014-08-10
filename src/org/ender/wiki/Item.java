@@ -14,6 +14,8 @@ public class Item {
     public Map<String, Integer> attreq;
     public Map<String, Integer> attgive;
     public String content;
+    public Map<String, Integer[]> food_reduce;
+    public Map<String, Integer[]> food_restore;
     public Map<String, Float[]> food;
     public int food_full = 0;
     public int food_uses = 1;
