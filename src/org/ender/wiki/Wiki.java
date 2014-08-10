@@ -353,9 +353,16 @@ public class Wiki {
     private static Integer parseTime(String time)
     {
         int mid = time.indexOf(':');
-        Integer hours = Integer.parseInt(time.substring(0, mid));
-        Integer minutes = Integer.parseInt(time.substring(mid+1));
-        return hours*60+minutes;
+        if(mid<0)
+        {
+            return 0;
+        }
+        else
+        {
+            Integer hours = Integer.parseInt(time.substring(0, mid));
+            Integer minutes = Integer.parseInt(time.substring(mid+1));
+            return hours*60+minutes;
+        }
     }
     
     private static void item_parse_cloth(Item item, Map<String, String> args) {
