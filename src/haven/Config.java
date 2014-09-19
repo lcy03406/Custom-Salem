@@ -142,6 +142,9 @@ public class Config {
     //project peace and quiet
     public static boolean remove_animations = Utils.getprefb("remove_animations", false);
     
+    public static boolean hide_minimap = Utils.getprefb("hide_minimap", false);
+    public static boolean hide_tempers = Utils.getprefb("hide_tempers", false);
+    
     static {
 	String p;
 	if((p = getprop("haven.authck", null)) != null)

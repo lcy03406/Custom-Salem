@@ -642,7 +642,31 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("Removes all animations of more than a single frame, should ease processing times.");}
 		
 	    }.a = Config.remove_animations;
-            
+            //not drawing parts of the UI
+            new CheckBox(new Coord(300, 260), tab, "Hide the minimap"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.hide_minimap = val;
+		    Utils.setprefb("hide_minimap", val);
+                    this.ui.gui.updateRenderFilter();
+		}
+
+		{tooltip = Text.render("The minimap will not be rendered.");}
+		
+	    }.a = Config.hide_minimap;
+            new CheckBox(new Coord(300, 280), tab, "Hide the humours"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.hide_tempers = val;
+		    Utils.setprefb("hide_tempers", val);
+                    this.ui.gui.updateRenderFilter();
+		}
+
+		{tooltip = Text.render("The humours will not be rendered.");}
+		
+	    }.a = Config.hide_tempers;
         }
         
         /* RADAR TAB */

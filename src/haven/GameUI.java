@@ -79,6 +79,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public Indir<Resource> lblk, dblk;
 //    Belt beltwdg;
     public String polowner;
+    
+    private List<Class<? extends Widget> > filterout = new ArrayList<Class<? extends Widget> >();
 
     public abstract class Belt extends Widget {
 	public Belt(Coord c, Coord sz, Widget parent) {
@@ -154,6 +156,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	TimerController.init(Config.getFile(), Config.server);
 	makemenu();
 	resize(sz);
+        updateRenderFilter();
     }
 
     public static class MenuButton extends IButton {
@@ -345,6 +348,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if(Config.pclaimv) map.enol(0,1);
             if(Config.tclaimv) map.enol(2,3);
             if(Config.wclaimv) map.enol(4);
+            
+            this.updateRenderFilter();
             
 	    return(map);
 	} else if(place == "fight") {
@@ -584,10 +589,43 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     
     static Text.Furnace progf = new PUtils.BlurFurn(new Text.Foundry(new java.awt.Font("serif", java.awt.Font.BOLD, 24)).aa(true), 2, 1, new Color(0, 16, 16));
     Text progt = null;
+    public void updateRenderFilter()
+    {
+        filterout = new ArrayList<Class<? extends Widget> >();
+        if(Config.hide_minimap)
+        {
+            filterout.add(LocalMiniMap.class);
+        }
+        if(Config.hide_tempers)
+        {
+            filterout.add(Tempers.class);
+            this.tm.hide();
+        }
+        else
+        {
+            this.tm.show();
+        }
+    }
+    private void drawFiltered(GOut g)//TODO: this is ugly!
+    {
+	Widget next;
+		
+	for(Widget wdg = child; wdg != null; wdg = next) {
+	    next = wdg.next;
+	    if(!wdg.visible || filterout.contains(wdg.getClass()))
+		continue;
+	    Coord cc = xlate(wdg.c, true);
+	    GOut g2;
+            g2 = g.reclip(cc, wdg.sz);
+	    wdg.draw(g2);
+	}
+    }
     public void draw(GOut g) {
 //	boolean beltp = !chat.expanded;
 //	beltwdg.show(beltp);
-	super.draw(g);
+//	super.draw(g);
+        //here, we'd like to only draw the mapview child
+        drawFiltered(g);
 	if(prog >= 0) {
 	    String progs = String.format("%d%%", prog);
 	    if((progt == null) || !progs.equals(progt.text))

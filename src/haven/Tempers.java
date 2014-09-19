@@ -127,6 +127,7 @@ public class Tempers extends SIWidget {
 		    }
 		};
 	    raise();
+            this.ui.gui.updateRenderFilter();
 	} else if(!gavail && (gbtn != null)) {
 	    gbtn.reqdestroy();
 	    gbtn = null;
