@@ -37,11 +37,22 @@ public class FoodInfo extends ItemInfo.Tip {
     }
     
     public BufferedImage longtip() {
-	String text = String.format("Heals: $b{$col[%s]{%s} : $col[%s]{%s} : $col[%s]{%s} : $col[%s]{%s}}", 
-		colors[0], Utils.fpformat(tempers[0], 3, 1), 
-		colors[1], Utils.fpformat(tempers[1], 3, 1),
-		colors[2], Utils.fpformat(tempers[2], 3, 1), 
-		colors[3], Utils.fpformat(tempers[3], 3, 1));
-	return(RichText.stdf.render(text).img);
+//TODO: to be expanded somehow?
+//<<<<<<< HEAD
+//	String text = String.format("Heals: $b{$col[%s]{%s} : $col[%s]{%s} : $col[%s]{%s} : $col[%s]{%s}}", 
+//		colors[0], Utils.fpformat(tempers[0], 3, 1), 
+//		colors[1], Utils.fpformat(tempers[1], 3, 1),
+//		colors[2], Utils.fpformat(tempers[2], 3, 1), 
+//		colors[3], Utils.fpformat(tempers[3], 3, 1));
+//	return(RichText.stdf.render(text).img);
+//=======
+	StringBuilder buf = new StringBuilder();
+	buf.append("Heals: ");
+	for(int i = 0; i < 4; i++) {
+	    if(i > 0)
+		buf.append(", ");
+	    buf.append(String.format("$col[%s]{%s}", Tempers.tcolors[i], Utils.fpformat(tempers[i], 3, 1)));
+	}
+	return(RichText.render(buf.toString(), 0).img);
     }
 }

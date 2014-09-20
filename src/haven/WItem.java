@@ -70,7 +70,7 @@ public class WItem extends Widget implements DTarget {
 	Alchemy ch = find(Alchemy.class, info);
 	if(ch != null)
 	    img = ItemInfo.catimgsh(5, img, ch.smallmeter(),
-				    Text.std.renderf("(%d%% pure)", (int)(ch.purity() * 100)).img);
+				    Text.std.renderf("(%d%% pure)", (int)(ch.a[0] * 100)).img);
 	return(img);
     }
 
@@ -260,40 +260,44 @@ public class WItem extends Widget implements DTarget {
 	}
     }
     
-    public final AttrCache<Tex> purity = new AttrCache<Tex>() {
-	protected Tex find(List<ItemInfo> info) {
-	    Alchemy alch = ItemInfo.find(Alchemy.class, info);
-	    if(alch == null){
-		ItemInfo.Contents cont = ItemInfo.find(ItemInfo.Contents.class, info);
-		if(cont == null){return null;}
-		alch = ItemInfo.find(Alchemy.class, cont.sub);
-		if(alch == null){return(null);}
-	    }
-	    String num = String.format("%d%%",(int)(100*alch.purity()));
-	    return(new TexI(Utils.outline2(Text.render(num, alch.color()).img, Color.DARK_GRAY)));
-	}
-    };
+    //TODO: still applicable?
+//    public final AttrCache<Tex> purity = new AttrCache<Tex>() {
+//	protected Tex find(List<ItemInfo> info) {
+//	    Alchemy alch = ItemInfo.find(Alchemy.class, info);
+//	    if(alch == null){
+//		ItemInfo.Contents cont = ItemInfo.find(ItemInfo.Contents.class, info);
+//		if(cont == null){return null;}
+//		alch = ItemInfo.find(Alchemy.class, cont.sub);
+//		if(alch == null){return(null);}
+//	    }
+//	    String num = String.format("%d%%",(int)(100*alch.purity()));
+//	    return(new TexI(Utils.outline2(Text.render(num, alch.color()).img, Color.DARK_GRAY)));
+//	}
+//    };
     
-    public final AttrCache<Tex> puritymult = new AttrCache<Tex>() {
-	protected Tex find(List<ItemInfo> info) {
-	    Alchemy alch = ItemInfo.find(Alchemy.class, info);
-	    if(alch == null){
-		ItemInfo.Contents cont = ItemInfo.find(ItemInfo.Contents.class, info);
-		if(cont == null){return null;}
-		alch = ItemInfo.find(Alchemy.class, cont.sub);
-		if(alch == null){return(null);}
-	    }
-	    String num = String.format("%.2f",alch.mult());
-	    return(new TexI(Utils.outline2(Text.render(num, alch.color()).img, Color.DARK_GRAY)));
-	}
-    };
+    //TODO: still applicable?
+//    public final AttrCache<Tex> puritymult = new AttrCache<Tex>() {
+//	protected Tex find(List<ItemInfo> info) {
+//	    Alchemy alch = ItemInfo.find(Alchemy.class, info);
+//	    if(alch == null){
+//		ItemInfo.Contents cont = ItemInfo.find(ItemInfo.Contents.class, info);
+//		if(cont == null){return null;}
+//		alch = ItemInfo.find(Alchemy.class, cont.sub);
+//		if(alch == null){return(null);}
+//	    }
+//	    String num = String.format("%.2f",alch.mult());
+//	    return(new TexI(Utils.outline2(Text.render(num, alch.color()).img, Color.DARK_GRAY)));
+//	}
+//    };
     
     private void drawpurity(GOut g) {
-	if(!Config.alwaysshowpurity && ui.modflags() == 0){return;}//show purity only when any mod key pressed
-	Tex img = Config.pure_mult?puritymult.get():purity.get();
-	if(img != null){
-	    g.aimage(img, new Coord(0, sz.y), 0, 1);
-	}
+        return;
+        //TODO: still applicable?
+//	if(!Config.alwaysshowpurity && ui.modflags() == 0){return;}//show purity only when any mod key pressed
+//	Tex img = Config.pure_mult?puritymult.get():purity.get();
+//	if(img != null){
+//	    g.aimage(img, new Coord(0, sz.y), 0, 1);
+//	}
     }
 
     private void heurmeters(GOut g) {
