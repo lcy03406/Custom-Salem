@@ -3,6 +3,7 @@ $size[20]{$u{CHANGE LOG:}}
 $size[14]{$u{Update for 20.09.14 (Latikai):}}
   * Merged in the latest patch changes. Small tweaks to come when I have time to read the patch notes in detail.
   * Added in the options to remove the biles and minimap from rendering at all (for some vid'ers out there).
+  * The client currently shows just aether as a purity percentage.
  
 $size[14]{$u{Update for 10.08.14 (Latikai):}}
   * Various updates to the crafting menu: once again correctly reads from the wiki, and will now also show debuffs on food items (undebuffs cannot be shown as these are dependent on the ingredients used).

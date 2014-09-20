@@ -86,12 +86,9 @@ public class Alchemy extends ItemInfo.Tip {
 	return(buf);
     }
 
-//    public double purity() {
-//	double p = 0.0;
-//	for(int e : a)
-//	    p += Math.pow(e / 10000.0, 2);
-//	return(((p - 0.25) * 4.0) / 3.0);
-//    }
+    public double purity() {
+	return a[0];
+    }
 //    
 //    public double mult() {
 //	double p = 0.0;

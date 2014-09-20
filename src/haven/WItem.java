@@ -260,22 +260,21 @@ public class WItem extends Widget implements DTarget {
 	}
     }
     
-    //TODO: still applicable?
-//    public final AttrCache<Tex> purity = new AttrCache<Tex>() {
-//	protected Tex find(List<ItemInfo> info) {
-//	    Alchemy alch = ItemInfo.find(Alchemy.class, info);
-//	    if(alch == null){
-//		ItemInfo.Contents cont = ItemInfo.find(ItemInfo.Contents.class, info);
-//		if(cont == null){return null;}
-//		alch = ItemInfo.find(Alchemy.class, cont.sub);
-//		if(alch == null){return(null);}
-//	    }
-//	    String num = String.format("%d%%",(int)(100*alch.purity()));
-//	    return(new TexI(Utils.outline2(Text.render(num, alch.color()).img, Color.DARK_GRAY)));
-//	}
-//    };
+    public final AttrCache<Tex> purity = new AttrCache<Tex>() {
+	protected Tex find(List<ItemInfo> info) {
+	    Alchemy alch = ItemInfo.find(Alchemy.class, info);
+	    if(alch == null){
+		ItemInfo.Contents cont = ItemInfo.find(ItemInfo.Contents.class, info);
+		if(cont == null){return null;}
+		alch = ItemInfo.find(Alchemy.class, cont.sub);
+		if(alch == null){return(null);}
+	    }
+	    String num = String.format("%d%%",(int)(100*alch.purity()));
+	    return(new TexI(Utils.outline2(Text.render(num, Alchemy.colors[0]).img, Color.DARK_GRAY)));
+	}
+    };
     
-    //TODO: still applicable?
+    //TODO: multiplier?
 //    public final AttrCache<Tex> puritymult = new AttrCache<Tex>() {
 //	protected Tex find(List<ItemInfo> info) {
 //	    Alchemy alch = ItemInfo.find(Alchemy.class, info);
@@ -291,13 +290,12 @@ public class WItem extends Widget implements DTarget {
 //    };
     
     private void drawpurity(GOut g) {
-        return;
-        //TODO: still applicable?
-//	if(!Config.alwaysshowpurity && ui.modflags() == 0){return;}//show purity only when any mod key pressed
-//	Tex img = Config.pure_mult?puritymult.get():purity.get();
-//	if(img != null){
-//	    g.aimage(img, new Coord(0, sz.y), 0, 1);
-//	}
+        //TODO: multiplier?
+	if(!Config.alwaysshowpurity && ui.modflags() == 0){return;}//show purity only when any mod key pressed
+	Tex img = purity.get();
+	if(img != null){
+	    g.aimage(img, new Coord(0, sz.y), 0, 1);
+	}
     }
 
     private void heurmeters(GOut g) {
