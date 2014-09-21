@@ -63,6 +63,10 @@ public class MCache {
         req.clear();
         grids.clear();
         ols.clear();
+        
+        System.gc();
+        
+        System.out.println("purged");
     }
 
     private static class Request {

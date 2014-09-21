@@ -75,6 +75,8 @@ public class Glob {
         map.purge();
         paginae.clear();
         pmap.clear();
+        cattr.clear();
+        buffs.clear();
     }
     
     public static class CAttr extends Observable {

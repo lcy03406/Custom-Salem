@@ -176,7 +176,6 @@ public class UI {
 	    bind(wdg, id);
             
             if(type.equals("gameui")){
-                sess.glob.purge();
                 if(Config.alwaystrack){
                     String[] as = {"tracking"};
                     wdgmsg(wdg, "act", (Object[])as);
@@ -218,6 +217,13 @@ public class UI {
 		Widget wdg = widgets.get(id);
                 System.out.println("Destroying widget of type "+wdg.getClass().getName());
 		destroy(wdg);
+                if(wdg == gui)
+                {
+                    this.sess.glob.purge();
+                    this.gui = null;
+                    this.cons.clearout();
+                    this.mnu = null;
+                }
 	    }
 	}
     }
