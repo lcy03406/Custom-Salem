@@ -175,9 +175,12 @@ public class UI {
 	    Widget wdg = pwdg.makechild(type.intern(), pargs, cargs);
 	    bind(wdg, id);
             
-            if(type.equals("gameui") && Config.alwaystrack){
-                String[] as = {"tracking"};
-                wdgmsg(wdg, "act", (Object[])as);
+            if(type.equals("gameui")){
+                sess.glob.purge();
+                if(Config.alwaystrack){
+                    String[] as = {"tracking"};
+                    wdgmsg(wdg, "act", (Object[])as);
+                }
             }
 	}
     }

@@ -71,6 +71,12 @@ public class Glob {
 	party = new Party(this);
     }
     
+    public void purge(){
+        map.purge();
+        paginae.clear();
+        pmap.clear();
+    }
+    
     public static class CAttr extends Observable {
 	String nm;
 	int base, comp;

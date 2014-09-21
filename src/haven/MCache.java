@@ -57,6 +57,13 @@ public class MCache {
 	    super(cause);
 	}
     }
+    
+    public void purge()
+    {
+        req.clear();
+        grids.clear();
+        ols.clear();
+    }
 
     private static class Request {
 	private long lastreq = 0;
