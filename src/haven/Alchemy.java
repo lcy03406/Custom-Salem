@@ -89,13 +89,10 @@ public class Alchemy extends ItemInfo.Tip {
     public double purity() {
 	return a[0];
     }
-//    
-//    public double mult() {
-//	double p = 0.0;
-//	for(int e : a)
-//	    p += Math.pow(e / 10000.0, 2);
-//	return 12*p - 2;
-//    }
+    
+    public double mult() {
+	return 1 + a[0];
+    }
     
     public String toString() {
 	return(String.format("%f-%f-%f-%f", a[0], a[1], a[2], a[3]));
