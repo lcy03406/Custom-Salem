@@ -283,7 +283,7 @@ public class WItem extends Widget implements DTarget {
 		alch = ItemInfo.find(Alchemy.class, cont.sub);
 		if(alch == null){return(null);}
 	    }
-	    String num = String.format("%.2f%%",alch.purity());
+	    String num = String.format("%.2f%%",100*alch.purity());
 	    return(new TexI(Utils.outline2(Text.render(num, alch.color()).img, Color.DARK_GRAY)));
 	}
     };
