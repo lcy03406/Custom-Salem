@@ -3,6 +3,7 @@ $size[20]{$u{CHANGE LOG:}}
 $size[14]{$u{Update for 23.09.14 (Latikai):}}
   * Bile regen colours reverted to what they were before.
   * Included changelog for yesterday.
+  * Multiplier has no real relevance anymore over aether percentage. The corresponding toggle will control precision of purity percentage display.
  
 $size[14]{$u{Update for 23.09.14 (Latikai):}}
   * Crafting menu will no longer go to root after selecting a recipe (credit to Feone).

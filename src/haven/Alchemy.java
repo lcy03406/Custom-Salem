@@ -54,18 +54,6 @@ public class Alchemy extends ItemInfo.Tip {
     }
     
     public BufferedImage longtip() {
-// TODO: figure out new stuff to show here        
-//<<<<<<< HEAD
-//	StringBuilder buf = new StringBuilder();
-//	for(int i = 0; i < 4; i++) {
-//	    if(i > 0)
-//		buf.append(", ");
-//	    buf.append(String.format("%s: $col[%s]{%.2f}", names[i], tcolors[i], a[i] / 100.0));
-//	}
-//	buf.append(String.format("\nMultiplier: %.2f", mult()));
-//	buf.append(String.format("   (%d%% pure)", (int)(purity() * 100)));
-//	return(RichText.render(buf.toString(), 0).img);
-//=======
 	Object[] p = new String[4];
 	for(int i = 0; i < 4; i++)
 	    p[i] = String.format("%s: $col[%s]{%.2f}", names[i], tcolors[i], a[i] * 100.0);
@@ -89,22 +77,12 @@ public class Alchemy extends ItemInfo.Tip {
     public double purity() {
 	return a[0];
     }
-    
-    public double mult() {
-	return 1 + a[0];
-    }
-    
+        
     public String toString() {
 	return(String.format("%f-%f-%f-%f", a[0], a[1], a[2], a[3]));
     }
 
     public Color color() {
-	int k = -1;
-	for(int i=0; i<4; i++){
-	    if(k < 0 || a[k] < a[i]){
-		k = i;
-	    }
-	}
-	return colors[k];
+	return colors[0];
     }
 }

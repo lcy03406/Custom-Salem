@@ -151,7 +151,7 @@ public class OptWnd2 extends Window {
 		
 	    }.a = Config.flower_study;
 	    
-	    new CheckBox(new Coord(0, y += 25), tab, "Show purity as multiplier"){
+	    new CheckBox(new Coord(0, y += 25), tab, "Show aether accurately"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -159,7 +159,7 @@ public class OptWnd2 extends Window {
 		    Utils.setprefb("pure_mult", val);
 		}
 
-		{tooltip = Text.render("Makes purity displayed as multiplier on item icons");}
+		{tooltip = Text.render("Makes aether be displayed to one hundredth of a percentage");}
 		
 	    }.a = Config.pure_mult;
 	    
