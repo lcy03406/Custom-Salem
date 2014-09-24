@@ -47,7 +47,7 @@ public class GItem extends AWidget implements ItemInfo.ResOwner, Comparable<GIte
         Alchemy thatalch = ItemInfo.find(Alchemy.class, that.info());
         if(thisalch == null && thatalch == null)
         {
-            return 0;
+            return this.hashCode()-that.hashCode();
         }
         else{
             if(thisalch==null)
@@ -55,7 +55,7 @@ public class GItem extends AWidget implements ItemInfo.ResOwner, Comparable<GIte
             if(thatalch==null)
                 return 1;
             if(thisalch == thatalch)
-                return 0;
+                return this.hashCode()-that.hashCode();
             
             return (thisalch.a[0]-thatalch.a[0]<0)?-1:1;
         }
