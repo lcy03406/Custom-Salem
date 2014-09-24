@@ -1,5 +1,13 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 23.09.14 (Latikai):}}
+  * Bile regen colours reverted to what they were before.
+  * Included changelog for yesterday.
+ 
+$size[14]{$u{Update for 23.09.14 (Latikai):}}
+  * Crafting menu will no longer go to root after selecting a recipe (credit to Feone).
+  * Aether multiplier now also available if you have the respective options ticked.
+ 
 $size[14]{$u{Update for 20.09.14 (Latikai):}}
   * Merged in the latest patch changes. Small tweaks to come when I have time to read the patch notes in detail.
   * Added in the options to remove the biles and minimap from rendering at all (for some vid'ers out there).
