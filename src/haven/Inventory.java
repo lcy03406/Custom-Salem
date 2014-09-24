@@ -135,8 +135,43 @@ public class Inventory extends Widget implements DTarget {
     }
 
     public boolean mousewheel(Coord c, int amount) {
-	if(ui.modshift) {
-	    wdgmsg("xfer", amount);
+	if(ui.modshift) 
+        {
+            //ideally I could just say 
+            //      wdgmsg("xfer", amount, ui.modflags());
+            //as in haven. but I can't 
+
+            if(ui.modctrl && !ui.gui.invwnd.names.keySet().contains(this))
+            {
+                if(amount < 0)
+                {
+                    //transfer FROM this container
+                    List<GItem> curritems = new LinkedList<GItem>();
+                    curritems.addAll(wmap.keySet());
+                    Collections.sort(curritems);
+                    int transferred = 0;
+                    for(int i = 0;transferred<-amount && i<curritems.size();i++)
+                    {
+                        int idx = ui.modmeta?i:curritems.size()-1-i;
+                        if(!curritems.get(idx).marked)
+                        {
+                            curritems.get(idx).wdgmsg("transfer",Coord.z);
+                            curritems.get(idx).marked = true;
+                            transferred += 1;
+                        }                        
+                    }
+                }
+                else
+                {
+                    //transfer TO this container
+                    ui.gui.transfer_sorted_from_inventory(amount);
+                }
+            }
+            else
+            {
+                //no ordering
+                wdgmsg("xfer", amount);
+            }
 	}
 	return(true);
     }

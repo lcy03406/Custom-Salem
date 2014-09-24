@@ -32,13 +32,34 @@ import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 
-public class GItem extends AWidget implements ItemInfo.ResOwner {
+public class GItem extends AWidget implements ItemInfo.ResOwner, Comparable<GItem> {
     public static volatile long infoUpdated;
     public Indir<Resource> res;
     public int meter = 0;
     public int num = -1;
     private Object[] rawinfo;
     private List<ItemInfo> info = Collections.emptyList();
+    public boolean marked = false;
+    
+    @Override
+    public int compareTo(GItem that) {
+        Alchemy thisalch = ItemInfo.find(Alchemy.class, this.info());
+        Alchemy thatalch = ItemInfo.find(Alchemy.class, that.info());
+        if(thisalch == null && thatalch == null)
+        {
+            return 0;
+        }
+        else{
+            if(thisalch==null)
+                return -1;
+            if(thatalch==null)
+                return 1;
+            if(thisalch == thatalch)
+                return 0;
+            
+            return (thisalch.a[0]-thatalch.a[0]<0)?-1:1;
+        }
+    }
     
     @RName("item")
     public static class $_ implements Factory {

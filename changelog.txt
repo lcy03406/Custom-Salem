@@ -4,7 +4,8 @@ $size[14]{$u{Update for 23.09.14 (Latikai):}}
   * Bile regen colours reverted to what they were before.
   * Included changelog for yesterday.
   * Multiplier has no real relevance anymore over aether percentage. The corresponding toggle will control precision of purity percentage display.
- 
+  * Implemented sorted scrolling of items to and from storage. Press control while scrolling to transfer highest-purity first, press control and alt to transfer lowest purity first.
+
 $size[14]{$u{Update for 23.09.14 (Latikai):}}
   * Crafting menu will no longer go to root after selecting a recipe (credit to Feone).
   * Aether multiplier now also available if you have the respective options ticked.

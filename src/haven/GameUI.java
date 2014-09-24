@@ -58,7 +58,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public static final Text.Foundry errfoundry = new Text.Foundry(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14), new Color(192, 0, 0));
     private Text lasterr;
     private long errtime;
-    private InvWindow invwnd;
+    public InvWindow invwnd;
     private Window equwnd, makewnd;
     public Inventory maininv;
     public MainMenu mainmenu;
@@ -241,7 +241,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public static class InvWindow extends Hidewnd {
-	private final Map<Inventory, String> names = new HashMap<Inventory, String>();
+	public final Map<Inventory, String> names = new HashMap<Inventory, String>();
 	private Label[] labels = new Label[0];
 
 	@RName("invwnd")
@@ -1491,5 +1491,27 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
     public Map<String, Console.Command> findcmds() {
 	return(cmdmap);
+    }
+    
+    public void transfer_sorted_from_inventory(int amount)
+    {
+        //transfer FROM this container
+        List<GItem> curritems = new LinkedList<GItem>();
+        int transferred = 0;
+        for(Inventory inv : this.invwnd.names.keySet())
+            
+        curritems.addAll(inv.wmap.keySet());
+        Collections.sort(curritems);
+
+        for(int i = 0;transferred<amount && i<curritems.size();i++)
+        {
+            int idx = ui.modmeta?i:curritems.size()-1-i;
+            if(!curritems.get(idx).marked)
+            {
+                curritems.get(idx).wdgmsg("transfer",Coord.z);
+                curritems.get(idx).marked = true;
+                transferred += 1;
+            }                        
+        }
     }
 }
