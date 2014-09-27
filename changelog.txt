@@ -1,5 +1,8 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for whenever (Latikai):}}
+  * A lock button for the minimap was added, allowing you to lock it. This will prevent you from moving the minimap window, but not from panning it.
+ 
 $size[14]{$u{Update for 23.09.14 (Latikai):}}
   * Bile regen colours reverted to what they were before.
   * Included changelog for yesterday.

@@ -71,6 +71,14 @@ public class LocalMiniMap extends Window implements Console.Directory{
     private Coord lastplg;
     private final Coord hmsz = cmaps.mul(3);
 
+    private static final String OPT_LOCKED = "_locked";
+    private static final BufferedImage ilockc = Resource.loadimg("gfx/hud/lockc");
+    private static final BufferedImage ilockch = Resource.loadimg("gfx/hud/lockch");
+    private static final BufferedImage ilocko = Resource.loadimg("gfx/hud/locko");
+    private static final BufferedImage ilockoh = Resource.loadimg("gfx/hud/lockoh");
+    private IButton lockbtn;
+    boolean locked;
+    
     private final Map<Coord, Future<MapTile>> cache = new LinkedHashMap<Coord, Defer.Future<MapTile>>(9, 0.75f, true) {
 	private static final long serialVersionUID = 1L;
 
@@ -263,6 +271,23 @@ public class LocalMiniMap extends Window implements Console.Directory{
 		throw new Exception("No such setting");
 	    }
 	});
+        
+	lockbtn = new IButton(new Coord(-10,-43), this, locked?ilockc:ilocko, locked?ilocko:ilockc, locked?ilockch:ilockoh) {
+	    public void click() {
+		locked = !locked;
+		if(locked) {
+		    up = ilockc;
+		    down = ilocko;
+		    hover = ilockch;
+		} else {
+		    up = ilocko;
+		    down = ilockc;
+		    hover = ilockoh;
+		}
+                storeOpt(OPT_LOCKED, locked);
+	    }
+	};
+	lockbtn.recthit = true;
     }
     
     public Coord p2c(Coord pc) {
@@ -440,6 +465,9 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	g.gl.glPopMatrix();
 	//drawicons(g);
 	Window.swbox.draw(og, Coord.z, this.sz);
+        
+        //draw the lock icon
+        lockbtn.draw(og.reclipl(xlate(lockbtn.c, true), lockbtn.sz));
     }
 
     private String mapfolder(){
@@ -583,7 +611,7 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	    sz.y = Math.max(minsz.y, sz.y);
 	    doff = c;
 	    //pack();
-	} else {
+	} else if(!locked) {
 	    super.mousemove(c);
 	}
     }
