@@ -234,6 +234,17 @@ public class OptWnd2 extends Window {
 
 		{tooltip = Text.render("Makes home pointer display as green arrow over character head");}
 	    }.a = Config.hptr;
+            
+	    new CheckBox(new Coord(0, y += 25), tab, "Crafting menu resets"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+                    Config.menugrid_resets = val;
+                    Utils.setprefb("menugrid_resets", val);
+		}
+
+		{tooltip = Text.render("Makes the crafting menu reset after selecting a recipe.");}
+	    }.a = Config.menugrid_resets;
 	}
 
 	
