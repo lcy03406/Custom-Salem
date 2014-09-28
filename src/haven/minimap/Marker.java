@@ -83,6 +83,10 @@ public class Marker {
     }
     
     public void draw(GOut g, Coord c) {
+        draw(g,c,1.0);
+    }
+    
+    public void draw(GOut g, Coord c, double scale) {
         Coord3f ptc3f = gob.getc();
         if (ptc3f == null)
             return;
@@ -93,7 +97,7 @@ public class Marker {
         	GobIcon icon = gob.getattr(GobIcon.class);
         	if(icon != null) {
         	    Tex tex = icon.tex();
-        	    g.image(tex, ptc.sub(tex.sz().div(2)));
+        	    g.image(tex, ptc.sub(tex.sz().div(2)), tex.sz().div(scale));
         	    return;
         	}
             } catch(Loading l) {}
@@ -102,7 +106,7 @@ public class Marker {
         if(override)
             g.chcolor(override_color);
         Tex tex = template.shape.tex;
-	g.image(tex, ptc.sub(tex.sz().div(2)));
+	g.image(tex, ptc.sub(tex.sz().div(2)), tex.sz().div(scale));
         g.chcolor();
     }
 }

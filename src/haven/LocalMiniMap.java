@@ -630,11 +630,13 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	if (!radarenabled)
 	    return;
 
+        double scale = Config.scaled_mmicons?1.0:getScale();
+        
 	Radar radar = ui.sess.glob.oc.radar;
 	try {
 	    for (Marker m : radar.getMarkers()) {
 		if (m.template.visible)
-		    m.draw(g, tc);
+		    m.draw(g, tc, scale);
 	    }
 	} catch (MCache.LoadingMap e) {
 	}
