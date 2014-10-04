@@ -270,7 +270,8 @@ public class WItem extends Widget implements DTarget {
 		if(alch == null){return(null);}
 	    }
 	    String num = String.format("%d%%",(int)(100*alch.purity()));
-	    return(new TexI(Utils.outline2(Text.render(num, alch.color()).img, Color.DARK_GRAY)));
+            Color c = tryGetFoodColor(info, alch);
+	    return(new TexI(Utils.outline2(Text.render(num, c).img, Color.DARK_GRAY)));
 	}
     };
     
@@ -284,9 +285,39 @@ public class WItem extends Widget implements DTarget {
 		if(alch == null){return(null);}
 	    }
 	    String num = String.format("%.2f%%",100*alch.purity());
-	    return(new TexI(Utils.outline2(Text.render(num, alch.color()).img, Color.DARK_GRAY)));
+            Color c = tryGetFoodColor(info, alch);
+	    return(new TexI(Utils.outline2(Text.render(num, c).img, Color.DARK_GRAY)));
 	}
     };
+    
+    private Color tryGetFoodColor(List<ItemInfo> info, Alchemy alch)
+    {
+        GobbleInfo food = ItemInfo.find(GobbleInfo.class, info);
+        Color c = alch.color();
+        if(food!=null)
+        {
+            int[] means = new int[4];
+            int i_highest=0,i_nexthighest=0;
+            for(int b = 0;b<4;b++)
+            {
+                means[b]=(food.h[b]+food.l[b])/2;
+                if(means[i_highest] < means[b])
+                {
+                    i_nexthighest = i_highest;
+                    i_highest = b;
+                }
+                else if(means[i_nexthighest] < means[b])
+                {
+                    i_nexthighest = b;
+                }
+            }
+            if(means[i_nexthighest] < means[i_highest] || i_highest==0)
+            {
+                c = Tempers.colors[i_highest];
+            }
+        }
+        return c;
+    }
     
     private void drawpurity(GOut g) {
 	if(!Config.alwaysshowpurity && ui.modflags() == 0){return;}//show purity only when any mod key pressed
