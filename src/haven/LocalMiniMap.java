@@ -630,7 +630,7 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	if (!radarenabled)
 	    return;
 
-        double scale = Config.scaled_mmicons?1.0:getScale();
+        double scale = 1.0;//Math.max(getScale(),1.0);
         
 	Radar radar = ui.sess.glob.oc.radar;
 	try {
