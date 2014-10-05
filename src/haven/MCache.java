@@ -64,7 +64,7 @@ public class MCache {
         grids.clear();
         ols.clear();
         
-        System.gc();
+//        System.gc();
         
         System.out.println("purged");
     }
