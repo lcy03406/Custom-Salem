@@ -155,7 +155,8 @@ public class GItem extends AWidget implements ItemInfo.ResOwner, Comparable<GIte
 	    rawinfo = args;
             //this might be an update to artifices for the clothing
             //notify the abacus: it should update
-            OverviewTool.instance(ui).notifyClothingChanged();
+            if(this.parent.equals(ui.gui.getEquipory()))
+                OverviewTool.instance(ui).notifyClothingChanged();
 	} else if(name == "meter") {
 	    meter = (Integer)args[0];
 	}
