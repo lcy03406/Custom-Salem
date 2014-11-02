@@ -39,6 +39,7 @@ import java.util.List;
 
 import static haven.Inventory.invsq;
 import static haven.Inventory.isqsz;
+import java.util.Map.Entry;
 
 public class GameUI extends ConsoleHost implements Console.Directory {
     public final String chrid;
@@ -1498,9 +1499,34 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         //transfer FROM this container
         List<GItem> curritems = new LinkedList<GItem>();
         int transferred = 0;
-        for(Inventory inv : this.invwnd.names.keySet())
-            
-        curritems.addAll(inv.wmap.keySet());
+        for(Entry<Inventory,String> entry : this.invwnd.names.entrySet())
+        {
+            if(!entry.getValue().contains("oolbelt") || Config.toolbelt_scrolling)
+                curritems.addAll(entry.getKey().wmap.keySet());
+        }
+        Collections.sort(curritems);
+
+        for(int i = 0;transferred<amount && i<curritems.size();i++)
+        {
+            int idx = ui.modmeta?i:curritems.size()-1-i;
+            if(!curritems.get(idx).marked)
+            {
+                curritems.get(idx).wdgmsg("transfer",Coord.z);
+                curritems.get(idx).marked = true;
+                transferred += 1;
+            }                        
+        }
+    }
+    public void transfer_unsorted_from_inventory(int amount)
+    {
+        //transfer FROM this container
+        List<GItem> curritems = new LinkedList<GItem>();
+        int transferred = 0;
+        for(Entry<Inventory,String> entry : this.invwnd.names.entrySet())
+        {
+            if(!entry.getValue().contains("oolbelt") || Config.toolbelt_scrolling)
+                curritems.addAll(entry.getKey().wmap.keySet());
+        }
         Collections.sort(curritems);
 
         for(int i = 0;transferred<amount && i<curritems.size();i++)

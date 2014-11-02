@@ -45,20 +45,19 @@ public class GItem extends AWidget implements ItemInfo.ResOwner, Comparable<GIte
     public int compareTo(GItem that) {
         Alchemy thisalch = ItemInfo.find(Alchemy.class, this.info());
         Alchemy thatalch = ItemInfo.find(Alchemy.class, that.info());
-        if(thisalch == null && thatalch == null)
+        if(thisalch == thatalch)
         {
-            return this.hashCode()-that.hashCode();
+            return this.rawinfo.hashCode()-that.rawinfo.hashCode();
         }
-        else{
-            if(thisalch==null)
-                return -1;
-            if(thatalch==null)
-                return 1;
-            if(thisalch == thatalch)
-                return this.hashCode()-that.hashCode();
-            
+        if(thisalch==null)
+            return -1;
+        if(thatalch==null)
+            return 1;
+        
+        if(thisalch.a[0] == thatalch.a[0])
+            return 0;
+        else
             return (thisalch.a[0]-thatalch.a[0]<0)?-1:1;
-        }
     }
     
     @RName("item")

@@ -141,37 +141,45 @@ public class Inventory extends Widget implements DTarget {
             //      wdgmsg("xfer", amount, ui.modflags());
             //as in haven. but I can't 
 
-            if(ui.modctrl && !ui.gui.invwnd.names.keySet().contains(this))
-            {
                 if(amount < 0)
                 {
-                    //transfer FROM this container
-                    List<GItem> curritems = new LinkedList<GItem>();
-                    curritems.addAll(wmap.keySet());
-                    Collections.sort(curritems);
-                    int transferred = 0;
-                    for(int i = 0;transferred<-amount && i<curritems.size();i++)
+                    if(ui.modctrl && !ui.gui.invwnd.names.keySet().contains(this))
                     {
-                        int idx = ui.modmeta?i:curritems.size()-1-i;
-                        if(!curritems.get(idx).marked)
+                        //transfer FROM this container
+                        List<GItem> curritems = new LinkedList<GItem>();
+                        curritems.addAll(wmap.keySet());
+                        Collections.sort(curritems);
+                        int transferred = 0;
+                        for(int i = 0;transferred<-amount && i<curritems.size();i++)
                         {
-                            curritems.get(idx).wdgmsg("transfer",Coord.z);
-                            curritems.get(idx).marked = true;
-                            transferred += 1;
-                        }                        
+                            int idx = ui.modmeta?i:curritems.size()-1-i;
+                            if(!curritems.get(idx).marked)
+                            {
+                                curritems.get(idx).wdgmsg("transfer",Coord.z);
+                                curritems.get(idx).marked = true;
+                                transferred += 1;
+                            }                        
+                        }
+                    }
+                    else
+                    {
+                        //no ordering
+                        wdgmsg("xfer", amount);
                     }
                 }
                 else
                 {
-                    //transfer TO this container
-                    ui.gui.transfer_sorted_from_inventory(amount);
+                    if(ui.modctrl && !ui.gui.invwnd.names.keySet().contains(this))
+                    {
+                        //transfer TO this container
+                        ui.gui.transfer_sorted_from_inventory(amount);
+                    }
+                    else
+                    {
+                        //no ordering, but take care not too scroll tool items out of the belt
+                        ui.gui.transfer_unsorted_from_inventory(amount);
+                    }
                 }
-            }
-            else
-            {
-                //no ordering
-                wdgmsg("xfer", amount);
-            }
 	}
 	return(true);
     }

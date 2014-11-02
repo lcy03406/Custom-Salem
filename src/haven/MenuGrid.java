@@ -216,8 +216,8 @@ public class MenuGrid extends Widget {
 	try {
 	    Item itm = Wiki.get(name);
 	    if(itm != null){
-		Map<String, Float[]> food = itm.food;
-		if(food != null){
+		if(itm.food != null){
+                    Map<String, Float[]> food = itm.food;
 		    float[] def = new float[]{0, 0, 0, 0};
                     String[] names = {"Blood", "Phlegm", "Yellow Bile", "Black Bile"};
 		    float[] heal = safeFloat(food.get("Heals"), def);
@@ -295,7 +295,10 @@ public class MenuGrid extends Widget {
 		    return currimg;
 		}
 	    }
-	} catch (Exception e) {e.printStackTrace();}
+	} catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
 	return null;
     }
     

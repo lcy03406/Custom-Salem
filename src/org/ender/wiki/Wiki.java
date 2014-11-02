@@ -67,12 +67,12 @@ public class Wiki {
 	imap.put("Arts & Crafts", "arts");
 	imap.put("Cloak & Dagger", "cloak");
 	imap.put("Faith & Wisdom", "faith");
-	imap.put("Frontier & Wilderness", "wild");
+	imap.put("Flora & Fauna", "wild");
 	imap.put("Hammer & Nail", "nail");
-	imap.put("Hunting & Gathering", "hung");
+	imap.put("Hunting & Hideworking", "hung");
 	imap.put("Law & Lore", "law");
 	imap.put("Mines & Mountains", "mine");
-	imap.put("Pots & Pans", "pots");
+	imap.put("Herbs & Sprouts", "pots");
 	imap.put("Sparks & Embers", "fire");
 	imap.put("Stocks & Cultivars", "stock");
 	imap.put("Sugar & Spice", "spice");
@@ -95,7 +95,7 @@ public class Wiki {
         buffmap.put("Berries", "berry");
         buffmap.put("Flowers and Herbs", "flowerfood");
         buffmap.put("Seafood", "seafood");
-        buffmap.put("Fishrd", "fish");
+        buffmap.put("Fishes", "fish");
         buffmap.put("Game", "game");
         buffmap.put("Slugs Bugs and Kritters", "slugsnbugs");
         buffmap.put("Nuts and Seeds", "nut");
@@ -392,7 +392,7 @@ public class Wiki {
     private static String get_content(String name){
 	String content = null;
 	try {
-	    URI uri = new URI("http", null, "salem-wiki.com/mediawiki", -1, "/api.php", null, null);
+	    URI uri = new URI("http", null, "www.salem-wiki.com/mediawiki", -1, "/api.php", null, null);
 
 	    URL link = uri.toURL();
 	    HttpURLConnection conn = (HttpURLConnection) link.openConnection();

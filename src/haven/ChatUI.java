@@ -55,7 +55,7 @@ public class ChatUI extends Widget {
     private final Selector chansel;
     public boolean expanded = false;
     private Coord base;
-    private int basesize = 12;
+    private static int basesize = 12;
     private QuickLine qline = null;
     private final LinkedList<Notification> notifs = new LinkedList<Notification>();
     
@@ -74,6 +74,8 @@ public class ChatUI extends Widget {
         ChatUI.fnd = new RichText.Foundry(new ChatParser(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, basesize, TextAttribute.FOREGROUND, Color.BLACK));
         ChatUI.qfnd = new Text.Foundry(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, basesize+2), new java.awt.Color(192, 255, 192));
         ChatUI.selw = 100+(basesize-12)*6;
+        TextEntryChannel.efnd = new Text.Foundry(new Font("SansSerif", Font.PLAIN, basesize), Color.BLACK);
+        
         this.c = this.base.add(0, -100-(basesize-12)*24);
         this.resize(new Coord(this.sz.x,100+(basesize-12)*24));
         this.chansel.nf = new Text.Foundry("SansSerif", basesize);
@@ -284,7 +286,7 @@ public class ChatUI extends Widget {
 		for(Message msg : msgs) {
 		    if((selstart != null) && (msg == selstart.msg))
 			sel = true;
-		    int y1 = y - sb.val;
+		    int y1 = y - sb.val - (basesize-10);
 		    int y2 = y1 + msg.sz().y;
 		    if((y2 > 0) && (y1 < ih())) {
 			if(sel)
@@ -650,16 +652,27 @@ public class ChatUI extends Widget {
 	public String name() {return(name);}
     }
     
+    static class TextEntryChannel extends TextEntry {
+        public static Text.Foundry efnd = new Text.Foundry(new Font("SansSerif", Font.PLAIN, 12), Color.BLACK);
+        
+        protected Text.Line render_text(String text){
+            return efnd.render(text);
+        }
+        public TextEntryChannel(Coord c, Coord sz, Widget parent, String deftext) {
+            super(c, sz, parent, deftext);
+        }
+    }
+    
     public static abstract class EntryChannel extends Channel {
 	private final TextEntry in;
 	private List<String> history = new ArrayList<String>();
 	private int hpos = 0;
 	private String hcurrent;
-	
-	public EntryChannel(Widget parent) {
+        public EntryChannel(Widget parent) {
 	    super(parent);
 	    setfocusctl(true);
-	    this.in = new TextEntry(new Coord(0, sz.y - 20), new Coord(sz.x, 20), this, "") {
+            int height = basesize + 8;
+	    this.in = new TextEntryChannel(new Coord(0, sz.y - height), new Coord(sz.x, height), this, "") {
 		    public void activate(String text) {
 			if(text.length() > 0)
 			    send(text);
@@ -697,8 +710,9 @@ public class ChatUI extends Widget {
 	public void resize(Coord sz) {
 	    super.resize(sz);
 	    if(in != null) {
-		in.c = new Coord(0, this.sz.y - 20);
-		in.resize(new Coord(this.sz.x, 20));
+                int height = basesize + 8;
+		in.c = new Coord(0, this.sz.y - height);
+		in.resize(new Coord(this.sz.x, height));
 	    }
 	}
 	
@@ -1147,7 +1161,7 @@ public class ChatUI extends Widget {
 		rqline = qfnd.render(pre + qline.line);
 		rqpre = pre.length();
 	    }
-	    c = br.sub(0, 20);
+	    c = br.sub(0, 8+basesize);
 	    g.chcolor(24, 24, 16, 200);
 	    g.frect(c, rqline.tex().sz());
 	    g.chcolor();

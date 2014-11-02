@@ -247,6 +247,9 @@ public abstract class PView extends Widget {
 		gl.glClearColor((float)cc.getRed() / 255f, (float)cc.getGreen() / 255f, (float)cc.getBlue() / 255f, (float)cc.getAlpha() / 255f);
 		gl.glClear(gl.GL_DEPTH_BUFFER_BIT | gl.GL_COLOR_BUFFER_BIT);
 	    }
+            //this is where a skybox should probably be drawn
+            //TODO
+            
 	    if(curf != null)
 		curf.tick("cls");
 	    g.st.time = 0;

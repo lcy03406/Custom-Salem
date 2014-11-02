@@ -297,21 +297,21 @@ public class WItem extends Widget implements DTarget {
         if(food!=null)
         {
             int[] means = new int[4];
-            int i_highest=0,i_nexthighest=0;
+            int i_highest=-1,i_nexthighest=-1;
             for(int b = 0;b<4;b++)
             {
                 means[b]=(food.h[b]+food.l[b])/2;
-                if(means[i_highest] < means[b])
+                if(i_highest < 0 || means[i_highest] < means[b])
                 {
                     i_nexthighest = i_highest;
                     i_highest = b;
                 }
-                else if(means[i_nexthighest] < means[b])
+                else if(i_nexthighest < 0 || means[i_nexthighest] < means[b])
                 {
                     i_nexthighest = b;
                 }
             }
-            if(means[i_nexthighest] < means[i_highest] || i_highest==0)
+            if(means[i_nexthighest] < means[i_highest])
             {
                 c = Tempers.colors[i_highest];
             }

@@ -81,6 +81,10 @@ public class TextEntry extends Widget {
 	g.frect(Coord.z, sz);
     }
 
+    protected Text.Line render_text(String text){
+        return fnd.render(text);
+    }
+    
     public void draw(GOut g) {
 	super.draw(g);
 	String dtext;
@@ -93,7 +97,7 @@ public class TextEntry extends Widget {
 	}
 	drawbg(g);
 	if((tcache == null) || !tcache.text.equals(dtext))
-	    tcache = fnd.render(dtext);
+	    tcache = render_text(dtext);
 	int cx = tcache.advance(buf.point);
 	if(cx < sx) sx = cx;
 	if(cx > sx + (sz.x - 1)) sx = cx - (sz.x - 1);
@@ -105,7 +109,7 @@ public class TextEntry extends Widget {
 	    g.chcolor();
 	}
     }
-
+            
     public TextEntry(Coord c, Coord sz, Widget parent, String deftext) {
 	super(c, sz, parent);
 	rsettext(deftext);

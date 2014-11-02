@@ -630,6 +630,10 @@ public class OptWnd2 extends Window {
                         {
                             basesize=16;
                         }
+                        else if(lbl.equals("Base size 20"))
+                        {
+                            basesize=20;
+                        }
                         OptWnd2.this.ui.gui.chat.setbasesize(basesize);
                         Utils.setpreff("chatfontsize", basesize);
                     }
@@ -638,6 +642,7 @@ public class OptWnd2 extends Window {
             fontsizes.add("Base size 12", new Coord(300,60));
             fontsizes.add("Base size 14", new Coord(300,85));
             fontsizes.add("Base size 16", new Coord(300,110));
+            fontsizes.add("Base size 20", new Coord(300,135));
             int basesize = (int) Utils.getpreff("chatfontsize", 12);
 	    fontsizes.check("Base size "+basesize);	    
             
@@ -678,6 +683,20 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("The humours will not be rendered.");}
 		
 	    }.a = Config.hide_tempers;
+            
+            //DO allow scrolling out of toolbelts
+            new CheckBox(new Coord(300, 300), tab, "Allow scrolling items out of a toolbelt."){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.toolbelt_scrolling = val;
+		    Utils.setprefb("toolbelt_scrolling", val);
+                    this.ui.gui.updateRenderFilter();
+		}
+
+		{tooltip = Text.render("If, for some reason, you prefer this behaviour.");}
+		
+	    }.a = Config.toolbelt_scrolling;
         }
         
         /* RADAR TAB */

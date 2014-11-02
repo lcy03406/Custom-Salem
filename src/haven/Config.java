@@ -146,6 +146,8 @@ public class Config {
     public static boolean hide_minimap = Utils.getprefb("hide_minimap", false);
     public static boolean hide_tempers = Utils.getprefb("hide_tempers", false);
     
+    public static boolean toolbelt_scrolling = Utils.getprefb("toolbelt_scrolling", false);
+    
     static {
 	String p;
 	if((p = getprop("haven.authck", null)) != null)
