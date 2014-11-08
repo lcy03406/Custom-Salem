@@ -164,7 +164,6 @@ public class Config {
 	loadOptions();
 	window_props = loadProps("windows.conf");
 
-	loadContentsIcons();
 	Wiki.init(getFile("cache"), 3);
     }
 
@@ -199,25 +198,6 @@ public class Config {
             hnames[i] = Utils.getpref(hname, defhotkeys[i]);
             hcommands[i] = Utils.getpref(hcommand, defcommands[i]);
         }
-    }
-
-    private static void loadContentsIcons() {
-	InputStream in = Config.class.getResourceAsStream("/contents_icons.json");
-	try {
-	    try {
-		if (in != null) {
-		    Gson gson = new Gson();
-		    Type collectionType = new TypeToken<HashMap<String, String>>(){}.getType();
-		    String json = Utils.stream2str(in);
-		    contents_icons = gson.fromJson(json, collectionType);
-		}
-	    } catch (JsonSyntaxException ignore){
-	    } finally {
-		if (in != null) { in.close(); }
-	    }
-	} catch(IOException e) {
-	    throw(new Error(e));
-	}
     }
     
     public static void setCharName(String name){

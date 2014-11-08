@@ -31,6 +31,7 @@ import static haven.ItemInfo.find;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -348,19 +349,27 @@ public class WItem extends Widget implements DTarget {
 	g.image(tex, Coord.z,hsz);
     }
     
+    private static Map<String,String> contents_translations = new HashMap<String,String>();
+    {
+        contents_translations.put("Yellow Cornmeal", "gfx/invobjs/cornmeal0");
+        contents_translations.put("White Cornmeal", "gfx/invobjs/cornmeal1");
+        contents_translations.put("Blue Cornmeal", "gfx/invobjs/cornmeal2");
+        contents_translations.put("Golden Cornmeal", "gfx/invobjs/cornmeal3");
+        
+        contents_translations.put("Oatmeal", "gfx/invobjs/flour0");
+        contents_translations.put("Rye Flour", "gfx/invobjs/flour1");
+        contents_translations.put("Barley Flour", "gfx/invobjs/flour2");
+        contents_translations.put("Wheat Flour", "gfx/invobjs/flour3");
+        
+        contents_translations.put("Bonemeal", "gfx/invobjs/bonemeal");
+        contents_translations.put("Sugar", "gfx/invobjs/sugar");
+    }
+    
     private Tex getContentTex(String contents) {
-	if(Config.contents_icons == null){ return null;}
-
-	String name = null;
-	for(Map.Entry<String, String> entry : Config.contents_icons.entrySet()) {
-	    if(contents.contains(entry.getKey())){
-	    	name = entry.getValue();
-		break;
-	    }
-	}
+        String name = contents_translations.get(contents.substring(contents.indexOf("of ")+3));
 
 	Tex tex = null;
-	if(name != null){
+	if(name != null && !name.equals("silver")){
 	    try {
 		//return Resource.loadtex(name);
 		Resource res = Resource.load(name);
