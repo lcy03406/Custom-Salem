@@ -26,20 +26,23 @@
 
 package haven;
 
+
 import static haven.ItemInfo.find;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Map;
 
 public class WItem extends Widget implements DTarget {
     public static final Resource missing = Resource.load("gfx/invobjs/missing");
+    private static final Coord hsz = new Coord(24, 24);//Inventory.sqsz.div(2);
     public final GItem item;
     private Tex ltex = null;
     private Tex mask = null;
     private Resource cmask = null;
     private long ts = 0;
-    
+
     public WItem(Coord c, Widget parent, GItem item) {
 	super(c, Inventory.sqsz, parent);
 	this.item = item;
@@ -53,7 +56,7 @@ public class WItem extends Widget implements DTarget {
 	    h = Inventory.sqsz.y * ((h / Inventory.sqsz.y) + 1);
 	return(new Coord(w, h));
     }
-
+    
     public void drawmain(GOut g, Tex tex) {
 	g.image(tex, Coord.z);
 	if(tex != ltex) {
@@ -61,7 +64,7 @@ public class WItem extends Widget implements DTarget {
 	    ltex = tex;
 	}
     }
-
+    
     public static BufferedImage rendershort(List<ItemInfo> info) {
 	ItemInfo.Name nm = find(ItemInfo.Name.class, info);
 	if(nm == null)
@@ -70,10 +73,10 @@ public class WItem extends Widget implements DTarget {
 	Alchemy ch = find(Alchemy.class, info);
 	if(ch != null)
 	    img = ItemInfo.catimgsh(5, img, ch.smallmeter(),
-				    Text.std.renderf("(%d%% pure)", (int)(ch.a[0] * 100)).img);
+		    Text.std.renderf("(%d%% pure)", (int)(ch.a[0] * 100)).img);
 	return(img);
     }
-
+    
     public static BufferedImage shorttip(List<ItemInfo> info) {
 	BufferedImage img = rendershort(info);
 	ItemInfo.Contents cont = find(ItemInfo.Contents.class, info);
@@ -126,7 +129,7 @@ public class WItem extends Widget implements DTarget {
     public class LongTip extends ItemTip {
 	public LongTip(List<ItemInfo> info) {super(longtip(info));}
     }
-
+    
     private long hoverstart;
     private ItemTip shorttip = null, longtip = null;
     private List<ItemInfo> ttinfo = null;
@@ -216,6 +219,12 @@ public class WItem extends Widget implements DTarget {
 	    return meters;
 	}
     };
+
+    public final AttrCache<String> contentName = new AttrCache<String>() {
+	protected String find(List<ItemInfo> info) {
+	    return ItemInfo.getContent(info);
+	}
+    };
     
     public void draw(GOut g) {
 	try {
@@ -239,6 +248,7 @@ public class WItem extends Widget implements DTarget {
 		g.frect(s2.sub(bsz).sub(4,0), bsz);
 		g.chcolor();
 	    }
+	    checkContents(g);
 	    heurmeters(g);
 	    if(olcol.get() != null) {
 		if(cmask != res) {
@@ -292,31 +302,31 @@ public class WItem extends Widget implements DTarget {
     
     private Color tryGetFoodColor(List<ItemInfo> info, Alchemy alch)
     {
-        GobbleInfo food = ItemInfo.find(GobbleInfo.class, info);
-        Color c = alch.color();
-        if(food!=null)
-        {
-            int[] means = new int[4];
-            int i_highest=-1,i_nexthighest=-1;
-            for(int b = 0;b<4;b++)
-            {
-                means[b]=(food.h[b]+food.l[b])/2;
-                if(i_highest < 0 || means[i_highest] < means[b])
-                {
-                    i_nexthighest = i_highest;
-                    i_highest = b;
-                }
-                else if(i_nexthighest < 0 || means[i_nexthighest] < means[b])
-                {
-                    i_nexthighest = b;
-                }
-            }
-            if(means[i_nexthighest] < means[i_highest])
-            {
-                c = Tempers.colors[i_highest];
-            }
-        }
-        return c;
+	GobbleInfo food = ItemInfo.find(GobbleInfo.class, info);
+	Color c = alch.color();
+	if(food!=null)
+	{
+	    int[] means = new int[4];
+	    int i_highest=-1,i_nexthighest=-1;
+	    for(int b = 0;b<4;b++)
+	    {
+		means[b]=(food.h[b]+food.l[b])/2;
+		if(i_highest < 0 || means[i_highest] < means[b])
+		{
+		    i_nexthighest = i_highest;
+		    i_highest = b;
+		}
+		else if(i_nexthighest < 0 || means[i_nexthighest] < means[b])
+		{
+		    i_nexthighest = b;
+		}
+	    }
+	    if(means[i_nexthighest] < means[i_highest])
+	    {
+		c = Tempers.colors[i_highest];
+	    }
+	}
+	return c;
     }
     
     private void drawpurity(GOut g) {
@@ -327,10 +337,45 @@ public class WItem extends Widget implements DTarget {
 	}
     }
 
+    private void checkContents(GOut g) {
+	if(!Config.show_contents_icons){return;}
+	String contents = contentName.get();
+	if(contents == null){ return; }
+
+	Tex tex = getContentTex(contents);
+	if(tex == null){return;}
+
+	g.image(tex, Coord.z,hsz);
+    }
+    
+    private Tex getContentTex(String contents) {
+	if(Config.contents_icons == null){ return null;}
+
+	String name = null;
+	for(Map.Entry<String, String> entry : Config.contents_icons.entrySet()) {
+	    if(contents.contains(entry.getKey())){
+	    	name = entry.getValue();
+		break;
+	    }
+	}
+
+	Tex tex = null;
+	if(name != null){
+	    try {
+		//return Resource.loadtex(name);
+		Resource res = Resource.load(name);
+		tex =  new TexI(Utils.outline2(Utils.outline2(res.layer(Resource.imgc).img, Color.BLACK, true), Color.BLACK, true));
+	    } catch (Loading e){
+		tex =  missing.layer(Resource.imgc).tex();
+	    }
+	}
+	return tex;
+    }
+    
     private void heurmeters(GOut g) {
 	List<Integer> meters = heurmeter.get();
 	if(meters == null){return;}
-
+	
 	int k = 0;
 	Coord s2 = sz.sub(0, 4);
 	for (Integer meter : meters){
@@ -344,7 +389,7 @@ public class WItem extends Widget implements DTarget {
 	    k++;
 	}
     }
-
+    
     public boolean mousedown(Coord c, int btn) {
 	boolean inv = parent instanceof Inventory;
 	if(btn == 1) {
@@ -370,11 +415,11 @@ public class WItem extends Widget implements DTarget {
 	}
 	return(false);
     }
-
+    
     public boolean drop(Coord cc, Coord ul) {
 	return(false);
     }
-	
+    
     public boolean iteminteract(Coord cc, Coord ul) {
 	item.wdgmsg("itemact", ui.modflags());
 	return(true);

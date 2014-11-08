@@ -73,11 +73,11 @@ public class Alchemy extends ItemInfo.Tip {
 	g.dispose();
 	return(buf);
     }
-
+    
     public double purity() {
 	return a[0];
     }
-        
+
     public String toString() {
 	return(String.format("%f-%f-%f-%f", a[0], a[1], a[2], a[3]));
     }

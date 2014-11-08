@@ -27,10 +27,10 @@
 package haven;
 
 import haven.GLSettings.SettingException;
-import haven.error.ErrorHandler;
 import org.ender.wiki.Wiki;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +45,7 @@ public class Config {
     public static URL resurl = geturl("haven.resurl", "");
     public static URL mapurl = geturl("haven.mapurl", "");
     public static URL screenurl = geturl("haven.screenurl", "http://game.salemthegame.com/mt/ss");
-    public static URL storeurl = geturl("haven.storeurl","http://login.salemthegame.com/portal/tostore");
+    public static URL storeurl = geturl("haven.storeurl", "http://login.salemthegame.com/portal/tostore");
     public static URL regurl = geturl("haven.regurl", "http://login.salemthegame.com/beta/nregister");
     public static boolean dbtext = getprop("haven.dbtext", "off").equals("on");
     public static boolean bounddb = getprop("haven.bounddb", "off").equals("on");
@@ -68,12 +68,12 @@ public class Config {
     public static boolean show_tempers = Utils.getprefb("show_tempers", false);
     public static boolean store_map = Utils.getprefb("store_map", true);
     public static boolean radar_icons = Utils.getprefb("radar_icons", true);
-    
+
     public static String currentCharName = "";
     static Properties window_props;
     public static Properties options;
     private static Map<String, Object> buildinfo = new HashMap<String, Object>();
-    
+
     public static boolean isUpdate;
     public static boolean isShowNames = true;
     public static boolean timestamp = true;
@@ -148,6 +148,9 @@ public class Config {
     
     public static boolean toolbelt_scrolling = Utils.getprefb("toolbelt_scrolling", false);
     
+    public static boolean show_contents_icons = Utils.getprefb("show_contents_icons", false);
+    public static Map<String, String> contents_icons;
+    
     static {
 	String p;
 	if((p = getprop("haven.authck", null)) != null)
@@ -156,8 +159,17 @@ public class Config {
 	if(!f.exists()){
 	    f.mkdirs();
 	}
-	
-	InputStream in = ErrorHandler.class.getResourceAsStream("/buildinfo");
+
+	loadBuildVersion();
+	loadOptions();
+	window_props = loadProps("windows.conf");
+
+	loadContentsIcons();
+	Wiki.init(getFile("cache"), 3);
+    }
+
+    private static void loadBuildVersion() {
+	InputStream in = Config.class.getResourceAsStream("/buildinfo");
 	try {
 	    try {
 		if(in != null) {
@@ -167,7 +179,7 @@ public class Config {
 			buildinfo.put((String)e.getKey(), e.getValue());
 		}
 	    } finally {
-		in.close();
+		if (in != null) { in.close(); }
 	    }
 	} catch(IOException e) {
 	    throw(new Error(e));
@@ -187,6 +199,25 @@ public class Config {
             hnames[i] = Utils.getpref(hname, defhotkeys[i]);
             hcommands[i] = Utils.getpref(hcommand, defcommands[i]);
         }
+    }
+
+    private static void loadContentsIcons() {
+	InputStream in = Config.class.getResourceAsStream("/contents_icons.json");
+	try {
+	    try {
+		if (in != null) {
+		    Gson gson = new Gson();
+		    Type collectionType = new TypeToken<HashMap<String, String>>(){}.getType();
+		    String json = Utils.stream2str(in);
+		    contents_icons = gson.fromJson(json, collectionType);
+		}
+	    } catch (JsonSyntaxException ignore){
+	    } finally {
+		if (in != null) { in.close(); }
+	    }
+	} catch(IOException e) {
+	    throw(new Error(e));
+	}
     }
     
     public static void setCharName(String name){

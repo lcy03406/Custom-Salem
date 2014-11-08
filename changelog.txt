@@ -1,5 +1,6 @@
 $size[20]{$u{CHANGE LOG:}}
 
+<<<<<<< HEAD
 $size[14]{$u{Update for 04.10.14 (Latikai):}}
   * A lock button for the minimap was added, allowing you to lock it. This will prevent you from moving the minimap window, but not from panning it.
   * Made the crafting menu only optionally stay where it is rather than go to root. Option found under general.
@@ -36,6 +37,15 @@ $size[14]{$u{Update for 30.06.14 (Latikai):}}
  
 $size[14]{$u{Update for 27.06.14 (Latikai):}}
   * Merged in nikelin's fix for invisible homestead pointers.
+=======
+$size[14]{$u{Update for 08.11.14:}}
+  * added option to show contents of seed and flour bags as small icons (Options->General)
+
+$size[14]{$u{Update for 07.11.14:}}
+  * fixed store url
+  * merged with default client
+  * made purity color on items display as in Latikai client - if it is food and has dominant gobble value, then use that gobble color, otherwise use Aether color
+>>>>>>> upstream/master
  
 $size[14]{$u{Update for 10.05.14 (Latikai):}}
   * Finally got round to the long-due merge of loftar's and Ender's changes.

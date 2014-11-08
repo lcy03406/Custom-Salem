@@ -24,6 +24,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import haven.Utils;
 import org.ender.wiki.Request.Callback;
 import org.ender.wiki.Request.Type;
 import org.json.JSONArray;
@@ -185,11 +186,6 @@ public class Wiki {
 	}
     }
 
-    public static String stream2str(java.io.InputStream is) {
-	java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-	return s.hasNext() ? s.next() : "";
-    }
-
     private static void load(Request request){
 	//System.out.println(String.format("Loading '%s' at '%s'", name, Thread.currentThread().getName()));
 	Item item = (request.type==Type.ITEM)?get_cache(request.name, false):null;
@@ -220,7 +216,7 @@ public class Wiki {
 	    URI uri = new URI("http", null, "salem-wiki.com/mediawiki", -1, "/api.php", String.format(SEARCH_URL, name), null);
 
 	    URL url = uri.toURL();
-	    String data = stream2str(url.openStream());
+	    String data = Utils.stream2str(url.openStream());
 	    JSONObject json = new JSONObject(data);
 	    JSONArray pages = json.getJSONObject("query").getJSONArray("search");
 	    if(pages == null || pages.length() == 0){return null;}
@@ -404,7 +400,7 @@ public class Wiki {
 	    wr.writeBytes(data);
 	    wr.flush();
 	    wr.close();
-	    data = stream2str(conn.getInputStream());
+	    data = Utils.stream2str(conn.getInputStream());
 	    JSONObject json = new JSONObject(data);
 	    json = json.getJSONObject("query").getJSONObject("pages");
 	    String pageid = JSONObject.getNames(json)[0];
@@ -441,7 +437,7 @@ public class Wiki {
 	    wr.writeBytes(req);
 	    wr.flush();
 	    wr.close();
-	    data = stream2str(conn.getInputStream());
+	    data = Utils.stream2str(conn.getInputStream());
 	    JSONObject json = new JSONObject(data);
 	    json = json.getJSONObject("parse").getJSONObject("text");
 	    content = json.getString("*");

@@ -176,8 +176,8 @@ public class Inventory extends Widget implements DTarget {
                     }
                     else
                     {
-                        //no ordering, but take care not too scroll tool items out of the belt
-                        ui.gui.transfer_unsorted_from_inventory(amount);
+                        //no ordering
+                        wdgmsg("xfer", amount);
                     }
                 }
 	}
