@@ -161,15 +161,12 @@ public class Item {
 	builder.append(';');
     }
 
-    public void setClothing(String difficulty, int slots, String[] profs) {
+    public void setClothing(int slots) {
 	this.cloth_slots = slots;
 	if(slots == 0){return;}
-	String[] ds = difficulty.split(" to ");
-	try{
-	    this.cloth_pmin = 100 - Integer.parseInt(ds[0]);
-	    this.cloth_pmax = 100 - Integer.parseInt(ds[1]);
-	} catch(Exception e){}
-	this.cloth_profs = profs;
+	    this.cloth_pmin = 100;
+	    this.cloth_pmax = 100;
+	this.cloth_profs = new String[0];
     }
     
     public void setArtifact(String difficulty, String[] profs, Map<String, Integer> bonuses) {

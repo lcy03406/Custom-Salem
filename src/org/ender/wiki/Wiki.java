@@ -363,13 +363,10 @@ public class Wiki {
     
     private static void item_parse_cloth(Item item, Map<String, String> args) {
 	if(args == null){ return; }
-	String difficulty = args.containsKey("Difficulty")?args.get("Difficulty"):args.get("difficulty");
 	int slots = 0;
 	String sslots = args.containsKey("Artificer Slots")?args.get("Artificer Slots"):args.get("slots");
 	try{slots = Integer.parseInt(sslots);}catch(Exception e){}
-	String sprofs = args.containsKey("Proficiency Type")?args.get("Proficiency Type"):args.get("profs");
-	String[] profs = sprofs.split(", ");
-	item.setClothing(difficulty, slots, profs);
+	item.setClothing(slots);
     }
 
     private static Map<String, String> getargs(String argsline) {
