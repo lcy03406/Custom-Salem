@@ -108,7 +108,7 @@ public class AudioSprite {
 	}
 
 	public boolean setup(RenderList r) {
-	    if(clip != null && !(res.name.equals("sfx/bgm/boston") && Config.mute_violin))
+	    if(clip != null && !(res.name.equals("sfx/bgm/boston") && Config.mute_violin) && !(res.name.equals("sfx/bgm/markethustle") && Config.mute_violin))
 		r.add(clip, null);
 	    return(false);
 	}
