@@ -65,9 +65,6 @@ public class RootWidget extends ConsoleHost {
 	    }else if(isgui && (code == KeyEvent.VK_Q) && ctrl && !shift){
 		LocatorTool lt = LocatorTool.instance(ui);
                 if(lt!=null) lt.toggle();
-	    }else if(isgui && (code == KeyEvent.VK_A) && ctrl && !shift){
-		OverviewTool ot = OverviewTool.instance(ui);
-                if(ot!=null) ot.toggle();
 	    }else if(isgui && (code == KeyEvent.VK_X) && ctrl && !shift){
 		CartographWindow.toggle();
 	    }else if(isgui && code == KeyEvent.VK_D && ctrl && !shift){
@@ -88,7 +85,7 @@ public class RootWidget extends ConsoleHost {
                 Config.alwaysbright = !Config.alwaysbright;
                 Utils.setprefb("alwaysbright", Config.alwaysbright);
                 this.ui.sess.glob.brighten();
-	    }else if(code == KeyEvent.VK_C && alt && hasGUI){
+	    }else if(isgui && code == KeyEvent.VK_C && alt){
 		ui.gui.toggleCraftWnd();
 	    }else if(code == KeyEvent.VK_Z && ctrl){
 		Config.center = !Config.center;

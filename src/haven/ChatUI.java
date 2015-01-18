@@ -237,7 +237,7 @@ public class ChatUI extends Widget {
                         throw new FileNotFoundException("Failed to create parent directories!");
                     }
                 } catch (FileNotFoundException ex) {
-                    this.ui.message("Could not open file for chat logging!");
+                    this.ui.message("Could not open file for chat logging!",GameUI.MsgType.INFO);
                 }
             }
         }

@@ -152,7 +152,6 @@ public class Config {
     public static boolean show_contents_icons = Utils.getprefb("show_contents_icons", false);
     public static Map<String, String> contents_icons;
     
-    public static boolean menugrid_resets = Utils.getprefb("menugrid_resets", false);
     static {
 	String p;
 	if((p = getprop("haven.authck", null)) != null)

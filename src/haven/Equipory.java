@@ -198,9 +198,6 @@ public class Equipory extends Widget implements DTarget {
 	    }
 	    wmap.put(g, v);
 	}
-        //ideally we would want the abacus to update here
-        //however, the server only sends this tooltip information afterwards, 
-        //and it should be caught in the GItem uimsg function
         
 	return(ret);
     }
@@ -218,9 +215,6 @@ public class Equipory extends Widget implements DTarget {
 	    }
 	    bonuses.update(slots);
 	}
-        
-        //notify the abacus: it should update
-        OverviewTool.instance(ui).notifyClothingChanged();
     }
     
     public boolean drop(Coord cc, Coord ul) {

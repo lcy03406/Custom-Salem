@@ -558,10 +558,6 @@ public class MenuGrid extends Widget {
 	} else {
 	    r.newp = 0;
 	    if (!senduse(r)) return;
-	    if(Config.menugrid_resets){
-		this.cur = null;
-		curoff = 0;
-	    }
             if(Config.menugrid_resets)
             {
                 this.cur = null;

@@ -154,8 +154,6 @@ public class GItem extends AWidget implements ItemInfo.ResOwner, Comparable<GIte
 	} else if(name == "tt") {
 	    info = null;
 	    rawinfo = args;
-            if(this.parent.equals(ui.gui.getEquipory()))
-                OverviewTool.instance(ui).notifyClothingChanged();
 	    if(sendttupdate){wdgmsg("ttupdate");}
 	} else if(name == "meter") {
 	    meter = (Integer)args[0];
