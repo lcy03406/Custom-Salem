@@ -48,6 +48,7 @@ public class RootWidget extends ConsoleHost {
 	boolean ctrl = ev.isControlDown();
 	boolean shift = ev.isShiftDown();
         boolean isgui = ui!=null&&ui.gui!=null;
+	boolean alt = ev.isAltDown();
 	if(!super.globtype(key, ev)) {
 	    if(key == 0){return false;}
 	    if(Config.profile && (key == '`')) {
@@ -83,15 +84,16 @@ public class RootWidget extends ConsoleHost {
                         }
                     }
                 }
-	    }else if(isgui && code == KeyEvent.VK_Z && ctrl && !shift){
-		Config.center = !Config.center;
-		ui.message(String.format("Tile centering in turned %s", Config.center?"ON":"OFF"));
 	    }else if(isgui && code == KeyEvent.VK_N && ctrl && !shift){
                 Config.alwaysbright = !Config.alwaysbright;
                 Utils.setprefb("alwaysbright", Config.alwaysbright);
                 this.ui.sess.glob.brighten();
-            }
-            else if(key != 0) {
+	    }else if(code == KeyEvent.VK_C && alt && hasGUI){
+		ui.gui.toggleCraftWnd();
+	    }else if(code == KeyEvent.VK_Z && ctrl){
+		Config.center = !Config.center;
+		ui.message(String.format("Tile centering in turned %s", Config.center?"ON":"OFF"), GameUI.MsgType.INFO);
+	    } else if(key != 0) {
 		wdgmsg("gk", (int)key);
 	    }
 	}

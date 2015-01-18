@@ -80,9 +80,13 @@ public class Equipory extends Widget implements DTarget {
 		isz.y = ec.y + sqlite.sz().y;
 	}
     }
+
+    private final AttrBonusWdg bonuses;
+    private final IButton showbonus, hidebonus;
     WItem[] slots = new WItem[ecoords.length];
     Map<GItem, WItem[]> wmap = new HashMap<GItem, WItem[]>();
-	
+    private EquipOpts opts;
+
     @RName("epry")
     public static class $_ implements Factory {
 	public Widget create(Coord c, Widget parent, Object[] args) {
@@ -112,7 +116,8 @@ public class Equipory extends Widget implements DTarget {
     }
 
     public Equipory(Coord c, Widget parent, long gobid) {
-	super(c, isz, parent);
+	super(c, isz/*.add(175, 0)*/, parent);
+	bonuses = new AttrBonusWdg(this, new Coord(isz.x, 0));
 	Avaview ava = new Avaview(Coord.z, isz, this, gobid, "equcam") {
 		public boolean mousedown(Coord c, int button) {
 		    return(false);
@@ -121,12 +126,71 @@ public class Equipory extends Widget implements DTarget {
 		protected java.awt.Color clearcolor() {return(null);}
 	    };
 	new Boxen();
+
+	opts = new EquipOpts(new Coord(200,100), ui.gui);
+	opts.hide();
+	Window p = (Window) parent;
+
+	showbonus = new IButton(Coord.z, p, Window.rbtni[0], Window.rbtni[1], Window.rbtni[2]){
+	    {tooltip = Text.render("Show artifice bonuses");}
+
+	    @Override
+	    public void click() {
+		toggleBonuses();
+	    }
+	};
+	showbonus.visible = !bonuses.visible;
+	p.addtwdg(showbonus);
+
+	hidebonus = new IButton(Coord.z, p, Window.lbtni[0], Window.lbtni[1], Window.lbtni[2]){
+	    {tooltip = Text.render("Hide artifice bonuses");}
+
+	    @Override
+	    public void click() {
+		toggleBonuses();
+	    }
+	};
+	hidebonus.visible = bonuses.visible;
+	p.addtwdg(hidebonus);
+
+	p.addtwdg(new IButton(Coord.z, p, Window.obtni[0], Window.obtni[1], Window.obtni[2]) {
+	    {tooltip = Text.render("Toggle equip shortcuts config");}
+	    public void click() {
+		toggleOptions();
+	    }
+	});
+	pack();
+	parent.pack();
     }
-	
+
+    private void toggleBonuses() {
+	bonuses.toggle();
+	showbonus.visible = !bonuses.visible;
+	hidebonus.visible = bonuses.visible;
+	pack();
+	parent.pack();
+    }
+
+    private void toggleOptions() {
+	if(opts != null){
+	    opts.toggle();
+	}
+    }
+
+    @Override
+    public void wdgmsg(Widget sender, String msg, Object... args) {
+	if (sender  instanceof GItem && wmap.containsKey(sender) && msg.equals("ttupdate")) {
+	    bonuses.update(slots);
+	} else {
+	    super.wdgmsg(sender, msg, args);
+	}
+    }
+
     public Widget makechild(String type, Object[] pargs, Object[] cargs) {
 	Widget ret = gettype(type).create(Coord.z, this, cargs);
 	if(ret instanceof GItem) {
 	    GItem g = (GItem)ret;
+	    g.sendttupdate = true;
 	    WItem[] v = new WItem[pargs.length];
 	    for(int i = 0; i < pargs.length; i++) {
 		int ep = (Integer)pargs[i];
@@ -152,6 +216,7 @@ public class Equipory extends Widget implements DTarget {
 			slots[s] = null;
 		}
 	    }
+	    bonuses.update(slots);
 	}
         
         //notify the abacus: it should update

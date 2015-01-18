@@ -21,12 +21,13 @@
 	<target name="salem-client" depends="build-env">
 		<javac srcdir="src" destdir="build/classes" debug="on" source="1.5" target="1.5" includeantruntime="no">
 			<classpath>
-                            <pathelement path="lib/jogl-all.jar" />
-                            <pathelement path="lib/gluegen-rt.jar" />
-                            <pathelement path="lib/jnlp.jar" />
-                            <pathelement path="lib/jorbis.jar" />
-                            <pathelement path="lib/jogg.jar" />
-                            <pathelement path="lib/jglob.jar" />
+				<pathelement path="lib/jogl-all.jar" />
+				<pathelement path="lib/gluegen-rt.jar" />
+				<pathelement path="lib/jnlp.jar" />
+				<pathelement path="lib/jorbis.jar" />
+				<pathelement path="lib/jogg.jar" />
+				<pathelement path="lib/jglob.jar" />
+				<pathelement path="lib/gson-2.3.jar" />
 			</classpath>
 			<compilerarg value="-Xlint:unchecked" />
 			<!-- <compilerarg value="-Xbarda" /> -->
@@ -64,6 +65,9 @@
 		<unjar src="lib/jglob.jar" dest="build/classes-lib">
 			<patternset excludes="META-INF/**" />
 		</unjar>
+		<unjar src="lib/gson-2.3.jar" dest="build/classes-lib">
+			<patternset excludes="META-INF/**" />
+		</unjar>
 	</target>
 
 	<target name="resources">
@@ -72,6 +76,7 @@
 		</exec>
 		<jar destfile="build/client-res.jar" update="true">
 			<fileset dir="resources/compiled" />
+			<fileset dir="resources/item_data" />
 		</jar>
 	</target>
 
@@ -81,6 +86,8 @@
 			<fileset dir="build/classes-lib" />
 			<fileset file="changelog.txt" />
 			<fileset file="etc/radar.xml" />
+			<fileset file="etc/contents_icons.json" />
+			<fileset file="etc/item_data.json" />
 			<manifest>
 				<attribute name="Main-Class" value="haven.MainFrame" />
 				<attribute name="Class-Path" value="jogl-all.jar gluegen-rt.jar client-res.jar builtin-res.jar salem-res.jar" />

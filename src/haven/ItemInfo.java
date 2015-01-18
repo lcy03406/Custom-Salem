@@ -83,6 +83,7 @@ public abstract class ItemInfo {
 	    this.str = str;
 	}
 	
+	@SuppressWarnings("UnusedDeclaration")
 	public Name(Owner owner, String str) {
 	    this(owner, Text.render(str));
 	}
@@ -190,6 +191,7 @@ public abstract class ItemInfo {
 	return(ret);
     }
     
+    @SuppressWarnings("UnusedDeclaration")
     private static String dump(Object arg) {
 	if(arg instanceof Object[]) {
 	    StringBuilder buf = new StringBuilder();
@@ -222,7 +224,7 @@ public abstract class ItemInfo {
 		    if(m.find()){
 			res.add(Integer.parseInt(m.group(1)));
 		    }
-		}catch(Exception e){}
+		}catch(Exception ignored){}
 	    }
 	}
 	return res;
@@ -242,7 +244,7 @@ public abstract class ItemInfo {
 		    if(m.find()){
 			res = m.group(1);
 		    }
-		}catch(Exception e){}
+		}catch(Exception ignored){}
 	    } else if (info instanceof Name){
 		Name name = (Name) info;
 		try{
@@ -250,11 +252,11 @@ public abstract class ItemInfo {
 		    if(m.find()){
 			res = m.group(1);
 		    }
-		}catch(Exception e){}
+		}catch(Exception ignored){}
 	    }
 	    if(res != null){return res;}
 	}
-	return res;
+	return null;
     }
 
     public static String getContent(List<ItemInfo> infos){

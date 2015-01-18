@@ -50,7 +50,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	       KeyEvent.VK_5, KeyEvent.VK_6, KeyEvent.VK_7, KeyEvent.VK_8,
 	       KeyEvent.VK_9, KeyEvent.VK_0, KeyEvent.VK_MINUS, KeyEvent.VK_EQUALS};
     public final long plid;
+    public final EquipProxyWdg equipProxy;
     public MenuGrid menu;
+    public CraftWnd craftwnd;
     public Tempers tm;
     public Gobble gobble;
     public MapView map;
@@ -131,8 +133,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		return(true);
 	    }
 	};
-	new Bufflist(new Coord(80, 60), this);
-	new EquipProxyWdg(new Coord(80, 2), new int[]{6, 7, 9, 14}, this);
+	new Bufflist(new Coord(80, 40), this);
+	equipProxy = new EquipProxyWdg(new Coord(80, 2), new int[]{6, 7, 9, 14, 5, 4}, this);
 	tm = new Tempers(Coord.z, this);
 	chat = new ChatUI(Coord.z, 0, this);
 	syslog = new ChatUI.Log(chat, "System");
@@ -382,6 +384,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    return(g);
 	} else if(place == "craft") {
 	    final Widget[] mk = {null};
+	    showCraftWnd();
+	    if(craftwnd != null){
+		mk[0] = gettype(type).create(new Coord(215, 250), craftwnd, cargs);
+		craftwnd.setMakewindow(mk[0]);
+		return (mk[0]);
+	    } else {
 	    makewnd = new Window(new Coord(350, 100), Coord.z, this, "Crafting") {
 		    public void wdgmsg(Widget sender, String msg, Object... args) {
 			if((sender == this) && msg.equals("close")) {
@@ -399,7 +407,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		};
 	    mk[0] = gettype(type).create(Coord.z, makewnd, cargs);
 	    makewnd.pack();
-	    return(mk[0]);
+		return (mk[0]);
+	    }
 	} else if(place == "buddy") {
 	    buddies = (BuddyWnd)gettype(type).create(new Coord(187, 50), this, cargs);
 	    buddies.hide();
@@ -435,7 +444,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     
     public Equipory getEquipory(){
 	if(equwnd != null){
-	    for(Widget wdg = equwnd.lchild; wdg != null; wdg = wdg.next){
+	    for(Widget wdg = equwnd.child; wdg != null; wdg = wdg.next){
 		if(wdg instanceof Equipory){
 		    return (Equipory) wdg;
 		}
@@ -752,6 +761,25 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	}
     }
 
+    @Override
+    public void wdgmsg(String msg, Object... args) {
+	super.wdgmsg(msg, args);
+	if(msg.equals("belt")){
+	    checkBelt(args);
+	}
+    }
+
+    private void checkBelt(Object... args) {
+	int index = (Integer) args[0];
+	Resource res = belt[index].get();
+	if(menu.isCrafting(res)){
+	    showCraftWnd();
+	}
+	if(craftwnd != null) {
+	    craftwnd.select(res);
+	}
+    }
+
     public void wdgmsg(Widget sender, String msg, Object... args) {
 	if(sender == menu) {
 	    wdgmsg(msg, args);
@@ -860,6 +888,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 			    fitwdg(invwnd);
 			}
 		    }
+
 		    public void tick(double dt) {
 			if(maininv != null) {
 			    if(invwnd.visible) {
@@ -1067,6 +1096,24 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	}
 
     }
+
+    public void showCraftWnd() {
+	showCraftWnd(false);
+    }
+
+    public void showCraftWnd(boolean force) {
+	if(craftwnd == null && (force || Config.autoopen_craftwnd)){
+	    new CraftWnd(Coord.z, this);
+	}
+    }
+
+    public void toggleCraftWnd() {
+	if(craftwnd == null) {
+	    showCraftWnd(true);
+	} else {
+	    craftwnd.wdgmsg(craftwnd, "close");
+	}
+    }
     
     private void makemenu() {
 	mainmenu = new MainMenu(new Coord(0, sz.y - menubg.sz().y), menubg.sz(), this);
@@ -1229,14 +1276,38 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	resize(parent.sz);
     }
     
-    private static final Resource errsfx = Resource.load("sfx/error");
     public void error(String msg) {
+	message(msg, MsgType.ERROR);
+    }
+
+    private static final Resource errsfx = Resource.load("sfx/error");
+    public void message(String msg, MsgType type) {
 	errtime = System.currentTimeMillis();
-	lasterr = errfoundry.render(msg);
-	syslog.append(msg, Color.RED);
+	Color msgColor = getMsgColor(type);
+	lasterr = errfoundry.render(msg, msgColor);
+	syslog.append(msg, msgColor);
 	Audio.play(errsfx);
     }
-    
+
+    public static Color getMsgColor(MsgType type)
+    {
+	switch (type){
+	    case INFO:
+		return  Color.CYAN;
+	    case GOOD:
+		return  Color.GREEN;
+	    case BAD:
+		return  Color.RED;
+	    case ERROR:
+		return  Color.RED;
+	}
+	return Color.WHITE;
+    }
+
+    public static enum MsgType{
+	INFO, GOOD, BAD, ERROR
+    }
+
     public void act(String... args) {
 	wdgmsg("act", (Object[])args);
     }

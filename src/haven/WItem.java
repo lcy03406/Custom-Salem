@@ -26,7 +26,6 @@
 
 package haven;
 
-
 import static haven.ItemInfo.find;
 
 import java.awt.Color;

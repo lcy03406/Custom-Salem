@@ -34,6 +34,9 @@ public abstract class Listbox<T> extends ListWidget<T> {
     public final Scrollbar sb;
     public final Color sell = new Color(52, 35, 36);
     public final Color selr = new Color(178, 93, 91);
+    public final Color overr = new Color(189, 239, 137, 33);
+    public Color bgcolor = Color.BLACK;
+    private T over;
 
     public Listbox(Coord c, Widget parent, int w, int h, int itemh) {
 	super(c, new Coord(w, h * itemh).add(fbox.bisz()), parent, itemh);
@@ -42,18 +45,24 @@ public abstract class Listbox<T> extends ListWidget<T> {
     }
 
     protected void drawsel(GOut g) {
+	drawsel(g, sell, selr);
+    }
+
+    protected void drawsel(GOut g, Color left, Color right) {
 	g.chcolor(255, 255, 0, 128);
-	g.poly2(Coord.z, sell,
-		new Coord(0, g.sz.y), sell,
-		g.sz, selr,
-		new Coord(g.sz.x, 0), selr);
+	g.poly2(Coord.z, left,
+		new Coord(0, g.sz.y), left,
+		g.sz, right,
+		new Coord(g.sz.x, 0), right);
 	g.chcolor();
     }
 
     public void draw(GOut g) {
 	sb.max = listitems() - h;
-	g.chcolor(Color.BLACK);
-	g.frect(Coord.z, sz);
+	if(bgcolor != null) {
+	    g.chcolor(Color.BLACK);
+	    g.frect(Coord.z, sz);
+	}
 	g.chcolor();
 	fbox.draw(g, Coord.z, sz);
 	Coord off = fbox.btloff();
@@ -67,6 +76,9 @@ public abstract class Listbox<T> extends ListWidget<T> {
 	    GOut ig = g.reclip(off.add(0, i * itemh), new Coord(w, itemh));
 	    if(item == sel)
 		drawsel(ig);
+	    else if(item == over){
+		drawsel(ig, sell, overr);
+	    }
 	    drawitem(ig, item);
 	}
 	super.draw(g);
@@ -99,5 +111,14 @@ public abstract class Listbox<T> extends ListWidget<T> {
 	else if(item != null)
 	    itemclick(item, button);
 	return(true);
+    }
+
+    @Override
+    public void mousemove(Coord c) {
+	if(c.isect(Coord.z, sz)){
+	    over = itemat(c);
+	} else{
+	    over = null;
+	}
     }
 }

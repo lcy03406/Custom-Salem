@@ -60,6 +60,8 @@ public class GItem extends AWidget implements ItemInfo.ResOwner, Comparable<GIte
             return (thisalch.a[0]-thatalch.a[0]<0)?-1:1;
     }
     
+    public boolean sendttupdate = false;
+    
     @RName("item")
     public static class $_ implements Factory {
 	public Widget create(Coord c, Widget parent, Object[] args) {
@@ -152,10 +154,9 @@ public class GItem extends AWidget implements ItemInfo.ResOwner, Comparable<GIte
 	} else if(name == "tt") {
 	    info = null;
 	    rawinfo = args;
-            //this might be an update to artifices for the clothing
-            //notify the abacus: it should update
             if(this.parent.equals(ui.gui.getEquipory()))
                 OverviewTool.instance(ui).notifyClothingChanged();
+	    if(sendttupdate){wdgmsg("ttupdate");}
 	} else if(name == "meter") {
 	    meter = (Integer)args[0];
 	}

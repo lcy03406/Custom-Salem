@@ -68,6 +68,7 @@ public class Config {
     public static boolean show_tempers = Utils.getprefb("show_tempers", false);
     public static boolean store_map = Utils.getprefb("store_map", true);
     public static boolean radar_icons = Utils.getprefb("radar_icons", true);
+    public static boolean autoopen_craftwnd = Utils.getprefb("autoopen_craftwnd", false);
 
     public static String currentCharName = "";
     static Properties window_props;
@@ -151,6 +152,7 @@ public class Config {
     public static boolean show_contents_icons = Utils.getprefb("show_contents_icons", false);
     public static Map<String, String> contents_icons;
     
+    public static boolean menugrid_resets = Utils.getprefb("menugrid_resets", false);
     static {
 	String p;
 	if((p = getprop("haven.authck", null)) != null)
@@ -166,6 +168,7 @@ public class Config {
 
 	Wiki.init(getFile("cache"), 3);
     }
+
 
     private static void loadBuildVersion() {
 	InputStream in = Config.class.getResourceAsStream("/buildinfo");
@@ -199,7 +202,7 @@ public class Config {
             hcommands[i] = Utils.getpref(hcommand, defcommands[i]);
         }
     }
-    
+
     public static void setCharName(String name){
 	currentCharName = name;
 	MainFrame.instance.setTitle(name);

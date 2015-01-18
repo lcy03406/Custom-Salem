@@ -47,16 +47,17 @@ import org.ender.wiki.Wiki;
 public class MenuGrid extends Widget {
     public final static Tex bg = Resource.loadtex("gfx/hud/invsq");
     public final static Coord bgsz = bg.sz().add(-1, -1);
+    private final Pagina CRAFT;
     public final Pagina next = paginafor(Resource.load("gfx/hud/sc-next").loadwait());
     public final Pagina bk = paginafor(Resource.load("gfx/hud/sc-back").loadwait());
     public final static RichText.Foundry ttfnd = new RichText.Foundry(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 10);
     private static Coord gsz = new Coord(4, 4);
-    private Pagina cur, pressed, dragging, layout[][] = new Pagina[gsz.x][gsz.y];
+    public Pagina cur, pressed, dragging, layout[][] = new Pagina[gsz.x][gsz.y];
     private int curoff = 0;
     private int pagseq = 0;
     private boolean loading = true;
     private Map<Character, Pagina> hotmap = new TreeMap<Character, Pagina>();
-	
+
     @RName("scm")
     public static class $_ implements Factory {
 	public Widget create(Coord c, Widget parent, Object[] args) {
@@ -73,7 +74,7 @@ public class MenuGrid extends Widget {
 	}
     }
 
-    private boolean cons(Pagina p, Collection<Pagina> buf) {
+    public boolean cons(Pagina p, Collection<Pagina> buf) {
 	Pagina[] cp = new Pagina[0];
 	Collection<Pagina> open, close = new HashSet<Pagina>();
 	synchronized(ui.sess.glob.paginae) {
@@ -122,11 +123,13 @@ public class MenuGrid extends Widget {
     public MenuGrid(Coord c, Widget parent) {
 	super(c, Inventory.invsz(gsz), parent);
 	ui.mnu = this;
+	CRAFT = paginafor(Resource.load("paginae/act/craft"));
 	Glob glob = ui.sess.glob;
 	Collection<Pagina> p = glob.paginae;
 	p.add(glob.paginafor(Resource.load("paginae/act/add")));
 	p.add(glob.paginafor(Resource.load("paginae/add/timer")));
 	p.add(glob.paginafor(Resource.load("paginae/add/wiki")));
+	p.add(glob.paginafor(Resource.load("paginae/add/craft")));
 //	p.add(glob.paginafor(Resource.load("paginae/add/anime/lol")));
 //	p.add(glob.paginafor(Resource.load("paginae/add/anime/raeg")));
 //	p.add(glob.paginafor(Resource.load("paginae/add/anime/facepalm")));
@@ -134,7 +137,7 @@ public class MenuGrid extends Widget {
 	//cons(null);
     }
 	
-    private static Comparator<Pagina> sorter = new Comparator<Pagina>() {
+    public static Comparator<Pagina> sorter = new Comparator<Pagina>() {
 	public int compare(Pagina a, Pagina b) {
 	    AButton aa = a.act(), ab = b.act();
 	    if((aa.ad.length == 0) && (ab.ad.length > 0))
@@ -537,12 +540,15 @@ public class MenuGrid extends Widget {
 	    cur = new LinkedList<Pagina>();
 	cons(r, sub);
 	cons(this.cur, cur);
+	if(isCrafting(r)){ui.gui.showCraftWnd();}
+	selectCraft(r);
 	if(sub.size() > 0) {
 	    this.cur = r;
 	    curoff = 0;
 	} else if(r == bk) {
 	    this.cur = paginafor(this.cur.act().parent);
-	    curoff = 0;
+	    this.curoff = 0;
+	    selectCraft(this.cur);
 	} else if(r == next) {
 	    int off = gsz.x*gsz.y - 2;
 	    if((curoff + off) >= cur.size())
@@ -551,12 +557,10 @@ public class MenuGrid extends Widget {
 		curoff += off;
 	} else {
 	    r.newp = 0;
-	    String [] ad = r.act().ad;
-	    if((ad == null) || (ad.length < 1)){return;}
-	    if(ad[0].equals("@")) {
-		usecustom(ad);
-	    } else {
-		wdgmsg("act", (Object[])ad);
+	    if (!senduse(r)) return;
+	    if(Config.menugrid_resets){
+		this.cur = null;
+		curoff = 0;
 	    }
             if(Config.menugrid_resets)
             {
@@ -565,6 +569,28 @@ public class MenuGrid extends Widget {
             }
 	}
 	updlayout();
+    }
+
+    public boolean senduse(Pagina r) {
+	String [] ad = r.act().ad;
+	if((ad == null) || (ad.length < 1)){
+	    return false;
+	}
+	if(ad[0].equals("@")) {
+	    usecustom(ad);
+	} else {
+	    wdgmsg("act", (Object[])ad);
+	}
+	return true;
+    }
+
+    private void selectCraft(Pagina r) {
+	if(r == null){
+	    return;
+	}
+	if(ui.gui.craftwnd != null){
+	    ui.gui.craftwnd.select(r);
+	}
     }
     
     public void tick(double dt) {
@@ -582,6 +608,8 @@ public class MenuGrid extends Widget {
 	    TimerPanel.toggle();
 	} else if(ad[1].equals("wiki")) {
 	    WikiBrowser.toggle();
+	} else if(ad[1].equals("craft")) {
+	    ui.gui.toggleCraftWnd();
 	}
 	use(null);
     }
@@ -634,5 +662,37 @@ public class MenuGrid extends Widget {
 	    return(true);
 	}
 	return(false);
+    }
+
+    public boolean isCrafting(Pagina p) {
+	return isChildOf(p, CRAFT) || CRAFT == p;
+    }
+
+    public boolean isCrafting(Resource res){
+	return isCrafting(paginafor(res));
+    }
+
+    public Pagina getParent(Pagina p){
+	if(p == null){
+	    return null;
+	}
+	try {
+	    Resource res = p.res();
+	    Resource.AButton ad = res.layer(Resource.action);
+	    if (ad == null)
+		return null;
+	    return paginafor(ad.parent);
+	} catch (Loading e){
+	    return null;
+	}
+    }
+
+    public boolean isChildOf(Pagina item, Pagina parent) {
+	Pagina p;
+	while((p = getParent(item)) != null){
+	    if(p == parent){ return true; }
+	    item = p;
+	}
+	return false;
     }
 }
