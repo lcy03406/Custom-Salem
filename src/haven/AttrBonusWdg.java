@@ -34,17 +34,19 @@ public class AttrBonusWdg extends Widget {
     };
 
     private BufferedImage bonusImg;
-    private static Coord bonusc = new Coord(5, 20);
+    private static Coord bonusc = new Coord(5, 35);
     private boolean needUpdate;
     private WItem[] witems;
     private Scrollbar bar;
+    private Label scalplabel;
 
     public AttrBonusWdg(Equipory equip, Coord c) {
 	super(c, SZ, equip);
 	bar = new Scrollbar(new Coord(170, bonusc.y), SZ.y-bonusc.y, this, 0, 1);
 	bar.visible = false;
 	visible = Utils.getprefb("artifice_bonuses", true);
-	new Label(new Coord(5, 0), this, "Artifice bonuses:", new Text.Foundry(new Font("SansSerif", Font.PLAIN, 12)));
+	scalplabel = new Label(new Coord(5, 0), this, "Calculating scalp score...", new Text.Foundry(new Font("SansSerif", Font.PLAIN, 12)));
+	new Label(new Coord(5, 15), this, "Artifice bonuses:", new Text.Foundry(new Font("SansSerif", Font.PLAIN, 12)));
     }
 
     @Override
@@ -82,6 +84,20 @@ public class AttrBonusWdg extends Widget {
 	Map<String, Integer> map = new HashMap<String, Integer>();
 	needUpdate = false;
 
+        int scalp_score = 0;
+        Tempers tm = this.ui.gui.tm;
+        for(int i : tm.lmax)
+            scalp_score += 2*(i/1000-5);
+        CharWnd cw = this.ui.gui.chrwdg;
+        if(cw != null && cw.attrs != null)
+        {
+            for(CharWnd.Attr at : cw.attrs.values())
+            {
+            scalp_score+=at.attr.base-5;
+            }
+        }
+        scalplabel.settext("Scalp score: "+scalp_score);
+        
 	for (WItem wi : witems) {
 	    if (wi != null && wi.item != null) {
 		try {
