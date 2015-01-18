@@ -138,6 +138,7 @@
 
 	<target name="clean">
 		<delete dir="build/classes" />
+		<delete dir="build/classes-lib" />
 		<delete dir="resources/compiled" />
 	</target>
 </project>
