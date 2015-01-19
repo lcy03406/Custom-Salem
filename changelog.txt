@@ -1,5 +1,8 @@
 $size[20]{$u{CHANGE LOG:}}
 
+$size[14]{$u{Update for 19.01.15 (Ender):}}
+  * added displaying of scalp score to character window (and thus removed it from the equipment window)
+ 
 $size[14]{$u{Update for 04.10.14 (Latikai):}}
   * Violin mute now also works in the stall area.
   * Gratefully merged in Ender's last updates!
