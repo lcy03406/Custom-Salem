@@ -770,13 +770,19 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     private void checkBelt(Object... args) {
 	int index = (Integer) args[0];
-	Resource res = belt[index].get();
-	if(menu.isCrafting(res)){
-	    showCraftWnd();
-	}
-	if(craftwnd != null) {
-	    craftwnd.select(res);
-	}
+        Indir<Resource> indir = belt[index];
+        if (indir != null){
+            try{
+                Resource res = indir.get();
+                if(menu.isCrafting(res)){
+                    showCraftWnd();
+                }
+                if(craftwnd != null) {
+                    craftwnd.select(res);
+                }
+            }
+            catch(Loading l){}
+        }
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
