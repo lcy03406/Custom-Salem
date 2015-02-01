@@ -750,8 +750,11 @@ public class OptWnd2 extends Window {
                     @Override
                     protected void changed()
                     {
-                        Utils.setpref(hname, super.text);
-                        Config.hnames[idx] = super.text;
+                        if(super.text.length() > 0)
+                        {
+                            Utils.setpref(hname, super.text.substring(0,1));
+                            Config.hnames[idx] = super.text;
+                        }
                     }
                 };
                 
@@ -762,8 +765,11 @@ public class OptWnd2 extends Window {
                     @Override
                     protected void changed()
                     {
-                        Utils.setpref(hcommand, super.text);
-                        Config.hcommands[idx] = super.text;
+                        if(super.text.length() > 0)
+                        {
+                            Utils.setpref(hcommand, super.text);
+                            Config.hcommands[idx] = super.text;
+                        }
                     }
                 };
                 

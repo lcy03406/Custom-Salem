@@ -483,7 +483,7 @@ public class CharWnd extends Window {
 		    return(tt);
 		}
 	    };
-	new ScalpScore(new Coord(400, 0), this);
+    	new ScalpScore(new Coord(400, 0), this);
 	new CPButton(new Coord(580, y), 40, this, "Reset") {
 	    {tooltip = RichText.render("Discard all currently accumulated proficiency points, and reset learning ability to 100%.", 250).tex();}
 
