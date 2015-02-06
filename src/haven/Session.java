@@ -33,7 +33,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.ref.*;
 
-public class Session {
+public class Session implements Owner {
     public static final int PVER = 35;
     
     public static final int MSG_SESS = 0;
