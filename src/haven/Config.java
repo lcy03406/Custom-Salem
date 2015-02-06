@@ -197,7 +197,9 @@ public class Config {
             String hname = String.format("hotkey%d", i+1);
             String hcommand = String.format("command%d", i+1);
             
-            hnames[i] = Utils.getpref(hname, defhotkeys[i]).substring(0, 1);
+            hnames[i] = Utils.getpref(hname, defhotkeys[i]);
+            if(hnames[i].length() > 1)
+                hnames[i] = hnames[i].substring(0, 1);
             hcommands[i] = Utils.getpref(hcommand, defcommands[i]);
         }
     }
