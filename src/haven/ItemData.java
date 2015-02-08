@@ -26,7 +26,33 @@ public class ItemData {
     public Inspiration.Data inspiration;
     public GobbleInfo.Data gobble;
     public ArtificeData artifice;
+    public VariantsInfo.Data variants;
     public int uses;
+
+    public ItemData(GItem item){
+	this(item.info());
+    }
+
+    public ItemData(List<ItemInfo> info) {
+	init(info);
+    }
+
+    public void init(List<ItemInfo> info) {
+	double multiplier = getMultiplier(info);
+	uses = getUses(info);
+	for(ItemInfo ii : info){
+	    String className = ii.getClass().getCanonicalName();
+	    if(ii instanceof FoodInfo){
+		food = new FoodInfo.Data((FoodInfo) ii, multiplier);
+	    } else if(ii instanceof Inspiration){
+		inspiration = new Inspiration.Data((Inspiration) ii);
+	    } else if(ii instanceof GobbleInfo){
+		gobble = new GobbleInfo.Data((GobbleInfo) ii, multiplier);
+	    } else if(className.equals("Slotted")){
+		artifice = new ArtificeData(ii);
+	    }
+	}
+    }
 
     public Tex longtip(Resource res) {
 	Resource.AButton ad = res.layer(Resource.action);
@@ -55,23 +81,8 @@ public class ItemData {
     public static void actualize(GItem item, Pagina pagina) {
 	String name = item.name();
 	if(name == null){ return; }
-	
-	List<ItemInfo> info = item.info();
-	double multiplier = getMultiplier(info);
-	ItemData data = new ItemData();
-	data.uses = getUses(info);
-	for(ItemInfo ii : info){
-	    String className = ii.getClass().getCanonicalName();
-	    if(ii instanceof FoodInfo){
-		data.food = new FoodInfo.Data((FoodInfo) ii, multiplier);
-	    } else if(ii instanceof Inspiration){
-		data.inspiration = new Inspiration.Data((Inspiration) ii);
-	    } else if(ii instanceof GobbleInfo){
-		data.gobble = new GobbleInfo.Data((GobbleInfo) ii, multiplier);
-	    } else if(className.equals("Slotted")){
-		data.artifice = new ArtificeData(ii);
-	    }
-	}
+
+	ItemData data = new ItemData(item);
 	name = pagina.res().name;
 	item_data.put(name, data);
 	store(name, data);
@@ -167,6 +178,7 @@ public class ItemData {
 	    builder.registerTypeAdapter(FoodInfo.Data.class, new FoodInfo.Data.DataAdapter().nullSafe());
 	    builder.registerTypeAdapter(GobbleInfo.Data.class, new GobbleInfo.Data.DataAdapter().nullSafe());
 	    builder.registerTypeAdapter(ArtificeData.class, new ArtificeData.DataAdapter().nullSafe());
+	    builder.registerTypeAdapter(VariantsInfo.Data.class, new VariantsInfo.Data.DataAdapter().nullSafe());
 	    builder.setPrettyPrinting();
 	    gson =  builder.create();
 	}

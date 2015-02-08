@@ -87,6 +87,8 @@ public class RootWidget extends ConsoleHost {
                 this.ui.sess.glob.brighten();
 	    }else if(isgui && code == KeyEvent.VK_C && alt){
 		ui.gui.toggleCraftWnd();
+	    }else if(code == KeyEvent.VK_F && alt && isgui){
+		ui.gui.toggleFilterWnd();
 	    }else if(code == KeyEvent.VK_Z && ctrl){
 		Config.center = !Config.center;
 		ui.message(String.format("Tile centering in turned %s", Config.center?"ON":"OFF"), GameUI.MsgType.INFO);

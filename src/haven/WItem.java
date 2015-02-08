@@ -37,6 +37,7 @@ import java.util.Map;
 public class WItem extends Widget implements DTarget {
     public static final Resource missing = Resource.load("gfx/invobjs/missing");
     private static final Coord hsz = new Coord(24, 24);//Inventory.sqsz.div(2);
+    private static final Color MATCH_COLOR = new Color(96, 255, 255, 128);
     public final GItem item;
     private Tex ltex = null;
     private Tex mask = null;
@@ -73,7 +74,7 @@ public class WItem extends Widget implements DTarget {
 	Alchemy ch = find(Alchemy.class, info);
 	if(ch != null)
 	    img = ItemInfo.catimgsh(5, img, ch.smallmeter(),
-		    Text.std.renderf("(%d%% pure)", (int)(ch.a[0] * 100)).img);
+		    Text.std.renderf("(%d%% pure)", (int) (ch.a[0] * 100)).img);
 	return(img);
     }
     
@@ -103,7 +104,7 @@ public class WItem extends Widget implements DTarget {
     public BufferedImage longtip(List<ItemInfo> info) {
 	return(longtip(item, info));
     }
-    
+
     public class ItemTip implements Indir<Tex> {
 	private final TexI tex;
 	
@@ -135,15 +136,16 @@ public class WItem extends Widget implements DTarget {
     private List<ItemInfo> ttinfo = null;
     public Object tooltip(Coord c, Widget prev) {
 	long now = System.currentTimeMillis();
-	if(prev == this) {
-	} else if(prev instanceof WItem) {
-	    long ps = ((WItem)prev).hoverstart;
-	    if(now - ps < 1000)
+	if (prev != this) {
+	    if(prev instanceof WItem) {
+		long ps = ((WItem)prev).hoverstart;
+		if(now - ps < 1000)
+		    hoverstart = now;
+		else
+		    hoverstart = ps;
+	    } else {
 		hoverstart = now;
-	    else
-		hoverstart = ps;
-	} else {
-	    hoverstart = now;
+	    }
 	}
 	try {
 	    if(item == null){return "...";}
@@ -196,7 +198,7 @@ public class WItem extends Widget implements DTarget {
 	    return((cinf == null)?null:cinf.olcol());
 	}
     };
-    
+
     public final AttrCache<Tex> itemnum = new AttrCache<Tex>() {
 	protected Tex find(List<ItemInfo> info) {
 	    GItem.NumberInfo ninf = ItemInfo.find(GItem.NumberInfo.class, info);
@@ -215,8 +217,7 @@ public class WItem extends Widget implements DTarget {
     
     public final AttrCache<List<Integer>> heurmeter = new AttrCache<List<Integer>>() {
 	protected List<Integer> find(List<ItemInfo> info) {
-	    List<Integer> meters = ItemInfo.getMeters(info);
-	    return meters;
+	    return ItemInfo.getMeters(info);
 	}
     };
 
@@ -231,6 +232,7 @@ public class WItem extends Widget implements DTarget {
 	    Resource res = item.res.get();
 	    Tex tex = res.layer(Resource.imgc).tex();
 	    drawmain(g, tex);
+	    draw_highlight(g, res, tex);
 	    if(item.num >= 0) {
 		g.atext(Integer.toString(item.num), tex.sz(), 1, 1);
 	    } else if(itemnum.get() != null) {
@@ -250,26 +252,34 @@ public class WItem extends Widget implements DTarget {
 	    }
 	    checkContents(g);
 	    heurmeters(g);
-	    if(olcol.get() != null) {
-		if(cmask != res) {
-		    mask = null;
-		    if(tex instanceof TexI)
-			mask = ((TexI)tex).mkmask();
-		    cmask = res;
-		}
-		if(mask != null) {
-		    g.chcolor(olcol.get());
-		    g.image(mask, Coord.z);
-		    g.chcolor();
-		}
-	    }
 	    drawpurity(g);
+	    item.testMatch();
 	} catch(Loading e) {
 	    missing.loadwait();
 	    g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
 	}
     }
-    
+
+    private void draw_highlight(GOut g, Resource res, Tex tex) {
+	Color col = olcol.get();
+	if(col == null && item.matched && GItem.filter != null){
+	    col = MATCH_COLOR;
+	}
+	if(col != null) {
+	    if(cmask != res) {
+		mask = null;
+		if(tex instanceof TexI)
+		    mask = ((TexI)tex).mkmask();
+		cmask = res;
+	    }
+	    if(mask != null) {
+		g.chcolor(col);
+		g.image(mask, Coord.z);
+		g.chcolor();
+	    }
+	}
+    }
+
     public final AttrCache<Tex> purity = new AttrCache<Tex>() {
 	protected Tex find(List<ItemInfo> info) {
 	    Alchemy alch = ItemInfo.find(Alchemy.class, info);

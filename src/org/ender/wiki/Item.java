@@ -164,8 +164,8 @@ public class Item {
     public void setClothing(int slots) {
 	this.cloth_slots = slots;
 	if(slots == 0){return;}
-	    this.cloth_pmin = 100;
-	    this.cloth_pmax = 100;
+	this.cloth_pmin = 100;
+	this.cloth_pmax = 100;
 	this.cloth_profs = new String[0];
     }
     
@@ -174,7 +174,7 @@ public class Item {
 	try{
 	    this.art_pmin = 100 - Integer.parseInt(ds[0]);
 	    this.art_pmax = 100 - Integer.parseInt(ds[1]);
-	} catch(Exception e){}
+	} catch(Exception ignored){}
 	this.art_profs = profs;
 	this.art_bonuses = bonuses;
     }
