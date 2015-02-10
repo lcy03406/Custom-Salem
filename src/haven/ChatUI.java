@@ -934,7 +934,7 @@ public class ChatUI extends Widget {
 	    if(msg == "msg") {
 		String t = (String)args[0];
 		String line = parseTags((String)args[1]);
-		if(t.equals("in")) {
+		if(t.equals("in") && line!=null) {
 		    Message cmsg = new InMessage(line, iw());
 		    append(cmsg);
 		    notify(cmsg);
@@ -942,7 +942,7 @@ public class ChatUI extends Widget {
                     //project alert
                     if(!visible)
                         read = false;
-		} else if(t.equals("out")) {
+		} else if(t.equals("out") && line!=null) {
 		    append(new OutMessage(line, iw()));
 		}
 	    } else if(msg == "err") {
