@@ -51,15 +51,15 @@ public class ItemDrag extends WItem {
 		if (((DTarget2) w).drop(c, c.add(doff.inv()), this.item))
 		    return (true);
 	    }
-	}
-	for(Widget wdg = w.lchild; wdg != null; wdg = wdg.prev) {
-	    if(wdg == this)
-		continue;
-	    Coord cc = w.xlate(wdg.c, true);
-	    if(c.isect(cc, wdg.sz)) {
-		if(dropon(wdg, c.add(cc.inv())))
-		    return(true);
-	    }
+            for(Widget wdg = w.lchild; wdg != null; wdg = wdg.prev) {
+                if(wdg == this)
+                    continue;
+                Coord cc = w.xlate(wdg.c, true);
+                if(c.isect(cc, wdg.sz)) {
+                    if(dropon(wdg, c.add(cc.inv())))
+                        return(true);
+                }
+            }
 	}
 	return(false);
     }
