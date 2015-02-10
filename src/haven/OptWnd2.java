@@ -706,20 +706,6 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("The humours will not be rendered.");}
 		
 	    }.a = Config.hide_tempers;
-            
-            //DO allow scrolling out of toolbelts
-            new CheckBox(new Coord(300, 300), tab, "Allow scrolling items out of a toolbelt."){
-		@Override
-		public void changed(boolean val) {
-		    super.changed(val);
-		    Config.toolbelt_scrolling = val;
-		    Utils.setprefb("toolbelt_scrolling", val);
-                    this.ui.gui.updateRenderFilter();
-		}
-
-		{tooltip = Text.render("If, for some reason, you prefer this behaviour.");}
-		
-	    }.a = Config.toolbelt_scrolling;
         }
         
         /* RADAR TAB */

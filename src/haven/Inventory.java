@@ -170,55 +170,11 @@ public class Inventory extends Widget implements DTarget {
     }
 
     public boolean mousewheel(Coord c, int amount) {
-	if(ui.modshift) 
-        {
-            //ideally I could just say 
-            //      wdgmsg("xfer", amount, ui.modflags());
-            //as in haven. but I can't 
-
-                if(amount < 0)
-                {
-                    if(ui.modctrl && !ui.gui.invwnd.names.keySet().contains(this))
-                    {
-                        //transfer FROM this container
-                        List<GItem> curritems = new LinkedList<GItem>();
-                        curritems.addAll(wmap.keySet());
-                        Collections.sort(curritems);
-                        int transferred = 0;
-                        for(int i = 0;transferred<-amount && i<curritems.size();i++)
-                        {
-                            int idx = ui.modmeta?i:curritems.size()-1-i;
-                            if(!curritems.get(idx).marked)
-                            {
-                                curritems.get(idx).wdgmsg("transfer",Coord.z);
-                                curritems.get(idx).marked = true;
-                                transferred += 1;
-                            }                        
-                        }
-                    }
-                    else
-                    {
-                        //no ordering
-                        wdgmsg("xfer", amount);
-                    }
-                }
-                else
-                {
-                    if(ui.modctrl && !ui.gui.invwnd.names.keySet().contains(this))
-                    {
-                        //transfer TO this container
-                        ui.gui.transfer_sorted_from_inventory(amount);
-                    }
-                    else
-                    {
-                        //no ordering
-                        wdgmsg("xfer", amount);
-                    }
-                }
-	}
-	return(true);
+        if(ui.modshift) {
+            wdgmsg("xfer", amount);
+        }
+        return(true);
     }
-
     public Widget makechild(String type, Object[] pargs, Object[] cargs) {
 	Coord c = (Coord)pargs[0];
 	Widget ret = gettype(type).create(c, this, cargs);
