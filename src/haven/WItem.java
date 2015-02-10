@@ -38,6 +38,7 @@ public class WItem extends Widget implements DTarget {
     public static final Resource missing = Resource.load("gfx/invobjs/missing");
     private static final Coord hsz = new Coord(24, 24);//Inventory.sqsz.div(2);
     private static final Color MATCH_COLOR = new Color(96, 255, 255, 128);
+    public static final Color CARAT_COLOR = new Color(192, 160, 0);
     public final GItem item;
     private Tex ltex = null;
     private Tex mask = null;
@@ -226,6 +227,22 @@ public class WItem extends Widget implements DTarget {
 	    return ItemInfo.getContent(info);
 	}
     };
+
+    public final AttrCache<Float> carats = new AttrCache<Float>() {
+	protected Float find(List<ItemInfo> info) {
+	    return ItemInfo.getCarats(info);
+	}
+    };
+
+    public final AttrCache<Tex> carats_tex = new AttrCache<Tex>() {
+	protected Tex find(List<ItemInfo> info) {
+	    float c = carats.get();
+	    if(c > 0){
+		return(new TexI(Utils.outline2(Text.render(String.format("%.2f",c), CARAT_COLOR).img, Color.DARK_GRAY)));
+	    }
+	    return null;
+	}
+    };
     
     public void draw(GOut g) {
 	try {
@@ -237,7 +254,9 @@ public class WItem extends Widget implements DTarget {
 		g.atext(Integer.toString(item.num), tex.sz(), 1, 1);
 	    } else if(itemnum.get() != null) {
 		g.aimage(itemnum.get(), tex.sz(), 1, 1);
-	    } else if(heurnum.get() != null){
+	    } else if(carats_tex.get() != null) {
+		g.aimage(carats_tex.get(), tex.sz(), 1, 1);
+	    } else if(heurnum.get() != null) {
 		g.aimage(heurnum.get(), tex.sz(), 1, 1);
 	    }
 	    if(item.meter > 0) {
@@ -280,8 +299,8 @@ public class WItem extends Widget implements DTarget {
 	}
     }
 
-    public final AttrCache<Tex> purity = new AttrCache<Tex>() {
-	protected Tex find(List<ItemInfo> info) {
+    public final AttrCache<Alchemy> alch = new AttrCache<Alchemy>() {
+	protected Alchemy find(List<ItemInfo> info) {
 	    Alchemy alch = ItemInfo.find(Alchemy.class, info);
 	    if(alch == null){
 		ItemInfo.Contents cont = ItemInfo.find(ItemInfo.Contents.class, info);
@@ -289,24 +308,31 @@ public class WItem extends Widget implements DTarget {
 		alch = ItemInfo.find(Alchemy.class, cont.sub);
 		if(alch == null){return(null);}
 	    }
-	    String num = String.format("%d%%",(int)(100*alch.purity()));
-            Color c = tryGetFoodColor(info, alch);
-	    return(new TexI(Utils.outline2(Text.render(num, c).img, Color.DARK_GRAY)));
+	    return alch;
+	}
+    };
+
+    public final AttrCache<Tex> purity = new AttrCache<Tex>() {
+	protected Tex find(List<ItemInfo> info) {
+	    Alchemy a = alch.get();
+	    if(a != null) {
+		String num = String.format("%.2f%%", 100 * a.purity());
+		Color c = tryGetFoodColor(info, a);
+		return (new TexI(Utils.outline2(Text.render(num, c).img, Color.DARK_GRAY)));
+	    }
+	    return null;
 	}
     };
     
     public final AttrCache<Tex> puritymult = new AttrCache<Tex>() {
 	protected Tex find(List<ItemInfo> info) {
-	    Alchemy alch = ItemInfo.find(Alchemy.class, info);
-	    if(alch == null){
-		ItemInfo.Contents cont = ItemInfo.find(ItemInfo.Contents.class, info);
-		if(cont == null){return null;}
-		alch = ItemInfo.find(Alchemy.class, cont.sub);
-		if(alch == null){return(null);}
+	    Alchemy a = alch.get();
+	    if(a != null) {
+		String num = String.format("%.2f",1+a.purity());
+		Color c = tryGetFoodColor(info, a);
+		return (new TexI(Utils.outline2(Text.render(num, c).img, Color.DARK_GRAY)));
 	    }
-	    String num = String.format("%.2f%%",100*alch.purity());
-            Color c = tryGetFoodColor(info, alch);
-	    return(new TexI(Utils.outline2(Text.render(num, c).img, Color.DARK_GRAY)));
+	    return null;
 	}
     };
     
@@ -409,29 +435,42 @@ public class WItem extends Widget implements DTarget {
     }
     
     public boolean mousedown(Coord c, int btn) {
-	boolean inv = parent instanceof Inventory;
-	if(btn == 1) {
-	    if(ui.modshift){
-		if(ui.modmeta){
-		    if(inv){ wdgmsg("transfer-same", item.resname()); }
-		} else {
-		    item.wdgmsg("transfer", c);
-		}
-	    } else if(ui.modctrl) {
-		if(ui.modmeta){
-		    if(inv){ wdgmsg("drop-same", item.resname()); }
-		} else {
-		    item.wdgmsg("drop", c);
-		}
-	    } else {
-		item.wdgmsg("take", c);
-	    }
-	    return(true);
+	if(checkXfer(btn)) {
+	    return true;
+	} else if(btn == 1) {
+	    item.wdgmsg("take", c);
+	    return true;
 	} else if(btn == 3) {
 	    item.wdgmsg("iact", c);
-	    return(true);
+	    return true;
 	}
-	return(false);
+	return (false);
+    }
+
+    private boolean checkXfer(int button) {
+	boolean inv = parent instanceof Inventory;
+	if(ui.modshift) {
+	    if(ui.modmeta) {
+		if(inv) {
+		    wdgmsg("transfer-same", item.resname(), button == 3);
+		    return true;
+		}
+	    } else if(button == 1) {
+		item.wdgmsg("transfer", c);
+		return true;
+	    }
+	} else if(ui.modctrl) {
+	    if(ui.modmeta) {
+		if(inv) {
+		    wdgmsg("drop-same", item.resname(), button == 3);
+		    return true;
+		}
+	    } else if(button == 1) {
+		item.wdgmsg("drop", c);
+		return true;
+	    }
+	}
+	return false;
     }
     
     public boolean drop(Coord cc, Coord ul) {

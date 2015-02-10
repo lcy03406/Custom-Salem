@@ -27,6 +27,8 @@
 package haven;
 
 import haven.ChatUI.MultiChat.NamedMessage;
+import haven.minimap.Radar;
+
 import static haven.Window.cbtni;
 
 import java.util.*;
@@ -58,7 +60,9 @@ public class ChatUI extends Widget {
     private static int basesize = 12;
     private QuickLine qline = null;
     private final LinkedList<Notification> notifs = new LinkedList<Notification>();
-    
+
+    private static final Pattern tags_patt = Pattern.compile("\\$(?<tag>hl)\\[(?<val>[^\\[\\]]*)\\]");
+
     public ChatUI(Coord c, int w, Widget parent) {
 	super(c.add(0, -50), new Coord(w, 50), parent);
 	chansel = new Selector(Coord.z, new Coord(selw, sz.y));
@@ -85,7 +89,11 @@ public class ChatUI extends Widget {
         
         this.basesize = basesize;
     }
-    
+
+    public static boolean hasTags(String text){
+	return tags_patt.matcher(text).find();
+    }
+
     private static Color lighter(Color col){
 	int hsl[] = new int[3];
 	Utils.rgb2hsl(col.getRed(), col.getGreen(), col.getBlue(), hsl);
@@ -193,7 +201,7 @@ public class ChatUI extends Widget {
 		else
 		    this.t = fnd.render(RichText.Parser.quote(text), w, TextAttribute.FOREGROUND, col);
 	    }
-	    
+
 	    public Text text() {
 		return(t);
 	    }
@@ -732,15 +740,17 @@ public class ChatUI extends Widget {
 
 	public void uimsg(String msg, Object... args) {
 	    if((msg == "msg") || (msg == "log")) {
-		String line = (String)args[0];
-		Color col = null;
-		if(args.length > 1) col = (Color)args[1];
-		if(col == null) col = Color.WHITE;
-		boolean notify = (args.length > 2)?(((Integer)args[2]) != 0):false;
-		Message cmsg = new SimpleMessage(line, col, iw());
-		append(cmsg);
-		if(notify)
-		    notify(cmsg);
+		String line = parseTags((String)args[0]);
+		if(line != null) {
+		    Color col = null;
+		    if (args.length > 1) col = (Color) args[1];
+		    if (col == null) col = Color.WHITE;
+		    boolean notify = (args.length > 2) ? (((Integer) args[2]) != 0) : false;
+		    Message cmsg = new SimpleMessage(line, col, iw());
+		    append(cmsg);
+		    if (notify)
+			notify(cmsg);
+		}
 	    } else {
 		super.uimsg(msg, args);
 	    }
@@ -837,14 +847,16 @@ public class ChatUI extends Widget {
 	public void uimsg(String msg, Object... args) {
 	    if(msg == "msg") {
 		Integer from = (Integer)args[0];
-		String line = (String)args[1];
-		if(from == null) {
-		    append(new MyMessage(line, iw()));
-		} else {
-		    Message cmsg = new NamedMessage(from, line, fromcolor(from), iw());
-		    append(cmsg);
-		    if(notify)
-			notify(cmsg);
+		String line = parseTags((String)args[1]);
+		if(line != null) {
+		    if (from == null) {
+			append(new MyMessage(line, iw()));
+		    } else {
+			Message cmsg = new NamedMessage(from, line, fromcolor(from), iw());
+			append(cmsg);
+			if (notify)
+			    notify(cmsg);
+		    }
 		}
                 //project alert
                 if(!visible)
@@ -868,19 +880,21 @@ public class ChatUI extends Widget {
 	    if(msg == "msg") {
 		Integer from = (Integer)args[0];
 		int gobid = (Integer)args[1];
-		String line = (String)args[2];
-		Color col = Color.WHITE;
-		synchronized(ui.sess.glob.party.memb) {
-		    Party.Member pm = ui.sess.glob.party.memb.get((long)gobid);
-		    if(pm != null)
-			col = lighter(pm.col);
-		}
-		if(from == null) {
-		    append(new MyMessage(line, iw()));
-		} else {
-		    Message cmsg = new NamedMessage(from, line, col, iw());
-		    append(cmsg);
-		    notify(cmsg);
+		String line = parseTags((String)args[2]);
+		if(line != null) {
+		    Color col = Color.WHITE;
+		    synchronized (ui.sess.glob.party.memb) {
+			Party.Member pm = ui.sess.glob.party.memb.get((long) gobid);
+			if (pm != null)
+			    col = lighter(pm.col);
+		    }
+		    if (from == null) {
+			append(new MyMessage(line, iw()));
+		    } else {
+			Message cmsg = new NamedMessage(from, line, col, iw());
+			append(cmsg);
+			notify(cmsg);
+		    }
 		}
                 //project alert
                 if(!visible)
@@ -919,7 +933,7 @@ public class ChatUI extends Widget {
 	public void uimsg(String msg, Object... args) {
 	    if(msg == "msg") {
 		String t = (String)args[0];
-		String line = (String)args[1];
+		String line = parseTags((String)args[1]);
 		if(t.equals("in")) {
 		    Message cmsg = new InMessage(line, iw());
 		    append(cmsg);
@@ -1360,5 +1374,26 @@ public class ChatUI extends Widget {
 	    }
 	}
 	return(super.globtype(key, ev));
+    }
+
+    private static  String parseTags(String text) {
+	try {
+	    Matcher m = tags_patt.matcher(text);
+	    while (m.find()) {
+		String tag = m.group("tag");
+		String val = m.group("val");
+		if (tag.equals("hl")) {
+		    try {
+			long id = Long.parseLong(val);
+			Gob gob = UI.instance.sess.glob.oc.getgob(id);
+			if (gob != null) {
+			    gob.setattr(new GobHighlight(gob));
+			}
+		    } catch (NumberFormatException ignored) {}
+		    return null;
+		}
+	    }
+	} catch(Exception ignored) {}
+	return text;
     }
 }
