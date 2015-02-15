@@ -60,8 +60,7 @@ public class ChatUI extends Widget {
     private static int basesize = 12;
     private QuickLine qline = null;
     private final LinkedList<Notification> notifs = new LinkedList<Notification>();
-
-    private static final Pattern tags_patt = Pattern.compile("\\$(?<tag>hl)\\[(?<val>[^\\[\\]]*)\\]");
+    private static final Pattern tags_patt = Pattern.compile("\\$(hl)\\[([^\\[\\]]*)\\]");
 
     public ChatUI(Coord c, int w, Widget parent) {
 	super(c.add(0, -50), new Coord(w, 50), parent);
@@ -1380,8 +1379,8 @@ public class ChatUI extends Widget {
 	try {
 	    Matcher m = tags_patt.matcher(text);
 	    while (m.find()) {
-		String tag = m.group("tag");
-		String val = m.group("val");
+		String tag = m.group(1);
+		String val = m.group(2);
 		if (tag.equals("hl")) {
 		    try {
 			long id = Long.parseLong(val);
