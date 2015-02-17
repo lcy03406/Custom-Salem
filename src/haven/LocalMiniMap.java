@@ -139,13 +139,16 @@ public class LocalMiniMap extends Window implements Console.Directory{
 		} catch (LoadingMap e) {
 		    return null;
 		}
+                
 		BufferedImage tex = tileimg(t, texes);
                 
 		if(tex != null){
 		    buf.setRGB(c.x, c.y, tex.getRGB(Utils.floormod(c.x, tex.getWidth()),
 			    Utils.floormod(c.y, tex.getHeight())));
 		} else {
-		    return null;
+                    //no texture for this specific tile
+                    //used to be a null return, but now we just draw it transparent
+		    //return null;
 		}
 
 		try {
