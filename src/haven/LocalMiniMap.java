@@ -106,21 +106,17 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	}
     }
 
-    private static BufferedImage tileimg(int t, BufferedImage[] texes) {
+    private static BufferedImage tileimg(int t, BufferedImage[] texes) throws Loading {
 	BufferedImage img = texes[t];
 	if(img == null) {
 	    Resource r = UI.instance.sess.glob.map.tilesetr(t);
 	    if(r == null)
 		return(null);
-	    try{
-		Resource.Image ir = r.layer(Resource.imgc);
-		if(ir == null)
-		    return(null);
-		img = ir.img;
-		texes[t] = img;
-	    }catch (Loading e){
-		return null;
-	    }
+            Resource.Image ir = r.layer(Resource.imgc);
+            if(ir == null)
+                return(null);
+            img = ir.img;
+            texes[t] = img;
 	}
 	return(img);
     }
@@ -140,15 +136,17 @@ public class LocalMiniMap extends Window implements Console.Directory{
 		    return null;
 		}
                 
-		BufferedImage tex = tileimg(t, texes);
+                BufferedImage tex = null;
+                try{
+                     tex = tileimg(t, texes);
+                }catch(Loading e)
+                {
+                    return null;
+                }
                 
 		if(tex != null){
 		    buf.setRGB(c.x, c.y, tex.getRGB(Utils.floormod(c.x, tex.getWidth()),
 			    Utils.floormod(c.y, tex.getHeight())));
-		} else {
-                    //no texture for this specific tile
-                    //used to be a null return, but now we just draw it transparent
-		    //return null;
 		}
 
 		try {
