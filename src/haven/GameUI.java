@@ -271,11 +271,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
 	private void updweight() {
 	    int weight = wui.weight;
+            int nr = 0;
+            if(wui.maininv != null)
+                nr = wui.maininv.wmap.size();
 	    int cap = 25000;
 	    Glob.CAttr ca = ui.sess.glob.cattr.get("carry");
 	    if(ca != null)
 		cap = ca.comp;
-	    wlbl.settext(String.format("Carrying %.2f/%.2f kg", weight / 1000.0, cap / 1000.0));
+	    wlbl.settext(String.format("Carrying %.2f/%.2f kg (%d in inventory)", weight / 1000.0, cap / 1000.0, nr));
 	    wlbl.setcolor((weight > cap)?Color.RED:Color.WHITE);
 	}
 
