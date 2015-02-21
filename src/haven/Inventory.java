@@ -193,8 +193,8 @@ public class Inventory extends Widget implements DTarget {
     }
     public Coord updateClientSideSize()
     {
-        int maxx = 3;
-        int maxy = 3;
+        int maxx = 2;
+        int maxy = 2;
         for(WItem w : wmap.values())
         {
             Coord wc = sqroff(w.c);
