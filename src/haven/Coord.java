@@ -141,6 +141,11 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
     public Coord mod(Coord d) {
 	return(new Coord(Utils.floormod(x, d.x), Utils.floormod(y, d.y)));
     }
+    
+    public Coord transpose()
+    {
+        return new Coord(this.y,this.x);
+    }
 	
     public boolean isect(Coord c, Coord s) {
 	return((x >= c.x) && (y >= c.y) && (x < c.x + s.x) && (y < c.y + s.y));

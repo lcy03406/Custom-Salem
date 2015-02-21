@@ -27,6 +27,7 @@
 package haven;
 
 import java.util.*;
+import com.google.common.collect.*;
 
 public class Inventory extends Widget implements DTarget {
     private static final Tex obt = Resource.loadtex("gfx/hud/inv/obt");
@@ -78,7 +79,7 @@ public class Inventory extends Widget implements DTarget {
 	}
     };
 
-    Coord isz;
+    Coord isz,isz_client;
     Map<GItem, WItem> wmap = new HashMap<GItem, WItem>();
     public int newseq = 0;
 
@@ -90,20 +91,121 @@ public class Inventory extends Widget implements DTarget {
     }
 
     public void draw(GOut g) {
-	invsq(g, Coord.z, isz);
-	for(Coord cc = new Coord(0, 0); cc.y < isz.y; cc.y++) {
-	    for(cc.x = 0; cc.x < isz.x; cc.x++) {
+	invsq(g, Coord.z, isz_client);
+	for(Coord cc = new Coord(0, 0); cc.y < isz_client.y; cc.y++) {
+	    for(cc.x = 0; cc.x < isz_client.x; cc.x++) {
 		invrefl(g, sqoff(cc), isqsz);
 	    }
 	}
 	super.draw(g);
     }
 
+    BiMap<Coord,Coord> dictionaryClientServer;
+    boolean isTranslated = false;
     public Inventory(Coord c, Coord sz, Widget parent) {
 	super(c, invsz(sz), parent);
 	isz = sz;
+        isz_client = sz;
+        dictionaryClientServer = HashBiMap.create();
     }
 
+    public void sortItemsLocally()
+    {
+        isTranslated = true;
+        //first step: deciding the size of the sorted inventory
+        int nr_items = wmap.size();
+        float aspect_ratio = 6/4;
+        int width  = Math.max(4,1+(int) Math.ceil(Math.sqrt(aspect_ratio*nr_items)));
+        int height = Math.max(4,1+(int) Math.ceil(nr_items/width));
+        //now sort the item array
+        List<WItem> array = new ArrayList<WItem>(wmap.values());
+        Collections.sort(array, new Comparator<WItem>(){
+            @Override
+            public int compare(WItem o1, WItem o2) {
+                return o1.item.resname().compareTo(o2.item.resname());
+            }
+        });
+        //assign the new locations to each of the items and add new translations
+        int index = 0;
+        BiMap<Coord,Coord> newdictionary = HashBiMap.create();
+        for(WItem w : array)
+        {
+            Coord newloc = new Coord((index%(width)),(int)(index/(width)));
+            
+            //adding the translation to the dictionary
+                Coord currentloc = sqroff(w.c);
+                //was oldloc already translated?
+                Coord translatedoldloc = dictionaryClientServer.get(currentloc);
+                if(translatedoldloc != null)
+                    currentloc = translatedoldloc;
+                
+                newdictionary.put(newloc,currentloc);
+                
+            //moving the widget to its ordered place
+            w.c = sqoff(newloc);
+            
+            //on to the next location
+            index++;
+        }
+        dictionaryClientServer = newdictionary;
+        
+        //resize the inventory to the new set-up
+        this.updateClientSideSize();
+    }
+    
+    public Coord translateCoordinatesClientServer(Coord client)
+    {
+        if(!isTranslated)
+            return client;
+        Coord server = client;
+        if(dictionaryClientServer.containsKey(client))
+        {
+            server = dictionaryClientServer.get(client);
+        }
+        return server;
+    }
+    
+    public Coord translateCoordinatesServerClient(Coord server)
+    {
+        if(!isTranslated)
+            return server;
+        Coord client = server;
+        BiMap<Coord,Coord> dictionaryServerClient = dictionaryClientServer.inverse();
+        if(dictionaryServerClient.containsKey(server))
+        {
+            client = dictionaryServerClient.get(server);
+        }
+        else if(dictionaryClientServer.containsKey(client)){
+            //we already mapped something to this spot ourself!
+            //put it somewhere else
+            int width = isz_client.x;
+            int height = isz_client.y;
+            int index = 0;
+            Coord newloc;
+            do{
+                newloc = new Coord((index%(width-1)),(int)(index/(width-1)));
+                index++;
+            }while(dictionaryClientServer.containsKey(newloc));
+            client = newloc;
+            dictionaryClientServer.put(client,server);
+        }
+        return client;
+    }
+    public Coord updateClientSideSize()
+    {
+        int maxx = 3;
+        int maxy = 3;
+        for(WItem w : wmap.values())
+        {
+            Coord wc = sqroff(w.c);
+            maxx = Math.max(wc.x,maxx);
+            maxy = Math.max(wc.y,maxy);
+        }
+        this.isz_client = new Coord(maxx+2,maxy+2);
+        this.resize(invsz(isz_client));
+        return isz_client;
+    }
+    
     public static Coord sqoff(Coord c) {
 	return(c.mul(sqsz).add(ctl.sz()));
     }
@@ -177,11 +279,15 @@ public class Inventory extends Widget implements DTarget {
     }
     public Widget makechild(String type, Object[] pargs, Object[] cargs) {
 	Coord c = (Coord)pargs[0];
+        c = translateCoordinatesServerClient(c);
 	Widget ret = gettype(type).create(c, this, cargs);
 	if(ret instanceof GItem) {
 	    GItem i = (GItem)ret;
 	    wmap.put(i, new WItem(sqoff(c), this, i));
 	    newseq++;
+            
+            if(isTranslated)
+                updateClientSideSize();
 	}
 	return(ret);
     }
@@ -190,12 +296,15 @@ public class Inventory extends Widget implements DTarget {
 	super.cdestroy(w);
 	if(w instanceof GItem) {
 	    GItem i = (GItem)w;
-	    ui.destroy(wmap.remove(i));
+            WItem wi = wmap.remove(i);
+	    ui.destroy(wi);
 	}
     }
 
     public boolean drop(Coord cc, Coord ul) {
-	wdgmsg("drop", sqroff(ul.add(isqsz.div(2))));
+        Coord clientcoords = sqroff(ul.add(isqsz.div(2)));
+        Coord servercoords = translateCoordinatesClientServer(clientcoords);
+	wdgmsg("drop", servercoords);
 	return(true);
     }
 
@@ -206,7 +315,14 @@ public class Inventory extends Widget implements DTarget {
     public void uimsg(String msg, Object... args) {
 	if(msg == "sz") {
 	    isz = (Coord)args[0];
-	    resize(invsz(isz));
+            if(isTranslated)
+            {
+                resize(invsz(updateClientSideSize()));
+            }
+            else
+            {
+                resize(invsz(isz));
+            }
 	}
     }
     

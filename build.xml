@@ -28,6 +28,7 @@
 				<pathelement path="lib/jogg.jar" />
 				<pathelement path="lib/jglob.jar" />
 				<pathelement path="lib/gson-2.3.jar" />
+				<pathelement path="lib/guava-18.0.jar" />
 			</classpath>
 			<compilerarg value="-Xlint:unchecked" />
 			<!-- <compilerarg value="-Xbarda" /> -->
@@ -68,6 +69,9 @@
 		<unjar src="lib/gson-2.3.jar" dest="build/classes-lib">
 			<patternset excludes="META-INF/**" />
 		</unjar>
+		<unjar src="lib/guava-18.0.jar" dest="build/classes-lib">
+			<patternset excludes="META-INF/**" />
+		</unjar>
 	</target>
 
 	<target name="resources">
@@ -90,7 +94,7 @@
 			<fileset file="etc/item_data.json" />
 			<manifest>
 				<attribute name="Main-Class" value="haven.MainFrame" />
-				<attribute name="Class-Path" value="jogl-all.jar gluegen-rt.jar client-res.jar builtin-res.jar salem-res.jar gson-2.3.jar" />
+				<attribute name="Class-Path" value="jogl-all.jar gluegen-rt.jar client-res.jar builtin-res.jar salem-res.jar gson-2.3.jar guava-18.0.jar" />
 			</manifest>
 		</jar>
 		<chmod file="build/salem.jar" perm="a+x" />

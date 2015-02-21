@@ -250,6 +250,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	private Label[] labels = new Label[0];
 	private final GameUI wui;
 	private final Label wlbl;
+        private final IButton sbtn;
 
 	@RName("invwnd")
 	public static class $_ implements Factory {
@@ -263,9 +264,24 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    super(c, sz, parent, cap);
 	    if((this.wui = wui) != null) {
 		wlbl = new Label(Coord.z, this, "");
+                sbtn = new IButton(Coord.z, this, Window.obtni[0], Window.obtni[1], Window.obtni[2]){
+                    {tooltip = Text.render("Sort the items in your main inventory.");}
+
+                    @Override
+                    public void click() {
+                        if(InvWindow.this.wui != null)
+                        {
+                            InvWindow.this.wui.maininv.sortItemsLocally();
+                            InvWindow.this.repack();
+                        }
+                    }
+                };
+                sbtn.visible = true;
+                this.addtwdg(sbtn);
 		updweight();
 	    } else {
 		wlbl = null;
+                sbtn = null;
 	    }
 	}
 
