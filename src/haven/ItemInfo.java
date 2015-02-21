@@ -116,16 +116,22 @@ public abstract class ItemInfo {
     public static BufferedImage catimgs(int margin, BufferedImage... imgs) {
 	int w = 0, h = -margin;
 	for(BufferedImage img : imgs) {
-	    if(img.getWidth() > w)
-		w = img.getWidth();
-	    h += img.getHeight() + margin;
+	    if(img != null)
+            {
+                if(img.getWidth() > w)
+                    w = img.getWidth();
+                h += img.getHeight() + margin;
+            }
 	}
 	BufferedImage ret = TexI.mkbuf(new Coord(w, h));
 	Graphics g = ret.getGraphics();
 	int y = 0;
 	for(BufferedImage img : imgs) {
-	    g.drawImage(img, 0, y, null);
-	    y += img.getHeight() + margin;
+            if(img!=null)
+            {
+                g.drawImage(img, 0, y, null);
+                y += img.getHeight() + margin;
+            }
 	}
 	g.dispose();
 	return(ret);
