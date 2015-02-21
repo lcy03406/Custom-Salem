@@ -321,6 +321,7 @@ public class Inventory extends Widget implements DTarget {
             }
             else
             {
+                isz_client = isz;
                 resize(invsz(isz));
             }
 	}
