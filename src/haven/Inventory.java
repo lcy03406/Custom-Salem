@@ -114,9 +114,9 @@ public class Inventory extends Widget implements DTarget {
         isTranslated = true;
         //first step: deciding the size of the sorted inventory
         int nr_items = wmap.size();
-        float aspect_ratio = 6/4;
-        int width  = Math.max(4,1+(int) Math.ceil(Math.sqrt(aspect_ratio*nr_items)));
-        int height = Math.max(4,1+(int) Math.ceil(nr_items/width));
+        float aspect_ratio = 8/4;
+        int width  = Math.max(4,(int) Math.ceil(Math.sqrt(aspect_ratio*nr_items)));
+        int height = Math.max(4,(int) Math.ceil(nr_items/width));
         //now sort the item array
         List<WItem> array = new ArrayList<WItem>(wmap.values());
         Collections.sort(array, new Comparator<WItem>(){
@@ -130,19 +130,16 @@ public class Inventory extends Widget implements DTarget {
         BiMap<Coord,Coord> newdictionary = HashBiMap.create();
         for(WItem w : array)
         {
-            Coord newloc = new Coord((index%(width)),(int)(index/(width)));
+            Coord newclientloc = new Coord((index%(width)),(int)(index/(width)));
             
             //adding the translation to the dictionary
-                Coord currentloc = sqroff(w.c);
-                //was oldloc already translated?
-                Coord translatedoldloc = dictionaryClientServer.get(currentloc);
-                if(translatedoldloc != null)
-                    currentloc = translatedoldloc;
+                Coord currentclientloc = sqroff(w.c);
+                Coord serverloc = w.server_c;
                 
-                newdictionary.put(newloc,currentloc);
+                newdictionary.put(newclientloc,serverloc);
                 
             //moving the widget to its ordered place
-            w.c = sqoff(newloc);
+            w.c = sqoff(newclientloc);
             
             //on to the next location
             index++;
@@ -191,6 +188,26 @@ public class Inventory extends Widget implements DTarget {
         }
         return client;
     }
+    
+    public void removeDictionary()
+    {
+        isTranslated = false;
+        dictionaryClientServer = HashBiMap.create();
+        for(WItem w : wmap.values())
+        {
+            w.c = sqoff(w.server_c);
+        }
+        this.updateClientSideSize();
+    }
+    
+    public void sanitizeDictionary()
+    {
+        if(wmap.isEmpty())
+        {
+            removeDictionary();
+        }
+    }
+    
     public Coord updateClientSideSize()
     {
         int maxx = 2;
@@ -283,7 +300,7 @@ public class Inventory extends Widget implements DTarget {
 	Widget ret = gettype(type).create(c, this, cargs);
 	if(ret instanceof GItem) {
 	    GItem i = (GItem)ret;
-	    wmap.put(i, new WItem(sqoff(c), this, i));
+	    wmap.put(i, new WItem(sqoff(c), this, i, c));
 	    newseq++;
             
             if(isTranslated)
@@ -297,6 +314,10 @@ public class Inventory extends Widget implements DTarget {
 	if(w instanceof GItem) {
 	    GItem i = (GItem)w;
             WItem wi = wmap.remove(i);
+            if(isTranslated)
+            {
+                sanitizeDictionary();
+            }
 	    ui.destroy(wi);
 	}
     }

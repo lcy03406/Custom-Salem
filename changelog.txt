@@ -1,32 +1,35 @@
 $size[20]{$u{CHANGE LOG:}}
  
-$size[14]{$u{Update for 11.02.15:}}
+$size[14]{$u{Update for 11.02.15 (Latikai):}}
+ * Inventory sorting implemented! One button for sorting, one for undoing any sorting. May be finnicky.
+ 
+$size[14]{$u{Update for 11.02.15 (Ender):}}
  * fixed item interactions through invisible widgets
  * highlight object if you click on its icon on radar
  
-$size[14]{$u{Update for 10.02.15:}}
+$size[14]{$u{Update for 10.02.15 (Ender):}}
   * added helmet to equip proxy slots (turn it on in equip options)
   * added sorting by purity on mass transfers (ALT+SHIFT+Click). By default it goes in descending order. With right-click it transfers in ascending order.
  
-$size[14]{$u{Update for 09.02.15:}}
+$size[14]{$u{Update for 09.02.15 (Ender):}}
   * fixed gem carat value displaying
   * added highlighting of objects by ALT+Click. Properly formatted message will be sent in current chat and all recipients with supporting clients will see this object highlighted.
  
-$size[14]{$u{Update for 07.02.15:}}
+$size[14]{$u{Update for 07.02.15 (Ender):}}
   * merged with default client
   * fixed carry weight not updating when max carry weight changes (e.g. when you study Packrat)
   * fixed artifice bonuses not updating properly when last item with bonuses is removed
  
-$size[14]{$u{Update for 23.01.15:}}
+$size[14]{$u{Update for 23.01.15 (Ender):}}
   * item filters update when item tooltip is updated (e.g. you eat part of food and it can't be gobbled anymore)
   * fixed invisible widgets blocking item drops
   * fixed interactions with dragged item (you can smash or pry faces all day long!)
   * draw item highlight under counters
  
-$size[14]{$u{Update for 22.01.15:}}
+$size[14]{$u{Update for 22.01.15 (Ender):}}
   * fixed crash when trying to set pclaim as homestead
  
-$size[14]{$u{Update for 21.01.15:}}
+$size[14]{$u{Update for 21.01.15 (Ender):}}
   * fixed crash when trying to activate empty toolbelt slot
  
 $size[14]{$u{Update for 19.01.15 (Ender):}}

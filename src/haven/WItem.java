@@ -44,10 +44,16 @@ public class WItem extends Widget implements DTarget {
     private Tex mask = null;
     private Resource cmask = null;
     private long ts = 0;
+    public Coord server_c;
 
     public WItem(Coord c, Widget parent, GItem item) {
 	super(c, Inventory.sqsz, parent);
 	this.item = item;
+    }
+    
+    public WItem(Coord c, Widget parent, GItem item, Coord server_c) {
+	this(c, parent, item);
+        this.server_c = server_c;
     }
     
     private static Coord upsize(Coord sz) {

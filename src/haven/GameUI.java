@@ -250,7 +250,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	private Label[] labels = new Label[0];
 	private final GameUI wui;
 	private final Label wlbl;
-        private final IButton sbtn;
+        private final IButton nsbtn,sbtn;
 
 	@RName("invwnd")
 	public static class $_ implements Factory {
@@ -278,10 +278,25 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 };
                 sbtn.visible = true;
                 this.addtwdg(sbtn);
+                nsbtn = new IButton(Coord.z, this, Window.lbtni[0], Window.lbtni[1], Window.lbtni[2]){
+                    {tooltip = Text.render("Undo client-side sorting.");}
+
+                    @Override
+                    public void click() {
+                        if(InvWindow.this.wui != null)
+                        {
+                            InvWindow.this.wui.maininv.removeDictionary();
+                            InvWindow.this.repack();
+                        }
+                    }
+                };
+                nsbtn.visible = true;
+                this.addtwdg(nsbtn);
 		updweight();
 	    } else {
 		wlbl = null;
                 sbtn = null;
+                nsbtn = null;
 	    }
 	}
 
