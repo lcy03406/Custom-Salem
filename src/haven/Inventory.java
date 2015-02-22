@@ -106,17 +106,55 @@ public class Inventory extends Widget implements DTarget {
 	super(c, invsz(sz), parent);
 	isz = sz;
         isz_client = sz;
+        
+        if(sz.equals(new Coord(1,1)))
+        {
+            return;
+        }
         dictionaryClientServer = HashBiMap.create();
+        
+        IButton sbtn = new IButton(Coord.z, parent, Window.obtni[0], Window.obtni[1], Window.obtni[2]){
+            {tooltip = Text.render("Sort the items in your main inventory.");}
+
+            @Override
+            public void click() {
+                if(this.ui != null)
+                {
+                    Inventory.this.sortItemsLocally();
+                }
+            }
+        };
+        sbtn.visible = true;
+        ((Window)parent).addtwdg(sbtn);
+        IButton nsbtn = new IButton(Coord.z, parent, Window.lbtni[0], Window.lbtni[1], Window.lbtni[2]){
+            {tooltip = Text.render("Undo client-side sorting.");}
+
+            @Override
+            public void click() {
+                if(this.ui != null)
+                {
+                    Inventory.this.removeDictionary();
+                }
+            }
+        };
+        nsbtn.visible = true;
+        ((Window)parent).addtwdg(nsbtn);
     }
 
     public void sortItemsLocally()
     {
         isTranslated = true;
         //first step: deciding the size of the sorted inventory
-        int nr_items = wmap.size();
-        float aspect_ratio = 8/4;
-        int width  = Math.max(4,(int) Math.ceil(Math.sqrt(aspect_ratio*nr_items)));
-        int height = Math.max(4,(int) Math.ceil(nr_items/width));
+        int width = this.isz.x;
+        int height = this.isz.y;
+        if(this.equals(this.ui.gui.maininv))
+        {
+            //flexible size
+            int nr_items = wmap.size();
+            float aspect_ratio = 8/4;
+            width  = Math.max(4,(int) Math.ceil(Math.sqrt(aspect_ratio*nr_items)));
+            height = Math.max(4,(int) Math.ceil(nr_items/width));
+        }
         //now sort the item array
         List<WItem> array = new ArrayList<WItem>(wmap.values());
         Collections.sort(array, new Comparator<WItem>(){
@@ -233,17 +271,24 @@ public class Inventory extends Widget implements DTarget {
     
     public Coord updateClientSideSize()
     {
-        int maxx = 2;
-        int maxy = 2;
-        for(WItem w : wmap.values())
+        if(this.equals(ui.gui.maininv))
         {
-            Coord wc = sqroff(w.c);
-            maxx = Math.max(wc.x,maxx);
-            maxy = Math.max(wc.y,maxy);
+            int maxx = 2;
+            int maxy = 2;
+            for(WItem w : wmap.values())
+            {
+                Coord wc = sqroff(w.c);
+                maxx = Math.max(wc.x,maxx);
+                maxy = Math.max(wc.y,maxy);
+            }
+            this.isz_client = new Coord(maxx+2,maxy+2);
+            this.resize(invsz(isz_client));
+            return isz_client;
         }
-        this.isz_client = new Coord(maxx+2,maxy+2);
-        this.resize(invsz(isz_client));
-        return isz_client;
+        else
+        {
+            return isz_client = isz;
+        }
     }
     
     public static Coord sqoff(Coord c) {
