@@ -141,7 +141,11 @@ public class Inventory extends Widget implements DTarget {
                 Coord currentclientloc = sqroff(w.c);
                 Coord serverloc = w.server_c;
                 
+                try{
                 newdictionary.put(newclientloc,serverloc);
+                }catch(IllegalArgumentException iae){
+                    System.out.println("Gotcha");
+                }
                 
             //moving the widget to its ordered place
             w.c = sqoff(newclientloc);
@@ -300,12 +304,12 @@ public class Inventory extends Widget implements DTarget {
         return(true);
     }
     public Widget makechild(String type, Object[] pargs, Object[] cargs) {
-	Coord c = (Coord)pargs[0];
-        c = translateCoordinatesServerClient(c);
+	Coord server_c = (Coord)pargs[0];
+        c = translateCoordinatesServerClient(server_c);
 	Widget ret = gettype(type).create(c, this, cargs);
 	if(ret instanceof GItem) {
 	    GItem i = (GItem)ret;
-	    wmap.put(i, new WItem(sqoff(c), this, i, c));
+	    wmap.put(i, new WItem(sqoff(c), this, i, server_c));
 	    newseq++;
             
             if(isTranslated)
