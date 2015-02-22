@@ -168,6 +168,20 @@ public class Inventory extends Widget implements DTarget {
         {
             server = dictionaryClientServer.get(client);
         }
+        else if(dictionaryClientServer.containsValue(client))
+        {
+            //i.e. we don't have an item there but the server does: translate this location!
+            int width = isz.x;
+            int height = isz.y;
+            int index = 0;
+            Coord newloc;
+            do{
+                newloc = new Coord((index%(width-1)),(int)(index/(width-1)));
+                index++;
+            }while(dictionaryClientServer.containsValue(newloc));
+            server = newloc;
+            dictionaryClientServer.put(client,server);
+        }
         return server;
     }
     
