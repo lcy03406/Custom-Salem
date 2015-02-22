@@ -305,7 +305,7 @@ public class Inventory extends Widget implements DTarget {
     }
     public Widget makechild(String type, Object[] pargs, Object[] cargs) {
 	Coord server_c = (Coord)pargs[0];
-        c = translateCoordinatesServerClient(server_c);
+        Coord c = translateCoordinatesServerClient(server_c);
 	Widget ret = gettype(type).create(c, this, cargs);
 	if(ret instanceof GItem) {
 	    GItem i = (GItem)ret;
