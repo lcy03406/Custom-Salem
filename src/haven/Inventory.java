@@ -122,7 +122,12 @@ public class Inventory extends Widget implements DTarget {
         Collections.sort(array, new Comparator<WItem>(){
             @Override
             public int compare(WItem o1, WItem o2) {
-                return o1.item.resname().compareTo(o2.item.resname());
+                int result = o1.item.resname().compareTo(o2.item.resname());
+                if(result == 0)
+                {
+                    result = cmp_desc.compare(o1, o2);
+                }
+                return result;
             }
         });
         //assign the new locations to each of the items and add new translations

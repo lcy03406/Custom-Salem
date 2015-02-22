@@ -1,7 +1,8 @@
 $size[20]{$u{CHANGE LOG:}}
  
 $size[14]{$u{Update for 11.02.15 (Latikai):}}
- * Inventory sorting implemented! One button for sorting, one for undoing any sorting. May be finnicky.
+  * Inventory sorting implemented! One button for sorting, one for undoing any sorting. May be finnicky.
+  * Items of the same type are now sorted by purity.
  
 $size[14]{$u{Update for 11.02.15 (Ender):}}
  * fixed item interactions through invisible widgets
