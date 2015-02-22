@@ -114,7 +114,7 @@ public class Inventory extends Widget implements DTarget {
         dictionaryClientServer = HashBiMap.create();
         
         IButton sbtn = new IButton(Coord.z, parent, Window.obtni[0], Window.obtni[1], Window.obtni[2]){
-            {tooltip = Text.render("Sort the items in your main inventory.");}
+            {tooltip = Text.render("Sort the items in this inventory.");}
 
             @Override
             public void click() {
@@ -176,15 +176,9 @@ public class Inventory extends Widget implements DTarget {
             Coord newclientloc = new Coord((index%(width)),(int)(index/(width)));
             
             //adding the translation to the dictionary
-                Coord currentclientloc = sqroff(w.c);
-                Coord serverloc = w.server_c;
-                
-                try{
-                newdictionary.put(newclientloc,serverloc);
-                }catch(IllegalArgumentException iae){
-                    System.out.println("Gotcha");
-                }
-                
+            Coord serverloc = w.server_c;
+            newdictionary.put(newclientloc,serverloc);
+
             //moving the widget to its ordered place
             w.c = sqoff(newclientloc);
             
@@ -208,7 +202,7 @@ public class Inventory extends Widget implements DTarget {
         }
         else if(dictionaryClientServer.containsValue(client))
         {
-            //i.e. we don't have an item there but the server does: translate this location!
+            //i.e. we don't have an item there but the server does: find a solution!
             int width = isz.x;
             int height = isz.y;
             int index = 0;
@@ -233,9 +227,8 @@ public class Inventory extends Widget implements DTarget {
         {
             client = dictionaryServerClient.get(server);
         }
-        else if(dictionaryClientServer.containsKey(client)){
-            //we already mapped something to this spot ourself!
-            //put it somewhere else
+        else{
+            //find a spot for it
             int width = isz_client.x;
             int height = isz_client.y;
             int index = 0;
@@ -363,7 +356,7 @@ public class Inventory extends Widget implements DTarget {
         return(true);
     }
     public Widget makechild(String type, Object[] pargs, Object[] cargs) {
-	Coord server_c = (Coord)pargs[0];
+    	Coord server_c = (Coord)pargs[0];
         Coord c = translateCoordinatesServerClient(server_c);
 	Widget ret = gettype(type).create(c, this, cargs);
 	if(ret instanceof GItem) {
