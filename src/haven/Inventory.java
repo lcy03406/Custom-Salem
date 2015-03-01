@@ -107,7 +107,7 @@ public class Inventory extends Widget implements DTarget {
 	isz = sz;
         isz_client = sz;
         
-        if(sz.equals(new Coord(1,1)))
+        if(sz.equals(new Coord(1,1))|| !Window.class.isInstance(parent))
         {
             return;
         }
