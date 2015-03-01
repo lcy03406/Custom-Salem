@@ -268,6 +268,8 @@ public class ChatUI extends Widget {
                         Logger.getLogger(ChatUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                if(!visible)
+                    read=false;
 	    }
 	}
 
@@ -857,9 +859,6 @@ public class ChatUI extends Widget {
 			    notify(cmsg);
 		    }
 		}
-                //project alert
-                if(!visible)
-                    read = false;
 	    } else {
 		super.uimsg(msg, args);
 	    }
@@ -895,9 +894,6 @@ public class ChatUI extends Widget {
 			notify(cmsg);
 		    }
 		}
-                //project alert
-                if(!visible)
-                    read = false;
 	    } else {
 		super.uimsg(msg, args);
 	    }
@@ -937,10 +933,6 @@ public class ChatUI extends Widget {
 		    Message cmsg = new InMessage(line, iw());
 		    append(cmsg);
 		    notify(cmsg);
-                    
-                    //project alert
-                    if(!visible)
-                        read = false;
 		} else if(t.equals("out") && line!=null) {
 		    append(new OutMessage(line, iw()));
 		}
@@ -1053,7 +1045,7 @@ public class ChatUI extends Widget {
 		    g.chcolor(255, 255, 255, 255);
                     
                     //project alert
-		    if(rerender || (ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) ||ch.rread != ch.chan.read)
+		    if(rerender || (ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) || ch.rread != ch.chan.read)
                     {
                         ch.rread = ch.chan.read;
                         if(ch.rread)
