@@ -106,22 +106,22 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	}
     }
 
-    private static BufferedImage tileimg(int t, BufferedImage[] texes) throws Loading {
+    private BufferedImage tileimg(int t, BufferedImage[] texes) throws Loading {
 	BufferedImage img = texes[t];
-	if(img == null) {
-	    Resource r = UI.instance.sess.glob.map.tilesetr(t);
-	    if(r == null)
-		return(null);
-            Resource.Image ir = r.layer(Resource.imgc);
-            if(ir == null)
-                return(null);
-            img = ir.img;
-            texes[t] = img;
+	if (img == null) {
+	    Resource r = ui.sess.glob.map.tilesetr(t);
+	    if (r == null)
+		return (null);
+	    Resource.Image ir = r.layer(Resource.imgc);
+	    if (ir == null)
+		return (null);
+	    img = ir.img;
+	    texes[t] = img;
 	}
-	return(img);
+	return (img);
     }
 
-    public static BufferedImage drawmap(Coord ul, Coord sz) {
+    public BufferedImage drawmap(Coord ul, Coord sz) {
 	BufferedImage[] texes = new BufferedImage[256];
 	MCache m = UI.instance.sess.glob.map;
 	BufferedImage buf = TexI.mkbuf(sz);
@@ -135,18 +135,15 @@ public class LocalMiniMap extends Window implements Console.Directory{
 		} catch (LoadingMap e) {
 		    return null;
 		}
-                
-                BufferedImage tex = null;
-                try{
-                     tex = tileimg(t, texes);
-                }catch(Loading e)
-                {
-                    return null;
-                }
-                
-		if(tex != null){
-		    buf.setRGB(c.x, c.y, tex.getRGB(Utils.floormod(c.x, tex.getWidth()),
-			    Utils.floormod(c.y, tex.getHeight())));
+		try {
+		    BufferedImage tex = tileimg(t, texes);
+		    int rgb = 0xffff33ff;
+		    if (tex != null) {
+			rgb = tex.getRGB(Utils.floormod(c.x, tex.getWidth()), Utils.floormod(c.y, tex.getHeight()));
+		    }
+		    buf.setRGB(c.x, c.y, rgb);
+		} catch (Loading e){
+		    return null;
 		}
 
 		try {

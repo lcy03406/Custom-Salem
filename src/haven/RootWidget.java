@@ -86,6 +86,9 @@ public class RootWidget extends ConsoleHost {
                 Utils.setprefb("alwaysbright", Config.alwaysbright);
                 this.ui.sess.glob.brighten();
 	    }else if(isgui && code == KeyEvent.VK_C && alt){
+	    }else if(code == KeyEvent.VK_R && alt){
+		Config.toggleRadius();
+	    }else if(code == KeyEvent.VK_C && alt && isgui){
 		ui.gui.toggleCraftWnd();
 	    }else if(code == KeyEvent.VK_F && alt && isgui){
 		ui.gui.toggleFilterWnd();

@@ -85,7 +85,9 @@ public class CartographWindow extends Window {
             while((ulg.y * cmaps.y) + dy > 0)
                 ulg.y--;
 
-            Coord s = LocalMiniMap.bg.sz();
+           final LocalMiniMap lmmap = this.ui.gui.mmap;
+            
+            Coord s = lmmap.bg.sz();
             for(int y = 0; (y * s.y) < sz.y; y++) {
                 for(int x = 0; (x * s.x) < sz.x; x++) {
                     og.image(LocalMiniMap.bg, new Coord(x*s.x, y*s.y));
@@ -105,7 +107,7 @@ public class CartographWindow extends Window {
                         if((f == null) && (cg.manhattan2(plg) <= 1)) {
                             f = Defer.later(new Defer.Callable<MapTile> () {
                                 public MapTile call() {
-                                    BufferedImage img = LocalMiniMap.drawmap(ul, cmaps);
+                                    BufferedImage img = lmmap.drawmap(ul, cmaps);
                                     if(img == null){return null;}
                                     return(new MapTile(new TexI(img), ul, tcg));
                                 }
