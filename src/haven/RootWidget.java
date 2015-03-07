@@ -82,7 +82,20 @@ public class RootWidget extends ConsoleHost {
                     }
                 }
 	    }else if(isgui && code == KeyEvent.VK_N && ctrl && !shift){
-                Config.alwaysbright = !Config.alwaysbright;
+                //Config.alwaysbright = !Config.alwaysbright;
+                if (Config.alwaysbright)
+                {
+                    Config.brightang += 1;
+                    if (Config.brightang >= 4)
+                    {
+                	Config.alwaysbright = false;
+                	Config.brightang = 0;
+                    }
+                }
+                else
+                {
+                    Config.alwaysbright = true;
+                }
                 Utils.setprefb("alwaysbright", Config.alwaysbright);
                 this.ui.sess.glob.brighten();
 	    }else if(isgui && code == KeyEvent.VK_C && alt){
