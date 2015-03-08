@@ -19,7 +19,7 @@
 	</target>
 
 	<target name="salem-client" depends="build-env">
-		<javac srcdir="src" destdir="build/classes" debug="on" source="1.7" target="1.7" includeantruntime="no">
+		<javac srcdir="src" destdir="build/classes" debug="on" source="1.6" target="1.6" includeantruntime="no">
 			<classpath>
 				<pathelement path="lib/jogl-all.jar" />
 				<pathelement path="lib/gluegen-rt.jar" />
@@ -86,12 +86,12 @@
 
 	<target name="jar" depends="salem-client,buildinfo,lib-classes,resources">
 		<jar destfile="build/salem.jar" update="true">
-			<fileset dir="build/classes" excludes="*.class"/>
+			<fileset dir="build/classes"/>
 			<fileset dir="build/classes-lib" />
 			<fileset file="changelog.txt" />
 			<fileset file="etc/radar.xml" />
 			<fileset file="etc/contents_icons.json" />
-            <fileset file="etc/item_radius.json" />
+                        <fileset file="etc/item_radius.json" />
 			<fileset file="etc/item_data.json" />
 			<manifest>
 				<attribute name="Main-Class" value="haven.MainFrame" />
