@@ -78,14 +78,14 @@
 		<exec executable="java" failifexecutionfails="false">
 			<arg line="-jar resources/LayerUtil.jar -re resources/src resources/compiled/res" />
 		</exec>
-		<jar destfile="build/client-res.jar" update="true">
+		<jar destfile="build/lclient-res.jar" update="true">
 			<fileset dir="resources/compiled" />
 			<fileset dir="resources/item_data" />
 		</jar>
 	</target>
 
 	<target name="jar" depends="salem-client,buildinfo,lib-classes,resources">
-		<jar destfile="build/salem.jar" update="true">
+		<jar destfile="build/lsalem.jar" update="true">
 			<fileset dir="build/classes"/>
 			<fileset dir="build/classes-lib" />
 			<fileset file="changelog.txt" />
@@ -95,10 +95,10 @@
 			<fileset file="etc/item_data.json" />
 			<manifest>
 				<attribute name="Main-Class" value="haven.MainFrame" />
-				<attribute name="Class-Path" value="jogl-all.jar gluegen-rt.jar client-res.jar builtin-res.jar salem-res.jar gson-2.3.jar guava-18.0.jar" />
+				<attribute name="Class-Path" value="jogl-all.jar gluegen-rt.jar lclient-res.jar builtin-res.jar salem-res.jar gson-2.3.jar guava-18.0.jar" />
 			</manifest>
 		</jar>
-		<chmod file="build/salem.jar" perm="a+x" />
+		<chmod file="build/lsalem.jar" perm="a+x" />
 	</target>
 
 	<target name="res-jar" depends="build-env" unless="has-res-jar">
@@ -120,7 +120,7 @@
 	<target name="deftgt" depends="jars, appletview" />
 
 	<target name="run" depends="jars">
-		<java jar="build/salem.jar" 
+		<java jar="build/lsalem.jar" 
 				dir="build" 
 				fork="true" 
 				maxmemory="256m"
@@ -131,7 +131,7 @@
 	</target>
 
     <target name="debug" depends="jars">
-		<java jar="build/salem.jar"
+		<java jar="build/lsalem.jar"
 				dir="build"
 				fork="true"
 				maxmemory="256m"
