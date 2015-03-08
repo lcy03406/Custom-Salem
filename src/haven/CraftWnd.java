@@ -21,6 +21,7 @@ public class CraftWnd extends Window implements DTarget2{
     private Breadcrumbs breadcrumbs;
     private static Pagina current = null;
     private ItemData data;
+    private int dataidx;
     private Resource resd;
     private Pagina senduse = null;
 
@@ -150,7 +151,7 @@ public class CraftWnd extends Window implements DTarget2{
 	if(description == null) {
 	    if (data != null) {
 		try {
-		    description = data.longtip(resd);
+		    description = data.longtip(resd, dataidx);
 		}catch (Resource.Loading ignored){}
 	    } else {
 		description = MenuGrid.rendertt(resd, true, false);
@@ -220,6 +221,23 @@ public class CraftWnd extends Window implements DTarget2{
     @Override
     public boolean iteminteract(Coord cc, Coord ul, GItem item) {
 	return false;
+    }
+    
+    @Override
+    public boolean mousewheel(Coord c, int amount) {
+	if (!super.mousewheel(c, amount))
+	{
+	    if (data != null)
+	    {
+		if (amount > 0 && dataidx < data.data.size())
+		    dataidx++;
+		else if (amount < 0 && dataidx > 0)
+		    dataidx--;
+		updateDescription(current);
+		return true;
+	    }
+	}
+	return(false);
     }
 
     private Pagina paginafor(String name){
