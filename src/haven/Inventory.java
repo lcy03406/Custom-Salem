@@ -103,11 +103,11 @@ public class Inventory extends Widget implements DTarget {
         	    return 1;
         	else if (g2 == null)
         	    return -1;
-        	int v1 = g1.main_temper();
-        	int v2 = g2.main_temper();
+        	int v1 = g1.mainTemper();
+        	int v2 = g2.mainTemper();
         	if (v1 == v2)
         	    return cmp_name.compare(o1, o2);
-        	return g2.main_temper() - g1.main_temper();
+        	return v2-v1;
             }catch(Loading l){return 0;}
         }
     };

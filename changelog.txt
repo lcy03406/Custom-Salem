@@ -1,5 +1,11 @@
 $size[20]{$u{CHANGE LOG:}}
  
+$size[14]{$u{Update for 04.03.15 (thanks to lcy03406):}}
+  * Better lighting in mines: you can step through the various cardinal directions for lighting with ctrl+N
+  * Auto-sifting is now in! For now, this is completely automatic until I get enough complaints that it should be made an option.
+  * You can now store multiple versions of the recipes in Ender's Craft Window. Scroll them with the mousescroll wheel. Messing up will require you to delete them manually in Salem\item_data.
+  * An additional sort button to sort by highest gluttony value rather than names/purity. Similar as the auto-sifting: as a separate button until I get enough complaints that it should be made an option.
+ 
 $size[14]{$u{Update for 04.03.15 (Ender):}}
   * added support radius of mine exit
   * fixed possible crashes related to incorrect radius or timers configurations
