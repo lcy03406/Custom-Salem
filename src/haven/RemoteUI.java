@@ -80,9 +80,6 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 		} else if(msg.type == Message.RMSG_DSTWDG) {
 		    int id = msg.uint16();
 		    ui.destroy(id);
-                    
-                    System.out.println("Receiving RMSG_DSTWDG: ");
-                        System.out.println("id: "+id);
 		}
 	    }
 	    synchronized(sess) {
