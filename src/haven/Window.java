@@ -52,6 +52,10 @@ public class Window extends Widget implements DTarget {
 	    Resource.loadimg("gfx/hud/wnd/obtn"),
 	    Resource.loadimg("gfx/hud/wnd/obtnd"),
 	    Resource.loadimg("gfx/hud/wnd/obtnh")};
+    public static final BufferedImage[] gbtni = new BufferedImage[] {
+	    Resource.loadimg("gfx/hud/wnd/gbtn"),
+	    Resource.loadimg("gfx/hud/wnd/gbtnd"),
+	    Resource.loadimg("gfx/hud/wnd/gbtnh")};
     public static final Color cc = new Color(248, 230, 190);
     public static final Text.Furnace cf = new Text.Imager(new Text.Foundry(new Font("Serif", Font.BOLD, 15), cc).aa(true)) {
 	    protected BufferedImage proc(Text text) {

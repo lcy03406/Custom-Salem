@@ -159,7 +159,7 @@ public class Inventory extends Widget implements DTarget {
         };
         sbtn.visible = true;
         ((Window)parent).addtwdg(sbtn);
-        sbtn = new IButton(Coord.z, parent, Window.obtni[0], Window.obtni[1], Window.obtni[2]){
+        IButton sgbtn = new IButton(Coord.z, parent, Window.gbtni[0], Window.gbtni[1], Window.gbtni[2]){
             {tooltip = Text.render("Sort the items in this inventory by gobble.");}
 
             @Override
@@ -170,8 +170,8 @@ public class Inventory extends Widget implements DTarget {
                 }
             }
         };
-        sbtn.visible = true;
-        ((Window)parent).addtwdg(sbtn);
+        sgbtn.visible = true;
+        ((Window)parent).addtwdg(sgbtn);
         IButton nsbtn = new IButton(Coord.z, parent, Window.lbtni[0], Window.lbtni[1], Window.lbtni[2]){
             {tooltip = Text.render("Undo client-side sorting.");}
 
