@@ -315,7 +315,8 @@ public class Glob {
         }
         else
         {
-            lightang = 3*Math.PI/2;
+            //lightang = 3*Math.PI/2;
+            lightang = Config.brightang*Math.PI/2;
             lightelev = 56*Math.PI/180;
             float hsb2[] = Color.RGBtoHSB(255,255,208, null);
             lightdif = Color.getHSBColor(hsb2[0],hsb2[1],hsb2[2]);

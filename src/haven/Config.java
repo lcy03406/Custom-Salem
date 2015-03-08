@@ -130,6 +130,7 @@ public class Config {
     public static boolean watchguard = Utils.getprefb("watchguard", false);
     //project nighteye
     public static boolean alwaysbright = Utils.getprefb("alwaysbright", false);
+    public static float brightang = Utils.getpreff("brightang", 0);
     //project patience
     public static boolean fast_menu = Utils.getprefb("fast_flowers", false);
     //project silent lamb

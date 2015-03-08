@@ -36,12 +36,6 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
     }
 	
     public void rcvmsg(int id, String name, Object... args) {
-//        System.out.println("Sending a message: ");
-//            System.out.println("id: "+id);
-//            System.out.println("\t"+name);
-//            for(Object o : args)
-//                System.out.println("\t"+o.toString());
-        
 	Message msg = new Message(Message.RMSG_WDGMSG);
 	msg.adduint16(id);
 	msg.addstring(name);
@@ -69,30 +63,26 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 		    Object[] pargs = msg.list();
 		    Object[] cargs = msg.list();
 		    ui.newwidget(id, type, parent, pargs, cargs);
-                    
-//                    System.out.println("Receiving RMSG_NEWWDG: ");
-//                        System.out.println("id: "+id);
-//                        System.out.println("\t"+type);
-//                        for(Object o : pargs)
-//                            System.out.println("\t"+o.toString());
-//                        for(Object o : cargs)
-//                            System.out.println("\t"+o.toString());
 
 		} else if(msg.type == Message.RMSG_WDGMSG) {
 		    int id = msg.uint16();
 		    String name = msg.string();
-		    ui.uimsg(id, name, msg.list());
+		    Object[] args = msg.list();
+		    ui.uimsg(id, name, args);
                     
-//                    System.out.println("Receiving RMSG_WDGMSG: ");
-//                        System.out.println("id: "+id);
-//                        System.out.println("\t"+name);
+		    //auto sift
+		    if (name.equals("prog") && args.length == 0 && UI.instance.root.cursor.name.equals("gfx/hud/curs/sft"))
+		    {
+			MapView map = UI.instance.gui.map;
+			map.wdgmsg(map, "click", map.player().sc, map.player().rc, 1, 0);
+		    }
                         
 		} else if(msg.type == Message.RMSG_DSTWDG) {
 		    int id = msg.uint16();
 		    ui.destroy(id);
                     
-//                    System.out.println("Receiving RMSG_DSTWDG: ");
-//                        System.out.println("id: "+id);
+                    System.out.println("Receiving RMSG_DSTWDG: ");
+                        System.out.println("id: "+id);
 		}
 	    }
 	    synchronized(sess) {

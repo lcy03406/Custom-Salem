@@ -78,6 +78,39 @@ public class Inventory extends Widget implements DTarget {
 	    return cmp_asc.compare(o2, o1);
 	}
     };
+    private static final Comparator<WItem> cmp_name = new Comparator<WItem>() {
+	@Override
+	public int compare(WItem o1, WItem o2) {
+            try{
+        	int result = o1.item.resname().compareTo(o2.item.resname());
+        	if(result == 0)
+        	{
+        	    result = cmp_desc.compare(o1, o2);
+        	}
+        	return result;
+            }catch(Loading l){return 0;}
+        }
+    };
+    private static final Comparator<WItem> cmp_gobble = new Comparator<WItem>() {
+	@Override
+	public int compare(WItem o1, WItem o2) {
+            try{
+        	GobbleInfo g1 = ItemInfo.find(GobbleInfo.class, o1.item.info());
+        	GobbleInfo g2 = ItemInfo.find(GobbleInfo.class, o2.item.info());
+        	if (g1 == null && g2 == null)
+        	    return cmp_name.compare(o1, o2);
+        	else if (g1 == null)
+        	    return 1;
+        	else if (g2 == null)
+        	    return -1;
+        	int v1 = g1.mainTemper();
+        	int v2 = g2.mainTemper();
+        	if (v1 == v2)
+        	    return cmp_name.compare(o1, o2);
+        	return v2-v1;
+            }catch(Loading l){return 0;}
+        }
+    };
 
     Coord isz,isz_client;
     Map<GItem, WItem> wmap = new HashMap<GItem, WItem>();
@@ -114,13 +147,26 @@ public class Inventory extends Widget implements DTarget {
         dictionaryClientServer = HashBiMap.create();
         
         IButton sbtn = new IButton(Coord.z, parent, Window.obtni[0], Window.obtni[1], Window.obtni[2]){
-            {tooltip = Text.render("Sort the items in this inventory.");}
+            {tooltip = Text.render("Sort the items in this inventory by name.");}
 
             @Override
             public void click() {
                 if(this.ui != null)
                 {
-                    Inventory.this.sortItemsLocally();
+                    Inventory.this.sortItemsLocally(cmp_name);
+                }
+            }
+        };
+        sbtn.visible = true;
+        ((Window)parent).addtwdg(sbtn);
+        sbtn = new IButton(Coord.z, parent, Window.obtni[0], Window.obtni[1], Window.obtni[2]){
+            {tooltip = Text.render("Sort the items in this inventory by gobble.");}
+
+            @Override
+            public void click() {
+                if(this.ui != null)
+                {
+                    Inventory.this.sortItemsLocally(cmp_gobble);
                 }
             }
         };
@@ -141,7 +187,7 @@ public class Inventory extends Widget implements DTarget {
         ((Window)parent).addtwdg(nsbtn);
     }
 
-    public void sortItemsLocally()
+    public void sortItemsLocally(Comparator<WItem> comp)
     {
         isTranslated = true;
         //first step: deciding the size of the sorted inventory
@@ -157,19 +203,7 @@ public class Inventory extends Widget implements DTarget {
         }
         //now sort the item array
         List<WItem> array = new ArrayList<WItem>(wmap.values());
-        Collections.sort(array, new Comparator<WItem>(){
-            @Override
-            public int compare(WItem o1, WItem o2) {
-                try{
-                int result = o1.item.resname().compareTo(o2.item.resname());
-                if(result == 0)
-                {
-                    result = cmp_desc.compare(o1, o2);
-                }
-                return result;
-                }catch(Loading l){return 0;}
-            }
-        });
+        Collections.sort(array, comp);
         //assign the new locations to each of the items and add new translations
         int index = 0;
         BiMap<Coord,Coord> newdictionary = HashBiMap.create();

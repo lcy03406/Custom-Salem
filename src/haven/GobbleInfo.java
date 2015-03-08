@@ -62,6 +62,21 @@ public class GobbleInfo extends ItemInfo.Tip {
 	}
     }
     
+    public int mainTemper()
+    {
+	int bit = 0;
+	int value = 0;
+	for (int i = 0; i < 4; i++)
+	{
+	    int v = (l[i]+h[i])/2;
+	    if (v > value)
+	    {
+		value = v;
+	    }
+	}
+	return value;
+    }
+    
     private static final Text.Line head = Text.render("When gobbled:");
     public BufferedImage longtip() {
 	StringBuilder buf = new StringBuilder();
