@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.Fightview.Relation;
+
 public class RemoteUI implements UI.Receiver, UI.Runner {
     Session sess, ret;
     UI ui;
@@ -81,11 +83,30 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 		} else if(msg.type == Message.RMSG_WDGMSG) {
 		    int id = msg.uint16();
 		    String name = msg.string();
-		    ui.uimsg(id, name, msg.list());
+		    Object[] args = msg.list();
+		    ui.uimsg(id, name, args);
                     
-                    System.out.println("Receiving RMSG_WDGMSG: ");
-                        System.out.println("id: "+id);
-                        System.out.println("\t"+name);
+		    if (!name.equals("tmexp"))
+		    {
+			boolean detail = false;
+			if (name.equals("curs") || name.equals("prog"))
+			{
+			    detail = true;
+			}
+			System.out.format("Recv RMSG_WDGMSG:%d:%s\n",id,name);
+			if (detail)
+			{
+			    for(Object o : args)
+				System.out.println("\t"+o.toString());
+			}
+		    }
+		    
+		    //auto sift
+		    if (name.equals("prog") && args.length == 0 && UI.instance.root.cursor.name.equals("gfx/hud/curs/sft"))
+		    {
+			MapView map = UI.instance.gui.map;
+			map.wdgmsg(map, "click", map.player().sc, map.player().rc, 1, 0);
+		    }
                         
 		} else if(msg.type == Message.RMSG_DSTWDG) {
 		    int id = msg.uint16();
