@@ -268,6 +268,11 @@ public class Session implements Owner {
 		    while(true) {
 			int type = msg.uint8();
 			if(type == OD_REM) {
+			    if (gob != null) {
+				Gob player = BotHelper.player();
+				if (gob != player && player != null && player.rc.dist(gob.rc) < 110)
+				    BotHelper.wake("gob_remove:" + gob.name());
+			    }
 			    oc.remove(id, frame);
 			} else if(type == OD_MOVE) {
 			    Coord c = msg.coord();
@@ -644,6 +649,8 @@ public class Session implements Owner {
 			}
 		    }
 		}
+	    } catch (Exception e) {
+		e.printStackTrace();
 	    } finally {
 		synchronized(Session.this) {
 		    state = "dead";

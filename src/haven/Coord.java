@@ -26,6 +26,7 @@
 
 package haven;
 
+import static haven.MCache.tilesz;
 import static java.lang.Math.PI;
 
 public class Coord implements Comparable<Coord>, java.io.Serializable {
@@ -212,4 +213,13 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
     public Coord rotate(double angle){
 	return new Coord((int)(x*Math.cos(angle) - y*Math.sin(angle)), (int)(x*Math.sin(angle) + y*Math.cos(angle)));
     }
+
+    public boolean in(Coord min, Coord max) {
+	return x >= min.x && x <= max.x && y >= min.y && y <= max.y;
+    }
+
+    public Coord center() {
+	return div(tilesz).mul(tilesz).add(tilesz.div(2));
+    }
+
 }

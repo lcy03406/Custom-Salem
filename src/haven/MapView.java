@@ -32,6 +32,7 @@ import static haven.MCache.tilesz;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
     private final R2DWdg r2dwdg;
     public long plgob = -1;
     public Coord cc;
-    private final Glob glob;
+    public final Glob glob;
     private int view = 2;
     private Collection<Delayed> delayed = new LinkedList<Delayed>();
     private Collection<Delayed> delayed2 = new LinkedList<Delayed>();
@@ -575,14 +576,16 @@ public class MapView extends PView implements DTarget, Console.Directory {
 			Coord pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
 			MapMesh cut = glob.map.getcut(cc.add(o));
 			rl.add(cut, Location.xlate(new Coord3f(pc.x, -pc.y, 0)));
-			Collection<Gob> fol;
-			try {
-			    fol = glob.map.getfo(cc.add(o));
-			} catch(Loading e) {
-			    fol = Collections.emptyList();
+			if (Config.render_flavor) {
+			    Collection<Gob> fol;
+			    try {
+				fol = glob.map.getfo(cc.add(o));
+			    } catch(Loading e) {
+				fol = Collections.emptyList();
+			    }
+			    for(Gob fo : fol)
+				addgob(rl, fo);
 			}
-			for(Gob fo : fol)
-			    addgob(rl, fo);
 		    }
 		}
 		return(false);
@@ -1032,6 +1035,10 @@ public class MapView extends PView implements DTarget, Console.Directory {
 
     private boolean camload = false;
     private Loading lastload = null;
+    private Iterable<Coord> botpath = null;
+    public void setBotPath(Iterable<Coord> path) {
+	botpath = path;
+    }
     public void draw(GOut g) {
 	glob.map.sendreqs();
 	if((olftimer != 0) && (olftimer < System.currentTimeMillis()))
@@ -1055,6 +1062,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
             //project marathon
             if(Config.showgobpath)
                 drawGobPath(g, dgpcam, dgpwxf);
+            if(botpath != null)
+        	drawBotPath(g, dgpcam, dgpwxf);
             
             //project awareness
             if(Config.watchguard)
@@ -1162,6 +1171,41 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
 	g.chcolor();
     }
+
+    private void drawBotPath(GOut g, Matrix4f dgpcam, Matrix4f dgpwxf) {
+	g.chcolor(Color.CYAN);
+        
+        Matrix4f cam = new Matrix4f(), wxf = new Matrix4f(),
+            mv = new Matrix4f(), wxfaccent = new Matrix4f();
+        mv.load(cam.load(dgpcam)).mul1(wxf.load(dgpwxf));
+        wxfaccent = wxf.trim3(1).transpose();
+        float field = 0.5f;
+        float aspect = ((float)g.sz.y) / ((float)g.sz.x);
+        Projection proj = Projection.frustum(-field, field, -aspect * field, aspect * field, 1, 5000);
+
+        Coord scstart = null;
+        for (Coord c : botpath) {
+            float targetheight = 0;
+            try{
+                targetheight = glob.map.getcz(c);
+            }catch(MCache.LoadingMap e){
+                targetheight = 0;
+            }
+            Coord3f reposend = new Coord3f(c.x, c.y, targetheight);
+            reposend.x -= wxf.get(3,0);
+            reposend.y *= -1;
+            reposend.y -= wxf.get(3,1);
+            reposend.z -= wxf.get(3,2);
+            reposend = wxfaccent.mul4(reposend);
+            Coord3f send = proj.toscreen(mv.mul4(reposend), g.sz);
+            Coord scend = new Coord(send);
+            if (scstart != null) {
+        	g.line(scstart, scend,2);
+            }
+            scstart = scend;
+        }
+	g.chcolor();
+    }
     
     private void orientToEnemy()
     {
@@ -1231,7 +1275,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    public void hit(Coord pc, Coord mc) {
 		rc = mc;
 		if(adjust)
-		    rc = rc.div(tilesz).mul(tilesz).add(tilesz.div(2));
+		    rc = rc.center();
 		Gob pl = player();
 		if((pl != null) && !freerot)
 		    a = rc.angle(pl.rc);
@@ -1358,7 +1402,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	protected void nohit(Coord pc) {}
     }
 
-    private static int getid(Rendered tgt) {
+    public static int getid(Rendered tgt) {
 	if(tgt instanceof ResPart)
 	    return(((ResPart)tgt).partid());
 	return(-1);
@@ -1373,6 +1417,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
 	
 	protected void hit(Coord pc, Coord mc, ClickInfo inf) {
+	    BotHelper.debug(String.format("[C]%s:%d:%03f", mc.toString(), BotHelper.mapTile(mc), BotHelper.mapZ(mc)));
 	    int modflags = ui.modflags();
 	    if(inf == null) {
 		if(Config.center){mc = mc.div(11).mul(11).add(5, 5);}
@@ -1384,6 +1429,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 			((ChatUI.EntryChannel)channel).send(String.format("$hl[%d]", inf.gob.id));
 		    }
 		}
+		BotHelper.debug(String.format("[G]%s", inf.gob.toString()));
 		if(inf.ol == null) {
 		    wdgmsg("click", pc, mc, clickb, modflags, 0, (int)inf.gob.id, inf.gob.rc, 0, getid(inf.r));
 		} else {

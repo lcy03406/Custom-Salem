@@ -26,6 +26,12 @@
 
 package haven;
 
+import java.awt.Color;
+import java.util.HashSet;
+import java.util.Set;
+
+import haven.Fightview.Relation;
+
 public class RemoteUI implements UI.Receiver, UI.Runner {
     Session sess, ret;
     UI ui;
@@ -36,6 +42,14 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
     }
 	
     public void rcvmsg(int id, String name, Object... args) {
+	String str = String.format("[S]%d:%s:", id, name);
+	for(Object o : args) {
+	    str += "&";
+	    str += o.toString();
+	}
+	BotHelper.debug(str);
+	System.out.println(str);
+        
 	Message msg = new Message(Message.RMSG_WDGMSG);
 	msg.adduint16(id);
 	msg.addstring(name);
@@ -48,6 +62,20 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 	    this.ret = sess;
 	    this.sess.notifyAll();
 	}
+    }
+    
+    static Set<String> msgLogIgnore = new HashSet<String>();
+    static Set<String> msgLogDetail = new HashSet<String>();
+    {
+	msgLogIgnore.add("weight");
+	msgLogIgnore.add("tmexp");
+	msgLogIgnore.add("upd");
+	msgLogIgnore.add("curs");
+	msgLogIgnore.add("prog");
+	msgLogIgnore.add("stm");
+	msgLogIgnore.add("htm");
+	msgLogIgnore.add("tt");
+	msgLogDetail.add("pack");
     }
 
     public Session run(UI ui) throws InterruptedException {
@@ -63,6 +91,19 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 		    Object[] pargs = msg.list();
 		    Object[] cargs = msg.list();
 		    ui.newwidget(id, type, parent, pargs, cargs);
+		    
+//		    String str = String.format("[R.N]%d:%s:%d:", id, type, parent);
+//		    for(Object o : pargs) {
+//			str += "&";
+//			str += o.toString();
+//		    }
+//		    str += ":";
+//		    for(Object o : cargs) {
+//			str += "&";
+//			str += o.toString();
+//		    }
+//		    Helper.debug(str);
+//		    System.out.println(str);
 
 		} else if(msg.type == Message.RMSG_WDGMSG) {
 		    int id = msg.uint16();
@@ -71,9 +112,46 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 		    ui.uimsg(id, name, args);
                     
 		    checkvents(name, args);
+
+		    if (!msgLogIgnore.contains(name))
+		    {
+			boolean detail = false;
+			if (msgLogDetail.contains(name))
+			{
+			    detail = true;
+			}
+			
+			String str = String.format("[R.M]%d:%s:", id, name);
+			if (detail)
+			{
+			    for(Object o : args) {
+				str += "&";
+				str += o.toString();
+			    }
+			}
+			BotHelper.debug(str);
+			System.out.println(str);
+		    }
+		    
+		    if (name.equals("curs")) {
+			if (args.length == 0) {
+			    BotHelper.wake("curs:null");
+			} else {
+			    String cur = (String) args[0];
+			    BotHelper.wake("curs:" + cur);
+			}
+		    } else if (name.equals("prog") && args.length == 0) {
+			BotHelper.wake("prog");
+		    } else if (name.equals("err")) {
+			BotHelper.wake("err");
+		    }
 		} else if(msg.type == Message.RMSG_DSTWDG) {
 		    int id = msg.uint16();
 		    ui.destroy(id);
+                    
+		    //String str = String.format("[R.D]%d", id);
+		    //Helper.debug(str);
+		    //System.out.println(str);
 		}
 	    }
 	    synchronized(sess) {

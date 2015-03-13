@@ -83,7 +83,6 @@ public abstract class ItemInfo {
 	    this.str = str;
 	}
 	
-	@SuppressWarnings("UnusedDeclaration")
 	public Name(Owner owner, String str) {
 	    this(owner, Text.render(str));
 	}
@@ -197,7 +196,7 @@ public abstract class ItemInfo {
 	return(ret);
     }
     
-    @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("unused")
     private static String dump(Object arg) {
 	if(arg instanceof Object[]) {
 	    StringBuilder buf = new StringBuilder();
@@ -275,20 +274,38 @@ public abstract class ItemInfo {
     }
 
     public static String getContent(List<ItemInfo> infos){
-	String res = null;
 	for (ItemInfo info : infos){
 	    if(info instanceof Contents){
 		Contents cnt = (Contents) info;
-		for(ItemInfo subInfo : cnt.sub){
-		    if(subInfo instanceof Name){
-			Name name = (Name) subInfo;
-			res = name.str.text;
-		    }
-		    if(res != null){return res;}
-		}
+		return getName(cnt.sub);
 	    }
 	}
 	return null;
+    }
+
+    public static String getName(List<ItemInfo> infos){
+	String con = getContent(infos);
+	String nm = null;
+	for (ItemInfo info : infos){
+	    if(info instanceof Name){
+		Name name = (Name) info;
+		nm = name.str.text;
+		if (nm != null && !nm.isEmpty()) {
+		    char c = nm.charAt(0);
+		    if (c >= '0' && c <= '9') {
+			int b = nm.indexOf(' ');
+			nm = nm.substring(b);
+		    }
+		    break;
+		}
+	    }
+	}
+	if (nm == null)
+	    return null;
+	else if (con != null)
+	    return con + "@" + nm;
+	else
+	    return nm;
     }
 
     static final Pattern carats_patt = Pattern.compile("Carats: ([0-9]*\\.?[0-9]+)");

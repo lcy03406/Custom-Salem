@@ -26,8 +26,6 @@
 
 package haven;
 
-import static haven.FlowerMenu.pbgm;
-import static haven.FlowerMenu.ptf;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
@@ -35,6 +33,7 @@ import java.awt.Rectangle;
 import static java.lang.Math.PI;
 
 public class FlowerMenu extends Widget {
+    public static FlowerMenu instance;
     public static final Tex pbgl = Resource.loadtex("gfx/hud/fpl");
     public static final Tex pbgm = Resource.loadtex("gfx/hud/fpm");
     public static final Tex pbgr = Resource.loadtex("gfx/hud/fpr");
@@ -53,7 +52,9 @@ public class FlowerMenu extends Widget {
 	    String[] opts = new String[args.length];
 	    for(int i = 0; i < args.length; i++)
 		opts[i] = (String)args[i];
-	    return(new FlowerMenu(c, parent, opts));
+	    instance = new FlowerMenu(c, parent, opts);
+	    BotHelper.wake("flower_open");
+	    return instance;
 	}
     }
 
@@ -297,5 +298,19 @@ public class FlowerMenu extends Widget {
 	} else {
 	    wdgmsg("cl", option.num, ui.modflags());
 	}
+    }
+    
+    public void chooseName(String name) {
+	if (name.isEmpty()) {
+	    wdgmsg("cl", -1);
+	} else {
+	    for(FlowerMenu.Petal p : opts){
+		if(p.name.equals(name)){
+		    wdgmsg("cl", p.num, 0);
+		    return;
+		}
+	    }
+	}
+	    
     }
 }

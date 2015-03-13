@@ -33,6 +33,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import java.util.*;
+
 import javax.media.opengl.*;
 import javax.media.opengl.awt.*;
 
@@ -260,6 +261,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
 	ui.cons.add(this);
 	if(glconf != null)
 	    ui.cons.add(glconf);
+	ui.cons.add(BotCommander.instance);
 	return(ui);
     }
     
@@ -480,6 +482,9 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
 		    throw(new InterruptedException());
 	    }
 	} catch(InterruptedException e) {
+	    e.printStackTrace();
+	} catch(Exception e) {
+	    e.printStackTrace();
 	} finally {
 	    ui.destroy();
 	}

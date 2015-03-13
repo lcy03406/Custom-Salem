@@ -159,10 +159,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 	if(m != null)
 	    return(m.getc());
 	else
-	    return(getrc());
+	    return(getrcf());
     }
     
-    public Coord3f getrc() {
+    public Coord3f getrcf() {
 	return(new Coord3f(rc.x, rc.y, glob.map.getcz(rc)));
     }
 	
@@ -206,6 +206,45 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 	
     public void draw(GOut g) {}
 
+    public String name() {
+	try {
+	    ResDrawable rd = this.getattr(ResDrawable.class);
+	    if(rd!=null && rd.res != null)
+		return rd.res.get().name;
+	    return "^NORES^";
+	} catch (Loading e) {
+	    e.printStackTrace();
+	    return "^LOADING^";
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    return "^EXCEPTION^";	    
+	}
+    }
+    
+    public int mask() {
+	try {
+	    ResDrawable rd = this.getattr(ResDrawable.class);
+	    if(rd!=null && rd.res != null)
+		return rd.mask;
+	    return 0;
+	} catch (Loading e) {
+	    e.printStackTrace();
+	    return 0;
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    return 0;	    
+	}
+    }
+    
+    public String toString() {
+	String str = String.format("%s:%d:%s:%d:", rc, id, name(), mask());
+	//if (ols == null)
+	//    return str;
+	//for(Overlay ol : ols)
+	//    str += "&" + ol.res.get().name;
+	return str;
+    }
+   
     public boolean setup(RenderList rl) {
 	for(Overlay ol : ols)
 	    rl.add(ol, null);

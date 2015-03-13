@@ -102,6 +102,10 @@ public class MCache {
 	public void update() {
 	    olseq++;
 	}
+	
+	public int mask() {
+	    return mask;
+	}
     }
 
     public class Grid {

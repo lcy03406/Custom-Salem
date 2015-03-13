@@ -40,7 +40,7 @@ public class UI {
     public static UI instance;
     public GameUI gui;
     public RootWidget root;
-    private Widget keygrab, mousegrab;
+    public Widget keygrab, mousegrab;
     public Map<Integer, Widget> widgets = new TreeMap<Integer, Widget>();
     public Map<Widget, Integer> rwidgets = new HashMap<Widget, Integer>();
     Receiver rcvr;

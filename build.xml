@@ -19,7 +19,7 @@
 	</target>
 
 	<target name="salem-client" depends="build-env">
-		<javac srcdir="src" destdir="build/classes" debug="on" source="1.7" target="1.7" includeantruntime="no">
+		<javac srcdir="src" destdir="build/classes" debug="on" source="1.7" target="1.7" includeantruntime="no" encoding="UTF-8">
 			<classpath>
 				<pathelement path="lib/jogl-all.jar" />
 				<pathelement path="lib/gluegen-rt.jar" />
@@ -29,6 +29,7 @@
 				<pathelement path="lib/jglob.jar" />
 				<pathelement path="lib/gson-2.3.jar" />
 				<pathelement path="lib/guava-18.0.jar" />
+				<pathelement path="lib/groovy-2.4.1-indy.jar" />
 			</classpath>
 			<compilerarg value="-Xlint:unchecked" />
 			<!-- <compilerarg value="-Xbarda" /> -->
@@ -93,12 +94,12 @@
 			<fileset file="etc/timer.wav" />
 			<fileset file="etc/trans.txt" />
 			<fileset file="etc/contents_icons.json" />
-                        <fileset file="etc/item_radius.json" />
-                        <fileset file="etc/gob_path.json" />
+			<fileset file="etc/item_radius.json" />
+			<fileset file="etc/gob_path.json" />
 			<fileset file="etc/item_data.json" />
 			<manifest>
 				<attribute name="Main-Class" value="haven.MainFrame" />
-				<attribute name="Class-Path" value="jogl-all.jar gluegen-rt.jar lclient-res.jar builtin-res.jar salem-res.jar gson-2.3.jar guava-18.0.jar" />
+				<attribute name="Class-Path" value="jogl-all.jar gluegen-rt.jar lclient-res.jar builtin-res.jar salem-res.jar gson-2.3.jar guava-18.0.jar groovy-2.4.1-indy.jar" />
 			</manifest>
 		</jar>
 		<chmod file="build/lsalem.jar" perm="a+x" />
@@ -119,6 +120,29 @@
 			</fileset>
 		</copy>
 	</target>
+	
+	<target name="bot-doc">
+		<javadoc destdir="build/doc" windowtitle="装逼指南"
+			encoding="UTF-8" charset="UTF-8" docencoding="UTF-8">
+			<classpath>
+				<pathelement path="src"/>
+				<pathelement path="lib/jogl-all.jar" />
+				<pathelement path="lib/gluegen-rt.jar" />
+				<pathelement path="lib/jnlp.jar" />
+				<pathelement path="lib/jorbis.jar" />
+				<pathelement path="lib/jogg.jar" />
+				<pathelement path="lib/jglob.jar" />
+				<pathelement path="lib/gson-2.3.jar" />
+				<pathelement path="lib/guava-18.0.jar" />
+				<pathelement path="lib/groovy-2.4.1-indy.jar" />
+			</classpath>
+			<link href="http://docs.oracle.com/javase/7/docs/api/"/>
+			<fileset dir="src/haven">
+				<include name="BotHelper.java"/>
+				<include name="Coord.java"/> 
+			</fileset>
+		</javadoc>
+	</target>
 
 	<target name="deftgt" depends="jars, appletview" />
 
@@ -129,7 +153,7 @@
 				maxmemory="256m"
 				classpath="java">
 			<arg line="-d -U http://game.salemthegame.com/res/ game.salemthegame.com"/>
-                        <jvmarg line="-XX:-UseGCOverheadLimit" />
+			<jvmarg line="-XX:-UseGCOverheadLimit" />
 		</java>
 	</target>
 
@@ -140,7 +164,7 @@
 				maxmemory="256m"
 				classpath="java">
 			<arg line="-d -U http://game.salemthegame.com/res/ game.salemthegame.com"/>
-                        <jvmarg line="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -XX:-UseGCOverheadLimit" />
+			<jvmarg line="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -XX:-UseGCOverheadLimit" />
 		</java>
 	</target>
 

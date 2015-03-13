@@ -28,8 +28,8 @@ package haven;
 
 import haven.minimap.Marker;
 import haven.minimap.Radar;
-import java.awt.Color;
 
+import java.awt.Color;
 import java.util.*;
 
 public class OCache implements Iterable<Gob> {
@@ -140,8 +140,8 @@ public class OCache implements Iterable<Gob> {
     public synchronized void cres(Gob g, Indir<Resource> res, Message sdt) {
 	ResDrawable d = (ResDrawable)g.getattr(Drawable.class);
 	if((d != null) && (d.res == res) && !d.sdt.equals(sdt) && (d.spr != null) && (d.spr instanceof Gob.Overlay.CUpd)) {
+	    d.setData(sdt);
 	    ((Gob.Overlay.CUpd)d.spr).update(sdt);
-	    d.sdt = sdt;
 	} else if((d == null) || (d.res != res) || !d.sdt.equals(sdt)) {
 	    g.setattr(new ResDrawable(g, res, sdt));
 	    radar.add(g, res);
@@ -158,9 +158,11 @@ public class OCache implements Iterable<Gob> {
 	if((m == null) || !(m instanceof LinMove))
 	    return;
 	LinMove lm = (LinMove)m;
-	if((l < 0) || (l >= lm.c))
+	if((l < 0) || (l >= lm.c)) {
+	    if (g == BotHelper.player())
+		BotHelper.wake("move_stop");
 	    g.delattr(Moving.class);
-	else
+	} else
 	    lm.setl(l);
     }
 	

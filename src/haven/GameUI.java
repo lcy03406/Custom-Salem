@@ -73,7 +73,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public HelpWnd help;
     public OptWnd opts;
     public Collection<GItem> hand = new LinkedList<GItem>();
-    private WItem vhand;
+    public WItem vhand;
     public ChatUI chat;
     public FilterWnd filter = new FilterWnd(this);
     public ChatUI.Channel syslog;
@@ -357,10 +357,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	if((hand.isEmpty() && (vhand != null)) || ((vhand != null) && !hand.contains(vhand.item))) {
 	    ui.destroy(vhand);
 	    vhand = null;
+	    BotHelper.wake("hand_drop");
 	}
 	if(!hand.isEmpty() && (vhand == null)) {
 	    GItem fi = hand.iterator().next();
 	    vhand = new ItemDrag(new Coord(15, 15), this, fi);
+	    BotHelper.wake("hand_take");
 	}
     }
 

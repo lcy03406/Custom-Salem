@@ -164,7 +164,7 @@ public class WItem extends Widget implements DTarget {
 		shorttip = longtip = null;
 		ttinfo = info;
 	    }
-	    if(now - hoverstart < 1000) {
+	    if(now - hoverstart < 0) {
 		if(shorttip == null)
 		    shorttip = new ShortTip(info);
 		return(shorttip);
@@ -416,7 +416,7 @@ public class WItem extends Widget implements DTarget {
     }
     
     private Tex getContentTex(String contents) {
-        String name = contents_translations.get(contents.substring(contents.indexOf("of ")+3));
+        String name = contents_translations.get(contents);
 
 	Tex tex = null;
 	if(name != null && !name.equals("silver")){
@@ -478,6 +478,11 @@ public class WItem extends Widget implements DTarget {
 	    return true;
 	} else if(btn == 1) {
 	    item.wdgmsg("take", c);
+	    return true;
+	} else if(btn == 2) {
+	    String str = server_c.toString() + ":";
+	    str += item == null ? "null" : item.name();
+	    BotHelper.debug(str);
 	    return true;
 	} else if(btn == 3) {
 	    item.wdgmsg("iact", c);

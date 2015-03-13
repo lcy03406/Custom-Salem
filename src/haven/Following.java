@@ -45,7 +45,7 @@ public class Following extends Moving {
     public Coord3f getc() {
 	Gob tgt = gob.glob.oc.getgob(this.tgt);
 	if(tgt == null)
-	    return(gob.getrc());
+	    return(gob.getrcf());
 	return(tgt.getc());
     }
     

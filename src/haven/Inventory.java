@@ -27,6 +27,7 @@
 package haven;
 
 import java.util.*;
+
 import com.google.common.collect.*;
 
 public class Inventory extends Widget implements DTarget {
@@ -56,7 +57,7 @@ public class Inventory extends Widget implements DTarget {
 	@Override
 	public int compare(WItem o1, WItem o2) {
             try{
-        	int result = o1.item.resname().compareTo(o2.item.resname());
+        	int result = o1.item.name().compareTo(o2.item.name());
         	if(result == 0)
         	{
         	    result = cmp_desc.compare(o1, o2);
@@ -159,6 +160,18 @@ public class Inventory extends Widget implements DTarget {
         };
         nsbtn.visible = true;
         ((Window)parent).addtwdg(nsbtn);
+        if (parent != ui.gui.invwnd) {
+            BotHelper.box = this;
+            BotHelper.wake("box_open");
+        }
+    }
+    
+    public void destroy() {
+	if (this == BotHelper.box) {
+	    BotHelper.box = null;
+	    BotHelper.wake("box_close");
+	}
+	super.destroy();
     }
 
     public void sortItemsLocally(Comparator<WItem> comp)
@@ -428,4 +441,35 @@ public class Inventory extends Widget implements DTarget {
 	return items;
     }
     
+    public GItem findItem(String name) {
+        for(WItem w : wmap.values()) {
+            if (name.isEmpty() || name.equals(w.item.name()))
+        	return w.item;
+        }
+        return null;
+    }
+    
+    public Coord findEmpty() {
+        int width = isz.x;
+        int height = isz.y;
+        if(this.equals(this.ui.gui.maininv))
+            width --;
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+        	Coord c = new Coord(x, y);
+        	if (!dictionaryClientServer.containsValue(c))
+        	    return c;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<GItem> allItem(String name) {
+	ArrayList<GItem> l = new ArrayList<GItem>();
+        for(WItem w : wmap.values()) {
+            if (name.isEmpty() || name.equals(w.item.name()))
+        	l.add(w.item);
+        }
+	return l;
+    }
 }

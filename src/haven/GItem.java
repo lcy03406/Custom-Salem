@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.ItemInfo.Contents;
 import haven.ItemInfo.Name;
 
 import java.awt.Color;
@@ -114,20 +115,20 @@ public class GItem extends AWidget implements ItemInfo.ResOwner, Comparable<GIte
     
     public List<ItemInfo> info() {
    if(info == null)
-        {
+   {
        info = ItemInfo.buildinfo(this, rawinfo);
-            
-            ItemInfo.Name nm = ItemInfo.find(ItemInfo.Name.class, info);
-            if(nm!=null)
-            {
-                if(meter > 0)
-                {
-                    String newtext = nm.str.text + "   (" + meter + "% done)";
-                    ItemInfo.Name newnm = new ItemInfo.Name(nm.owner, newtext);
-                    int nameidx=info.indexOf(nm);
-                    info.set(nameidx, newnm);
-                }
-            }     
+           
+//            ItemInfo.Name nm = ItemInfo.find(ItemInfo.Name.class, info);
+//            if(nm!=null)
+//            {
+//                if(meter > 0)
+//                {
+//                    String newtext = nm.str.text + "   (" + meter + "% done)";
+//                    ItemInfo.Name newnm = new ItemInfo.Name(nm.owner, newtext);
+//                    int nameidx=info.indexOf(nm);
+//                    info.set(nameidx, newnm);
+//                }
+//            }     
         }
         
    return(info);
@@ -146,16 +147,17 @@ public class GItem extends AWidget implements ItemInfo.ResOwner, Comparable<GIte
     }
     
     public String name() {
-	Resource res = resource();
-	if(res != null){
-	    if(res.layer(Resource.tooltip) != null) {
-		return res.layer(Resource.tooltip).t;
-	    } else {
-		Name name = ItemInfo.find(Name.class, info);
-		return (name != null)?name.str.text:null;
-	    }
-	}
-	return null;
+	return ItemInfo.getName(info());
+//	Resource res = resource();
+//	if(res != null){
+//	    if(res.layer(Resource.tooltip) != null) {
+//		return res.layer(Resource.tooltip).t;
+//	    } else {
+//		Name name = ItemInfo.find(Name.class, info);
+//		return (name != null)?name.str.text:null;
+//	    }
+//	}
+//	return null;
     }
 
     public void testMatch() {

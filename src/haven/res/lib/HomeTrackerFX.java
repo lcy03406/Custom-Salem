@@ -9,8 +9,12 @@ public class HomeTrackerFX extends Sprite {
     private static final Location SCALE = Location.scale(new Coord3f(1.2f, 1.2f ,1));
     private static final Colors COLORS = new Material.Colors(Color.GREEN);
     private static final Location XLATE = Location.xlate(new Coord3f(0,0,2.5f));
+    private static final Location SCALEA = Location.scale(new Coord3f(2.0f, 2.0f ,1));
+    private static final Colors COLORSA = new Material.Colors(Color.GRAY);
+    private static final Location XLATEA = Location.xlate(new Coord3f(2.0f,0,2.0f));
     static Resource sres = Resource.load("gfx/fx/arrow", 1);
     Rendered fx = null;
+    Rendered fxx = null;
     double ca = 0;
     Gob.Overlay curol = null;
     public Coord c = null;
@@ -31,10 +35,13 @@ public class HomeTrackerFX extends Sprite {
 	if(fx == null){
 	    FastMesh.MeshRes mres = (FastMesh.MeshRes)sres.layer(FastMesh.MeshRes.class);
 	    this.fx = mres.mat.get().apply(mres.m);
+	    this.fxx = mres.mat.get().apply(mres.m);
 	}
 	if(c != null && ((Gob)owner).rc != null){
 	    Location rot = Location.rot(Coord3f.zu, (float)(((Gob)this.owner).a - this.ca));
 	    d.add(this.fx, GLState.compose(XLATE, SCALE, COLORS, rot));
+	    Location rotx = Location.rot(Coord3f.zu, (float)((Gob)this.owner).a);
+	    d.add(this.fxx, GLState.compose(XLATEA, SCALEA, COLORSA, rotx));
 	}
 	return false;
     }

@@ -29,6 +29,7 @@ package haven;
 public class ResDrawable extends Drawable {
     final public  Indir<Resource> res;
     Message sdt;
+    int mask;
     Sprite spr = null;
     int delay = 0;
     boolean show_radius = false;
@@ -38,6 +39,7 @@ public class ResDrawable extends Drawable {
 	super(gob);
 	this.res = res;
 	this.sdt = sdt;
+	this.mask = sdt.eom()?0xffff0000:Sprite.decnum(sdt.clone());
 	try {
 	    init();
 	} catch(Loading ignored) {}
@@ -57,6 +59,11 @@ public class ResDrawable extends Drawable {
 	    ColoredRadius.Cfg cfg = Config.item_radius.get(name);
 	    radius = new Gob.Overlay(new ColoredRadius(gob, cfg));
 	}
+    }
+    
+    public void setData(Message sdt) {
+	this.sdt = sdt;
+	this.mask = sdt.eom()?0xffff0000:Sprite.decnum(sdt.clone());
     }
 	
     public void setup(RenderList rl) {
