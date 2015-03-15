@@ -19,7 +19,7 @@
 	</target>
 
 	<target name="salem-client" depends="build-env">
-		<javac srcdir="src" destdir="build/classes" debug="on" source="1.6" target="1.6" includeantruntime="no">
+		<javac srcdir="src" destdir="build/classes" debug="on" source="1.7" target="1.7" includeantruntime="no">
 			<classpath>
 				<pathelement path="lib/jogl-all.jar" />
 				<pathelement path="lib/gluegen-rt.jar" />
@@ -141,6 +141,17 @@
 				classpath="java">
 			<arg line="-d -U http://game.salemthegame.com/res/ game.salemthegame.com"/>
                         <jvmarg line="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -XX:-UseGCOverheadLimit" />
+		</java>
+	</target>
+
+    <target name="debug-suspend" depends="jars">
+		<java jar="build/lsalem.jar"
+				dir="build"
+				fork="true"
+				maxmemory="256m"
+				classpath="java">
+			<arg line="-U http://game.salemthegame.com/res/ game.salemthegame.com"/>
+			<jvmarg line="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 -XX:-UseGCOverheadLimit" />
 		</java>
 	</target>
 

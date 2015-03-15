@@ -71,7 +71,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
     }
 
     public HavenPanel(int w, int h, GLCapabilitiesChooser cc) {
-	super(stdcaps(), cc, null, null);
+	super(stdcaps(), cc, null);
 	setSize(this.w = w, this.h = h);
 	newui(null);
 	initgl();

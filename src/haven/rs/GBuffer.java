@@ -72,7 +72,7 @@ public class GBuffer {
 	     * while a Pbuffer works; while on Xvfb with mesa-swx, an
 	     * OffscreenAutoDrawable works, while Pbuffer creation
 	     * fails. :-/ */
-	    this.buf = df.createOffscreenAutoDrawable(null, caps(prof), null, 1, 1, null);
+	    this.buf = df.createOffscreenAutoDrawable(null, caps(prof), null, 1, 1);
 	    buf.addGLEventListener(new GLEventListener() {
 		    public void display(GLAutoDrawable d) {
 			GL2 gl = d.getGL().getGL2();
