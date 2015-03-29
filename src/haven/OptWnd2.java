@@ -268,6 +268,17 @@ public class OptWnd2 extends Window {
 
 		{tooltip = Text.render("Makes open if you click on any crafting item in menugrid or toolbelt.");}
 	    }.a = Config.autoopen_craftwnd;
+
+	    new CheckBox(new Coord(200, y += 25), tab, "Translate"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.translate = val;
+		    Utils.setprefb("translate", val);
+		}
+
+		{tooltip = Text.render("Translate texts in trans.txt.");}
+	    }.a = Config.translate;
 	}
 
 	

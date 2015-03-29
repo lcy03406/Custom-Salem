@@ -165,11 +165,17 @@ public class RichText extends Text {
 	}
 	
 	public TextPart(String str, Map<? extends Attribute, ?> attrs) {
-	    this((str.length() == 0)?(new AttributedString(str)):(new AttributedString(str, attrs)), 0, str.length());
+	    str = Translate.get(str);
+	    this.str = (str.length() == 0)?(new AttributedString(str)):(new AttributedString(str, attrs));
+	    this.start = 0;
+	    this.end = str.length();
 	}
 	
 	public TextPart(String str) {
-	    this(new AttributedString(str), 0, str.length());
+	    str = Translate.get(str);
+	    this.str = new AttributedString(str);
+	    this.start = 0;
+	    this.end = str.length();
 	}
 	
 	public AttributedCharacterIterator ti() {
