@@ -1,0 +1,24 @@
+﻿User name
+账号
+Password
+密码
+Forget me
+不保存密码
+Remember me
+记住账号
+If you don't have an account
+如果你没有帐号
+register one here
+在这注册
+Arts & Crafts
+A&C艺术
+Cloak & Dagger
+C&D战斗
+Faith & Wisdom
+F&W信仰
+Flora & Fauna
+F&F生态
+Hammer & Nail
+H&N手工
+Hunting & Hideworking
+H&H捕猎

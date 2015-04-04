@@ -115,6 +115,7 @@ public class ItemData {
 	    if (0 == d.compareTo(n))
 	    {
 		data.remove(d);
+		break;
 	    }
 	}
 	data.add(n);
