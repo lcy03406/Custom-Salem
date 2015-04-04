@@ -155,6 +155,7 @@ public class Text {
 	}
                 
 	public Line render(String text, Color c) {
+	    text = Translate.get(text);
 	    Coord sz = strsize(text);
 	    if(sz.x < 1)
 		sz = sz.add(1, 0);
