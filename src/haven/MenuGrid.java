@@ -191,7 +191,7 @@ public class MenuGrid extends Widget {
 			exp[n] = val;
 			n ++;
 		    }
-		    Inspiration i = new Inspiration(null, attrs, exp);
+		    Inspiration i = new Inspiration(null, 0, attrs, exp);
 		    return i.longtip();
 		}
 	    }
