@@ -1,6 +1,10 @@
 $size[20]{$u{CHANGE LOG:}}
  
 $size[14]{$u{Update for 04.03.15 (thanks to lcy03406):}}
+  * Option for translation. It will use a trans.txt in your Salem home directory - check the jar or git for an example trans.txt (it will fall back on the etc/trans.txt from the jar).
+  * Minor bugfix with storing multiple item data's in the crafting window.
+ 
+$size[14]{$u{Update for 04.03.15 (thanks to lcy03406):}}
   * Better lighting in mines: you can step through the various cardinal directions for lighting with ctrl+N
   * Auto-sifting is now in! For now, this is completely automatic until I get enough complaints that it should be made an option.
   * You can now store multiple versions of the recipes in Ender's Craft Window. Scroll them with the mousescroll wheel. Messing up will require you to delete them manually in Salem\item_data.
