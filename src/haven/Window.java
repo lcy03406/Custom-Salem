@@ -70,8 +70,8 @@ public class Window extends Widget implements DTarget {
     private static final Coord capc = new Coord(20, th - 3);
     public Coord mrgn = new Coord(10, 10);
     public Text cap;
-    private boolean dt = false;
-    private boolean dm = false;
+    public boolean dt = false;
+    public boolean dm = false;
     public Coord ctl, csz, atl, asz, ac;
     public Coord doff;
     private final Collection<Widget> twdgs = new LinkedList<Widget>();

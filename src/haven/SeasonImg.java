@@ -42,6 +42,14 @@ public class SeasonImg extends Window {
     }
     
     @Override
+    public boolean type(char key, java.awt.event.KeyEvent ev) {
+	if(key == 27) {
+	    return(true);
+	}
+	return(super.type(key, ev));
+    }
+    
+    @Override
     public boolean mouseup(Coord c, int button) {
         boolean result = super.mouseup(c,button);
 	Config.setWindowOpt("season_pos", this.c.toString());
