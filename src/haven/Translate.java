@@ -1,9 +1,12 @@
 package haven;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.regex.Matcher;
@@ -26,7 +29,13 @@ public class Translate {
 	trans.clear();
 	later.clear();
 	try {
-	    BufferedReader r = new BufferedReader(new FileReader("trans.txt"));
+            Reader fr;
+            try{
+                fr = new FileReader("trans.txt");
+            }catch(FileNotFoundException fnfe){
+                fr = new InputStreamReader(Translate.class.getResourceAsStream("/trans.txt"), "UTF-8");
+            }
+            BufferedReader r = new BufferedReader(fr);
 	    while (true) {
 		String a = r.readLine();
 		String b = r.readLine();
@@ -35,8 +44,12 @@ public class Translate {
 		trans.put(a, b);
 	    }
 	    r.close();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	try {
 	    late = new PrintWriter(new FileWriter("late.txt", false));
-	    r = new BufferedReader(new FileReader("later.txt"));
+	    BufferedReader r = new BufferedReader(new FileReader("later.txt"));
 	    while (true) {
 		String a = r.readLine();
 		if (a == null)

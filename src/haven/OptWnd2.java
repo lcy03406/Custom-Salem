@@ -277,7 +277,7 @@ public class OptWnd2 extends Window {
 		    Utils.setprefb("translate", val);
 		}
 
-		{tooltip = Text.render("Translate texts in trans.txt.");}
+		{tooltip = Text.render("Translate texts using trans.txt.");}
 	    }.a = Config.translate;
 	}
 
