@@ -39,6 +39,7 @@ import java.util.List;
 
 import static haven.Inventory.invsq;
 import static haven.Inventory.isqsz;
+import static haven.Widget.gettype;
 import java.util.Map.Entry;
 
 public class GameUI extends ConsoleHost implements Console.Directory {
@@ -1062,16 +1063,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    x+=18;
             hwab = new MenuButton(new Coord(x,y), this, "hwa", -1, "Walk to your homestead") {
                 public void click() {
-                    if(map.player() != null)
-                    for(Overlay ol : map.player().ols)
-                    {
-                        if(ol.spr.getClass().equals(HomeTrackerFX.class))
-                        {
-                            HomeTrackerFX htfx = (HomeTrackerFX) ol.spr;
-                            // walk there!
-                            ui.wdgmsg(map, "click", map.player().sc, htfx.c, 1,0);
-                        }
-                    }
+                    GameUI.this.homesteadWalk();
                 }
             };
 	    x+=12;
@@ -1603,8 +1595,27 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		    gettype(args[1]).create(new Coord(200, 200), GameUI.this, new Object[0]);
 		}
 	    });
+        cmdmap.put("homestead", new Console.Command() {
+		public void run(Console cons, String[] args) {
+                    GameUI.this.homesteadWalk();
+		}
+	    });
     }
     public Map<String, Console.Command> findcmds() {
 	return(cmdmap);
+    }
+    
+    private void homesteadWalk()
+    {
+        if(map.player() != null)
+        for(Overlay ol : map.player().ols)
+        {
+            if(ol.spr.getClass().equals(HomeTrackerFX.class))
+            {
+                HomeTrackerFX htfx = (HomeTrackerFX) ol.spr;
+                // walk there!
+                ui.wdgmsg(map, "click", map.player().sc, htfx.c, 1,0);
+            }
+        }
     }
 }
