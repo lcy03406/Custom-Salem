@@ -1208,6 +1208,34 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		return(true);
 	    }
 	}.presize();
+	if((Config.manualurl != null) && (WebBrowser.self != null)) {
+	    IButton manual = new IButton(Coord.z, this, Resource.loadimg("gfx/hud/manu"), Resource.loadimg("gfx/hud/mand"), Resource.loadimg("gfx/hud/manh")) {
+		{
+		    tooltip = Text.render("Open Manual");
+		}
+		
+		public void click() {
+		    URL base = Config.manualurl;
+		    try {
+			WebBrowser.self.show(base);
+		    } catch(WebBrowser.BrowserException e) {
+			error("Could not launch web browser.");
+		    }
+		}
+
+		public void presize() {
+		    this.c = new Coord(0, (mainmenu.c.y - sz.y - ((int) ((mainmenu.cash!=null)?37:0))) + (mainmenu.full?0:119));
+		}
+
+		public Object tooltip(Coord c, Widget prev) {
+		    if(checkhit(c))
+			return(super.tooltip(c, prev));
+		    return(null);
+		}
+	    };
+            manual.presize();
+            mainmenu.manual = manual;
+	}
 	if((Config.storeurl != null) && (WebBrowser.self != null)) {
 	    IButton cash = new IButton(Coord.z, this, Resource.loadimg("gfx/hud/cashu"), Resource.loadimg("gfx/hud/cashd"), Resource.loadimg("gfx/hud/cashh")) {
 		{
@@ -1259,34 +1287,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    mainmenu.cash = cash;
 	}
 	
-	if((Config.manualurl != null) && (WebBrowser.self != null)) {
-	    IButton manual = new IButton(Coord.z, this, Resource.loadimg("gfx/hud/manu"), Resource.loadimg("gfx/hud/mand"), Resource.loadimg("gfx/hud/manh")) {
-		{
-		    tooltip = Text.render("Open Manual");
-		}
-		
-		public void click() {
-		    URL base = Config.manualurl;
-		    try {
-			WebBrowser.self.show(base);
-		    } catch(WebBrowser.BrowserException e) {
-			error("Could not launch web browser.");
-		    }
-		}
-
-		public void presize() {
-		    this.c = new Coord(140, (mainmenu.c.y - sz.y) + (mainmenu.full?0:119));
-		}
-
-		public Object tooltip(Coord c, Widget prev) {
-		    if(checkhit(c))
-			return(super.tooltip(c, prev));
-		    return(null);
-		}
-	    };
-            manual.presize();
-            mainmenu.manual = manual;
-	}
         if(mainmenu.manual != null || mainmenu.cash != null)
             mainmenu.toggle();
     }
