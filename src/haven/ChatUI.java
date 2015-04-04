@@ -24,6 +24,7 @@
  *  Boston, MA 02111-1307 USA
  */
 
+
 package haven;
 
 import haven.ChatUI.MultiChat.NamedMessage;
@@ -31,6 +32,7 @@ import haven.minimap.Radar;
 
 import static haven.Window.cbtni;
 
+import static haven.Window.cbtni;
 import java.util.*;
 import java.awt.Color;
 import java.awt.Font;
@@ -51,7 +53,7 @@ import java.util.logging.Logger;
 
 public class ChatUI extends Widget {
     public static RichText.Foundry fnd = new RichText.Foundry(new ChatParser(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 12, TextAttribute.FOREGROUND, Color.BLACK));
-    public static Text.Foundry qfnd = new Text.Foundry(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 14), new java.awt.Color(192, 255, 192));
+    public static Text.Foundry qfnd = new Text.Foundry(new Font("SansSerif", Font.PLAIN, 14), new Color(192, 255, 192));
     public static int selw = 100;
     public Channel sel = null;
     private final Selector chansel;
@@ -82,7 +84,7 @@ public class ChatUI extends Widget {
         this.c = this.base.add(0, -100-(basesize-12)*24);
         this.resize(new Coord(this.sz.x,100+(basesize-12)*24));
         this.chansel.nf = new Text.Foundry("SansSerif", basesize);
-        this.chansel.nfunread = new Text.Foundry("SansSerif", basesize+2, Font.BOLD);
+        this.chansel.nfu = new Text.Foundry("SansSerif", basesize+2, Font.BOLD);
         this.chansel.ymod = (basesize-12)*3;
         this.chansel.rerender = true;
         
@@ -170,17 +172,14 @@ public class ChatUI extends Widget {
 	private final Scrollbar sb;
         private FileOutputStream fos = null;
 	public IButton cbtn;
-        
-        //project alert
-        protected boolean read = true;
-        
-        //project alert
-        @Override
-        public void show(){
-            super.show();
-            read = true;
-        }
-        
+	protected boolean read = true;
+
+	@Override
+	    public void show(){
+	    super.show();
+	    read = true;
+	}
+	
 	public static abstract class Message {
 	    public final long time = System.currentTimeMillis();
 	    
@@ -214,16 +213,18 @@ public class ChatUI extends Widget {
 	    }
 	}
 
-	public Channel(Coord c, Coord sz, Widget parent) {
+	public Channel(Coord c, Coord sz, Widget parent, boolean closeable) {
 	    super(c, sz, parent);
 	    sb = new Scrollbar(new Coord(sz.x, 0), ih(), this, 0, -ih());
-	    cbtn = new IButton(Coord.z, this, cbtni[0], cbtni[1], cbtni[2]);
-	    cbtn.recthit = true;
-	    cbtn.c = new Coord(sz.x - cbtn.sz.x - sb.sz.x - 3, 0);
+	    if(closeable){
+		cbtn = new IButton(Coord.z, this, cbtni[0], cbtni[1], cbtni[2]);
+                cbtn.recthit = true;
+		cbtn.c = new Coord(sz.x - cbtn.sz.x - sb.sz.x - 3, 0);
+	    }
 	}
 	
-	public Channel(Widget parent) {
-	    this(new Coord(selw, 0), parent.sz.sub(selw, 0), parent);
+	public Channel(Widget parent, boolean closeable) {
+	    this(new Coord(selw, 0), parent.sz.sub(selw, 0), parent, closeable);
 	}
         
         protected final void startLogging()
@@ -249,7 +250,7 @@ public class ChatUI extends Widget {
             }
         }
 	
-	public void append(Message msg) {
+	public void append(Message msg, boolean attn) {
 	    synchronized(msgs) {
 		msgs.add(msg);
 		int y = 0;
@@ -268,13 +269,15 @@ public class ChatUI extends Widget {
                         Logger.getLogger(ChatUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                if(!visible)
-                    read=false;
+		if(attn){
+		    if(!visible)
+			read = false;
+		}
 	    }
 	}
 
 	public void append(String line, Color col) {
-	    append(new SimpleMessage(line, col, iw()));
+	    append(new SimpleMessage(line, col, iw()), false);
 	}
 	
 	public int iw() {
@@ -646,7 +649,6 @@ public class ChatUI extends Widget {
 		super.uimsg(name, args);
 	    }
 	}
-        
 	public abstract String name();
     }
     
@@ -654,7 +656,7 @@ public class ChatUI extends Widget {
 	private final String name;
 	
 	public Log(Widget parent, String name) {
-	    super(parent);
+	    super(parent, false);
 	    this.name = name;
 	}
 	
@@ -677,8 +679,9 @@ public class ChatUI extends Widget {
 	private List<String> history = new ArrayList<String>();
 	private int hpos = 0;
 	private String hcurrent;
-        public EntryChannel(Widget parent) {
-	    super(parent);
+	
+	public EntryChannel(Widget parent) {
+	    super(parent, true);
 	    setfocusctl(true);
             int height = basesize + 8;
 	    this.in = new TextEntryChannel(new Coord(0, sz.y - height), new Coord(sz.x, height), this, "") {
@@ -748,7 +751,7 @@ public class ChatUI extends Widget {
 		    if (col == null) col = Color.WHITE;
 		    boolean notify = (args.length > 2) ? (((Integer) args[2]) != 0) : false;
 		    Message cmsg = new SimpleMessage(line, col, iw());
-		    append(cmsg);
+		    append(cmsg, true);
 		    if (notify)
 			notify(cmsg);
 		}
@@ -851,14 +854,15 @@ public class ChatUI extends Widget {
 		String line = parseTags((String)args[1]);
 		if(line != null) {
 		    if (from == null) {
-			append(new MyMessage(line, iw()));
+			append(new MyMessage(line, iw()), true);
 		    } else {
 			Message cmsg = new NamedMessage(from, line, fromcolor(from), iw());
-			append(cmsg);
+			append(cmsg, true);
 			if (notify)
 			    notify(cmsg);
 		    }
 		}
+
 	    } else {
 		super.uimsg(msg, args);
 	    }
@@ -887,13 +891,14 @@ public class ChatUI extends Widget {
 			    col = lighter(pm.col);
 		    }
 		    if (from == null) {
-			append(new MyMessage(line, iw()));
+			append(new MyMessage(line, iw()), true);
 		    } else {
 			Message cmsg = new NamedMessage(from, line, col, iw());
-			append(cmsg);
+			append(cmsg, true);
 			notify(cmsg);
 		    }
 		}
+
 	    } else {
 		super.uimsg(msg, args);
 	    }
@@ -931,15 +936,16 @@ public class ChatUI extends Widget {
 		String line = parseTags((String)args[1]);
 		if(t.equals("in") && line!=null) {
 		    Message cmsg = new InMessage(line, iw());
-		    append(cmsg);
+		    append(cmsg, true);
 		    notify(cmsg);
 		} else if(t.equals("out") && line!=null) {
-		    append(new OutMessage(line, iw()));
+		    append(new OutMessage(line, iw()), false);
 		}
+
 	    } else if(msg == "err") {
 		String err = (String)args[0];
 		Message cmsg = new SimpleMessage(err, Color.RED, iw());
-		append(cmsg);
+		append(cmsg, false);
 		notify(cmsg);
 	    } else {
 		super.uimsg(msg, args);
@@ -994,19 +1000,16 @@ public class ChatUI extends Widget {
 	private int s = 0;
         public int ymod = 0;
         public boolean rerender = false;
-        
-        //project alert
-        public Text.Foundry nfunread = new Text.Foundry("SansSerif", 14, Font.BOLD);
+	public Text.Foundry nfu = new Text.Foundry("SansSerif", 14, Font.BOLD);
 	
 	private class DarkChannel {
 	    public final Channel chan;
 	    public Text rname;
-            //project alert
-            public boolean rread;
+	    public boolean rread;
 	    
 	    private DarkChannel(Channel chan) {
 		this.chan = chan;
-                this.rread = false;
+		this.rread = false;
 	    }
 	}
 	
@@ -1043,20 +1046,15 @@ public class ChatUI extends Widget {
 			g.frect(new Coord(0, y), new Coord(sz.x, 19+ymod));
 		    }
 		    g.chcolor(255, 255, 255, 255);
-                    
-                    //project alert
-		    if(rerender || (ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) || ch.rread != ch.chan.read)
-                    {
-                        ch.rread = ch.chan.read;
-                        if(ch.rread)
-                        {
-                            ch.rname = nf.render(ch.chan.name());
-                        }
-                        else
-                        {
-                            ch.rname = nfunread.render(ch.chan.name());
-                        }
-                    }
+		    
+		    if(rerender || (ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) || ch.rread != ch.chan.read) {
+			ch.rread = ch.chan.read;
+			if(ch.rread){
+			    ch.rname = nf.render(ch.chan.name());
+			} else {
+			    ch.rname = nfu.render(ch.chan.name());
+			}
+		    }
                     
                     if(rerender)
                     {

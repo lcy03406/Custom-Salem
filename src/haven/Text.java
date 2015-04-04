@@ -119,11 +119,10 @@ public class Text {
 	public Foundry(String font, int psz) {
 	    this(new Font(font, Font.PLAIN, psz));
 	}
-		
-        //project alert
-        public Foundry(String font, int psz, int style) {
-            this(new Font(font, style, psz));
-        }
+
+	public Foundry(String font, int psz, int style) {
+	    this(new Font(font, style, psz));
+	}
         		
 	public Foundry aa(boolean aa) {
 	    this.aa = aa;

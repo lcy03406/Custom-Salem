@@ -1,6 +1,9 @@
 $size[20]{$u{CHANGE LOG:}}
  
-$size[14]{$u{Update for 04.03.15 (thanks to lcy03406):}}
+$size[14]{$u{Update for 04.04.15:}}
+  * Merged Vanilla client changes.
+ 
+$size[14]{$u{Update for 04.0.15 (thanks to lcy03406):}}
   * Option for translation. It will use a trans.txt in your Salem home directory - check the jar or git for an example trans.txt (it will fall back on the etc/trans.txt from the jar).
   * Minor bugfix with storing multiple item data's in the crafting window.
  

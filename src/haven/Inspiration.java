@@ -37,12 +37,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Inspiration extends ItemInfo.Tip {
+    public final int xc;
     public final String[] attrs;
     public final int[] exp;
     public final int[] o;
     
-    public Inspiration(Owner owner, String[] attrs, int[] exp) {
+    public Inspiration(Owner owner, int xc, String[] attrs, int[] exp) {
 	super(owner);
+	this.xc = xc;
 	this.o = CharWnd.sortattrs(attrs);
 	this.attrs = attrs;
 	this.exp = exp;
@@ -92,7 +94,7 @@ public class Inspiration extends ItemInfo.Tip {
 
 	@Override
 	public Tip create() {
-	    return new Inspiration(null, attrs, exp);
+	    return new Inspiration(null, 0, attrs, exp);
 	}
 
 	public static class DataAdapter extends TypeAdapter<Data>

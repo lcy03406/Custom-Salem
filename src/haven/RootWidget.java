@@ -60,7 +60,7 @@ public class RootWidget extends ConsoleHost {
 	    } else if(key == ':') {
 		entercmd();
 	    }else if(isgui && (code == KeyEvent.VK_L || code == KeyEvent.VK_F) && ctrl && !shift){
-		FlatnessTool ft = FlatnessTool.instance(ui);
+		FlatnessTool ft = FlatnessTool.instance(ui.gui);
                 if(ft!=null) ft.toggle();
 	    }else if(isgui && (code == KeyEvent.VK_Q) && ctrl && !shift){
 		LocatorTool lt = LocatorTool.instance(ui);

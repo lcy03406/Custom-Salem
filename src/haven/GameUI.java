@@ -141,7 +141,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	tm = new Tempers(Coord.z, this);
 	chat = new ChatUI(Coord.z, 0, this);
 	syslog = new ChatUI.Log(chat, "System");
-	syslog.cbtn.visible = false;
 	ui.cons.out = new java.io.PrintWriter(new java.io.Writer() {
 		StringBuilder buf = new StringBuilder();
 		
@@ -377,7 +376,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    if(mmap != null){
 		ui.destroy(mmap);
 	    }
-	    mmap = new LocalMiniMap(new Coord(0, sz.y - 125), new Coord(125, 125), this, map);
             
             if(Config.pclaimv) map.enol(0,1);
             if(Config.tclaimv) map.enol(2,3);
@@ -385,6 +383,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             
             this.updateRenderFilter();
             
+	    mmap = new LocalMiniMap(new Coord(GameUI.this.sz.x-250, 15), new Coord(146,146), this, map);
 	    return(map);
 	} else if(place == "fight") {
 	    fv = (Fightview)gettype(type).create(new Coord(sz.x - Fightview.width, 0), this, cargs);
@@ -915,13 +914,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     
     public class MainMenu extends Widget {
 	public final MenuButton invb, equb, chrb, budb, polb, optb;
- 	public final MenuButton clab, towb, warb, ptrb, hwab, chatb;
+ 	public final MenuButton clab, towb, warb, ptrb, lndb, chatb;//hwab
 	public boolean hpv = true, pv = hpv && !Config.hptr;
 
 	boolean full = true;
+        public SeasonImg simg = new SeasonImg(new Coord(6,8), new Coord(125,125), this.ui.gui);
 	public MenuButton[] tohide = {
 		new MenuButton(new Coord(4, 8), this, "inv", 9, "Inventory (Tab)") {
 		    int seq = 0;
+                    @Override
 		    public void click() {
 			if((invwnd != null) && invwnd.show(!invwnd.visible)) {
 			    invwnd.raise();
@@ -929,6 +930,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 			}
 		    }
 
+                    @Override
 		    public void tick(double dt) {
 			if(maininv != null) {
 			    if(invwnd.visible) {
@@ -997,7 +999,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		    }
 		}
 	};
-	public IButton cash;
+	public IButton cash, manual;
 	
 	public MainMenu(Coord c, Coord sz, Widget parent) {
 	    super(c, sz, parent);
@@ -1061,12 +1063,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    };
             pv = Config.hpointv && !Config.hptr;
 	    x+=18;
-            hwab = new MenuButton(new Coord(x,y), this, "hwa", -1, "Walk to your homestead") {
-                public void click() {
-                    GameUI.this.homesteadWalk();
-                }
-            };
-	    x+=12;
+//            hwab = new MenuButton(new Coord(x,y), this, "hwa", -1, "Walk to your homestead") {
+//                public void click() {
+//                    GameUI.this.homesteadWalk();
+//                }
+//            };
+//	    x+=12;
 	    new MenuButton(new Coord(x, y), this, "height", -1, "Display heightmap") {
 		{
 		    hover = down;
@@ -1087,12 +1089,17 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
 	    };
 	    x+=18;
+	    lndb = new MenuButton(new Coord(x, y), this, "lnd", -1, "Display Landscape Tool") {
+		public void click() {
+		    FlatnessTool.instance(GameUI.this);
+		}
+	    };
+	    x+=18;
 	    chatb = new MenuButton(new Coord(x, y), this, "chat", 3, "Chat (Ctrl+C)") {
 		public void click() {
 		    chat.toggle();
 		}
 	    };
-
 	    new MenuButton(new Coord(this.sz.x - 22, y), this, "gear", -1, "Menu") {
 		{
 		    recthit = true;
@@ -1124,6 +1131,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		w.visible = full;
 	    }
 	    cash.presize();
+	    manual.presize();
 	}
 
     }
@@ -1249,8 +1257,38 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    };
 	    cash.presize();
 	    mainmenu.cash = cash;
-	    mainmenu.toggle();
 	}
+	
+	if((Config.manualurl != null) && (WebBrowser.self != null)) {
+	    IButton manual = new IButton(Coord.z, this, Resource.loadimg("gfx/hud/manu"), Resource.loadimg("gfx/hud/mand"), Resource.loadimg("gfx/hud/manh")) {
+		{
+		    tooltip = Text.render("Open Manual");
+		}
+		
+		public void click() {
+		    URL base = Config.manualurl;
+		    try {
+			WebBrowser.self.show(base);
+		    } catch(WebBrowser.BrowserException e) {
+			error("Could not launch web browser.");
+		    }
+		}
+
+		public void presize() {
+		    this.c = new Coord(140, (mainmenu.c.y - sz.y) + (mainmenu.full?0:119));
+		}
+
+		public Object tooltip(Coord c, Widget prev) {
+		    if(checkhit(c))
+			return(super.tooltip(c, prev));
+		    return(null);
+		}
+	    };
+            manual.presize();
+            mainmenu.manual = manual;
+	}
+        if(mainmenu.manual != null || mainmenu.cash != null)
+            mainmenu.toggle();
     }
     
     public boolean globtype(char key, KeyEvent ev) {
@@ -1598,6 +1636,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         cmdmap.put("homestead", new Console.Command() {
 		public void run(Console cons, String[] args) {
                     GameUI.this.homesteadWalk();
+                }
+            });
+	cmdmap.put("flatness", new Console.Command(){
+		public void run(Console cons, String[] args){
+		    FlatnessTool.instance(GameUI.this);
 		}
 	    });
     }

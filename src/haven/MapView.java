@@ -338,6 +338,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
     }
     
+    static {camtypes.put("best", FreeCam.class);}
+    
     private static class OrthoCam extends Camera {
 	public OrthoCam(MapView mv) {
 	    super(mv);
@@ -432,7 +434,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 
 	public boolean wheel(Coord c, int amount) {
 	    tfield += amount * 10;
-	    tfield = Math.max(Math.min(tfield, 200), 50);
+	    tfield = Math.max(Math.min(tfield, 400), 50);
 	    return(true);
 	}
     }
@@ -496,9 +498,9 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		return(false);
 	    }
 	};
-	
+    
     public static final int WFOL = 18;
-    public static final Tex wftex = Resource.loadtex("tex/flat");
+    public static final Tex wftex = Resource.loadtex("gfx/hud/flat");
     private final Rendered mapol = new Rendered() {
 	    private final GLState[] mats;
 	    {
@@ -509,9 +511,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		mats[3] = new Material(new Color(128, 0, 255, 32));
 		mats[4] = new Material(new Color(255, 0, 0, 96));
 		mats[16] = new Material(new Color(0, 255, 0, 32));
-		mats[17] = new Material(new Color(255, 0, 255, 32));
-//		mats[WFOL] = new Material(new Color(0, 255, 0, 255));
-		mats[WFOL] = new Material(wftex, true);
+		mats[17] = new Material(new Color(255, 255, 0, 32));
+		mats[WFOL] = new Material(wftex);
 	    }
 	    
 	    public void draw(GOut g) {}
