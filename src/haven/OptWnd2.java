@@ -444,7 +444,7 @@ public class OptWnd2 extends Window {
 	{ /* AUDIO TAB */
 	    tab = body.new Tab(new Coord(140, 0), 60, "Audio");
 
-            int y = 0;
+            int y = 30;
             new Label(new Coord(0, y), tab, "Audio volume");
             y += 20;
             new HSlider(new Coord(0, y), 200, tab, 0, 1000, (int)(Audio.volume * 1000)) {
