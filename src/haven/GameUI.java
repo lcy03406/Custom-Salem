@@ -1002,7 +1002,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		    }
 		}
 	};
-	public IButton cash, manual;
+//	public IButton cash, manual;
 	
 	public MainMenu(Coord c, Coord sz, Widget parent) {
 	    super(c, sz, parent);
@@ -1127,8 +1127,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    for (Widget w: tohide){
 		w.visible = full;
 	    }
-	    cash.presize();
-	    manual.presize();
+//	    cash.presize();
+//	    manual.presize();
 	}
 
     }
@@ -1205,6 +1205,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		return(true);
 	    }
 	}.presize();
+/*
 	if((Config.manualurl != null) && (WebBrowser.self != null)) {
 	    IButton manual = new IButton(Coord.z, this, Resource.loadimg("gfx/hud/manu"), Resource.loadimg("gfx/hud/mand"), Resource.loadimg("gfx/hud/manh")) {
 		{
@@ -1245,7 +1246,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		    try {
 			enc = in.getBytes("utf-8");
 		    } catch(java.io.UnsupportedEncodingException e) {
-			/* ¦] */
 			throw(new Error(e));
 		    }
 		    for(byte c : enc) {
@@ -1286,6 +1286,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	
         if(mainmenu.manual != null || mainmenu.cash != null)
             mainmenu.toggle();
+*/
     }
     
     public boolean globtype(char key, KeyEvent ev) {

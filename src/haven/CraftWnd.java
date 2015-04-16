@@ -237,7 +237,7 @@ public class CraftWnd extends Window implements DTarget2{
 		return true;
 	    }
 	}
-	return(false);
+	return(true);
     }
 
     private Pagina paginafor(String name){

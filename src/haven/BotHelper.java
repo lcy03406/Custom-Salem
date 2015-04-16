@@ -407,7 +407,7 @@ public class BotHelper {
 	synchronized (waiter) {
 	    waiting = waitfor; 
 	    MapView map = UI.instance.gui.map;
-	    map.wdgmsg(map, "click", gob.sc, gob.rc, button, modflags, 0, (int)gob.id, gob.rc, 0, 0);
+	    map.wdgmsg(map, "click", gob.sc, gob.rc, button, modflags, 0, (int)gob.id, gob.rc, 0, MapView.getid(gob));
 	    waiter.wait(timeout);
 	    waiting = "";
 	}
@@ -428,7 +428,7 @@ public class BotHelper {
 	synchronized (waiter) {
 	    waiting = waitfor; 
 	    MapView map = UI.instance.gui.map;
-	    map.wdgmsg(map, "click", gob.sc, gob.rc, button, modflags, 0, (int)gob.id, gob.rc, 0, 0);
+	    map.wdgmsg(map, "click", gob.sc, gob.rc, button, modflags, 0, (int)gob.id, gob.rc, 0, part);
 	    waiter.wait(timeout);
 	    waiting = "";
 	}
