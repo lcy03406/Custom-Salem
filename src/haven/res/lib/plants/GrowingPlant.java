@@ -27,8 +27,10 @@ public class GrowingPlant extends Sprite
     ArrayList<Integer> meshes = new ArrayList<Integer>();
     Collection<FastMesh.MeshRes> allMeshes = res.layers(FastMesh.MeshRes.class);
     for (FastMesh.MeshRes mesh : allMeshes) {
-      if ((mesh.id == paramInt2) && (mesh.mat != null) && (!meshes.contains(Integer.valueOf(mesh.ref))))
+      if ((mesh.id == paramInt2) && (mesh.mat != null) && (!meshes.contains(Integer.valueOf(mesh.ref)))) {
         meshes.add(Integer.valueOf(mesh.ref));
+        break;
+      }
     }
     HashMap<Material, MeshBuf> mats = new HashMap<Material, MeshBuf>();
     Object rand = gob.mkrandoom();
@@ -48,7 +50,8 @@ public class GrowingPlant extends Sprite
       float f3 = (float)Math.cos(d);
       
       if (!meshes.isEmpty()) {
-        j = Config.fieldfix?0:((Integer)meshes.get(((Random)rand).nextInt(meshes.size()))).intValue();
+	  int r = Config.fieldfix?0:((Random)rand).nextInt(meshes.size());
+        j = ((Integer)meshes.get(r)).intValue();
         for (FastMesh.MeshRes localMeshRes : allMeshes) {
           if (localMeshRes.ref == j){
             MeshBuf localMeshBuf = (MeshBuf)mats.get(localMeshRes.mat.get());

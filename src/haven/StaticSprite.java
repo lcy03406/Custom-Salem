@@ -30,7 +30,8 @@ import java.util.*;
 
 public class StaticSprite extends Sprite {
     public final Rendered[] parts;
-    
+    protected Location scale;
+   
     public static final Factory fact = new Factory() {
 	    public Sprite create(Owner owner, Resource res, Message sdt) {
 		if((res.layer(FastMesh.MeshRes.class) != null) ||
@@ -43,6 +44,11 @@ public class StaticSprite extends Sprite {
     public StaticSprite(Owner owner, Resource res, Rendered[] parts) {
 	super(owner, res);
 	this.parts = parts;
+	//if (res.name == "gfx/terobjs/herbpot") {
+	//    scale = scale7;
+	//} else {
+	    scale = null;
+	//}
     }
 
     public StaticSprite(Owner owner, Resource res, Rendered part) {
@@ -68,6 +74,10 @@ public class StaticSprite extends Sprite {
     }
 
     public boolean setup(RenderList r) {
+	if (this.scale != null) {
+	    r.prepc(this.scale);
+	    r.prepc(States.normalize);
+	}
 	for(Rendered p : parts)
 	    r.add(p, null);
 	return(false);

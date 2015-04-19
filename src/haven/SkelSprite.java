@@ -27,6 +27,7 @@
 package haven;
 
 import java.util.*;
+
 import haven.Skeleton.Pose;
 import haven.Skeleton.PoseMod;
 
@@ -45,6 +46,7 @@ public class SkelSprite extends Sprite implements Gob.Overlay.CUpd {
     private PoseMod[] mods = new PoseMod[0];
     private boolean stat = true;
     private Rendered[] parts;
+    private final Location scale;
     
     public static final Factory fact = new Factory() {
 	    public Sprite create(Owner owner, Resource res, Message sdt) {
@@ -62,6 +64,11 @@ public class SkelSprite extends Sprite implements Gob.Overlay.CUpd {
 	int fl = sdt.eom()?0xffff0000:decnum(sdt);
 	chparts(fl);
 	chposes(fl, 0);
+	//if (res.name == "gfx/terobjs/largeurn") {
+	//    scale = scale7;
+	//} else {
+	    scale = null;
+	//}
     }
 
     private void chparts(int mask) {
@@ -129,6 +136,10 @@ public class SkelSprite extends Sprite implements Gob.Overlay.CUpd {
     }
     
     public boolean setup(RenderList rl) {
+	if (this.scale != null) {
+	    rl.prepc(this.scale);
+	    rl.prepc(States.normalize);
+	}
 	for(Rendered p : parts)
 	    rl.add(p, null);
 	/* rl.add(pose.debug, null); */

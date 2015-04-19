@@ -153,7 +153,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 	this.rc = c;
 	this.a = a;
     }
-	
+    
     public Coord3f getc() {
 	Moving m = getattr(Moving.class);
 	if(m != null)
@@ -363,7 +363,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public class GobLocation extends Location {
 	public Coord3f c = null;
 	private double a = 0.0;
-	private Matrix4f update = null;
 
 	public GobLocation() {
 	    super(Matrix4f.id);

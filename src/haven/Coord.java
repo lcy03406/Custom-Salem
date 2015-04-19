@@ -222,4 +222,22 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
 	return div(tilesz).mul(tilesz).add(tilesz.div(2));
     }
 
+    public Coord adjust(int type) {
+	if (type == 0)
+	    return this;
+	Coord b = this.div(11).mul(11);
+	switch (type) {
+	case 0:
+	    return this;
+	case 1:
+	    return b.add(5, 5);
+	case 2:
+	    return b;
+	case 3:
+	    return b.add(this.sub(b).div(5).mul(6).add(2,2));
+	case 4:
+	    return b.add(this.sub(b).div(4).mul(3).add(2,2));
+	}
+	return this;
+    }
 }

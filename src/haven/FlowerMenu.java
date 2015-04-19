@@ -243,10 +243,12 @@ public class FlowerMenu extends Widget {
 
     public void uimsg(String msg, Object... args) {
 	if(msg == "cancel") {
+	    instance = null;
 	    new FlowerMenu.Cancel();
 	    ui.grabmouse(null);
 	    ui.grabkeys(null);
 	} else if(msg == "act") {
+	    instance = null;
 	    new FlowerMenu.Chosen(opts[get((Integer)args[0])]);
 	    ui.grabmouse(null);
 	    ui.grabkeys(null);
@@ -293,6 +295,7 @@ public class FlowerMenu extends Widget {
     }
 
     public void choose(FlowerMenu.Petal option) {
+	instance = null;
 	if(option == null) {
 	    wdgmsg("cl", -1);
 	} else {
@@ -301,6 +304,7 @@ public class FlowerMenu extends Widget {
     }
     
     public void chooseName(String name) {
+	instance = null;
 	if (name.isEmpty()) {
 	    wdgmsg("cl", -1);
 	} else {

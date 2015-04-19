@@ -233,7 +233,7 @@ public class BotHelper {
     /**
      * 获取地表
      * @param c 坐标
-     * @return 地形ID：深水58，浅水57，铺地18，矿洞42，黑森林44，枫叶林7
+     * @return 地形ID：深水58，浅水57，铺炉渣11，铺砖17，铺石头18，土31，矿洞42，黑森林44，枫叶林7
      */
     public static int mapTile(Coord c) {
 	if (aNull())

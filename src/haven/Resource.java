@@ -108,7 +108,7 @@ public class Resource implements Comparable<Resource>, Prioritized, Serializable
     }
 
     private Resource(String name, int ver) {
-	this.name = name;
+	this.name = name.intern();
 	this.ver = ver;
 	error = null;
 	loading = true;

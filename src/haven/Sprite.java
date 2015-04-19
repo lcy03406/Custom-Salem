@@ -32,6 +32,8 @@ import java.util.*;
 import java.lang.reflect.Constructor;
 
 public abstract class Sprite implements Rendered {
+    public final Location scale5 = mkscale(0.5f);
+    public final Location scale7 = mkscale(0.7f);
     public final Resource res;
     public final Owner owner;
     public static List<Factory> factories = new LinkedList<Factory>();
@@ -126,6 +128,15 @@ public abstract class Sprite implements Rendered {
 	}
 	throw(new ResourceException("Does not know how to draw resource " + res.name, res));
     }
+    
+    public static Location mkscale(float paramFloat1, float paramFloat2, float paramFloat3) {
+	return new Location(new Matrix4f(paramFloat1, 0.0F, 0.0F, 0.0F, 0.0F, paramFloat2, 0.0F, 0.0F, 0.0F, 0.0F, paramFloat3, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
+    }
+
+    public static Location mkscale(float paramFloat) {
+	return mkscale(paramFloat, paramFloat, paramFloat);
+    }
+
 
     public void draw(GOut g) {}
 

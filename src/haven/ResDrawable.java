@@ -38,6 +38,7 @@ public class ResDrawable extends Drawable {
     public ResDrawable(Gob gob, Indir<Resource> res, Message sdt) {
 	super(gob);
 	this.res = res;
+	setData(sdt);
 	this.sdt = sdt;
 	this.mask = sdt.eom()?0xffff0000:Sprite.decnum(sdt.clone());
 	try {
