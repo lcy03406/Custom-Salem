@@ -338,7 +338,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
     }
 
-    public class SFreeCam extends Camera {
+    private static class SFreeCam extends Camera {
         
 	public SFreeCam(MapView mv) {
 	    super(mv);
@@ -364,7 +364,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    dist = dist + ((tdist - dist) * (1f - (float)Math.pow(500, -dt)));
 	    if(Math.abs(tdist - dist) < 0.0001) dist = tdist;
 
-	    Coord3f mc = getcc();
+	    Coord3f mc = mv.getcc();
 	    mc.y = -mc.y;
 	    if((cc == null) || (Math.hypot(mc.x - cc.x, mc.y - cc.y) > 250))
 		cc = mc;
@@ -399,7 +399,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    return(true);
 	}
     }
-    static {camtypes.put("best", SFreeCam.class);}
+    static {camtypes.put("best", FreeCam.class);}
+    static {camtypes.put("sucky", SFreeCam.class);}
     
     private static class OrthoCam extends Camera {
 	public OrthoCam(MapView mv) {
@@ -1542,7 +1543,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		    Class<? extends Camera> cc = camtypes.get(args[1]);
 		    if(cc == null)
 			throw(new Exception("no such camera type: " + args[1]));
-		    camera = Utils.construct(cc.getConstructor(MapView.class), MapView.this);
+                    Constructor<? extends Camera> ccc = cc.getConstructor(MapView.class);
+		    camera = Utils.construct(ccc, MapView.this);
 		}
 	    });
 	cmdmap.put("whyload", new Console.Command() {
