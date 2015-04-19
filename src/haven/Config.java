@@ -95,7 +95,7 @@ public class Config {
     public static boolean cellshade = false;
     protected static boolean fsaa = false;
     protected static boolean water = false;
-    public static boolean center = false;
+    public static int click_adjust = 0;
     public static boolean skybox = Utils.getprefb("skybox", true);
     public static float brighten = Utils.getpreff("brighten", 0.0f);
     protected static boolean ss_silent = Utils.getprefb("ss_slent", false);

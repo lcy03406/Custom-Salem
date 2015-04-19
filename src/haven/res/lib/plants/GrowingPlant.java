@@ -48,7 +48,7 @@ public class GrowingPlant extends Sprite
       float f3 = (float)Math.cos(d);
       
       if (!meshes.isEmpty()) {
-        j = ((Integer)meshes.get(((Random)rand).nextInt(meshes.size()))).intValue();
+        j = Config.fieldfix?0:((Integer)meshes.get(((Random)rand).nextInt(meshes.size()))).intValue();
         for (FastMesh.MeshRes localMeshRes : allMeshes) {
           if (localMeshRes.ref == j){
             MeshBuf localMeshBuf = (MeshBuf)mats.get(localMeshRes.mat.get());

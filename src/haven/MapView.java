@@ -1411,6 +1411,25 @@ public class MapView extends PView implements DTarget, Console.Directory {
     private class Click extends Hittest {
 	int clickb;
 	
+	private Coord adjust(Coord c) {
+	    if (Config.click_adjust == 0)
+		return c;
+	    Coord b = c.div(11).mul(11);
+	    switch (Config.click_adjust) {
+	    case 0:
+		return c;
+	    case 1:
+		return b.add(5, 5);
+	    case 2:
+		return b;
+	    case 3:
+		return b.add(c.sub(b).div(5).mul(6).add(2,2));
+	    case 4:
+		return b.add(c.sub(b).div(4).mul(3).add(2,2));
+	    }
+	    return c;
+	}
+	
 	private Click(Coord c, int b) {
 	    super(c);
 	    clickb = b;
@@ -1420,9 +1439,12 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    BotHelper.debug(String.format("[C]%s:%d:%03f", mc.toString(), BotHelper.mapTile(mc), BotHelper.mapZ(mc)));
 	    int modflags = ui.modflags();
 	    if(inf == null) {
-		if(Config.center){mc = mc.div(11).mul(11).add(5, 5);}
-		wdgmsg("click", pc, mc, clickb, modflags);
+		mc = adjust(mc);
+		wdgmsg("click", pc, mc, clickb, ui.modflags());
 	    } else {
+		if (inf.gob.name().equalsIgnoreCase("gfx/terobjs/field")) {
+		    mc = adjust(mc);
+		}
 		if(ui.modmeta){
 		    ChatUI.Channel channel = ui.gui.chat.sel;
 		    if(channel != null && channel instanceof ChatUI.EntryChannel){

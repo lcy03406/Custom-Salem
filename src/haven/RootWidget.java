@@ -106,8 +106,8 @@ public class RootWidget extends ConsoleHost {
 	    }else if(code == KeyEvent.VK_F && alt && isgui){
 		ui.gui.toggleFilterWnd();
 	    }else if(code == KeyEvent.VK_Z && ctrl){
-		Config.center = !Config.center;
-		ui.message(String.format("Tile centering in turned %s", Config.center?"ON":"OFF"), GameUI.MsgType.INFO);
+		Config.click_adjust = (Config.click_adjust + 1) % 5;
+		ui.message(String.format("Click adjust %d", Config.click_adjust), GameUI.MsgType.INFO);
 	    } else if(key != 0) {
 		wdgmsg("gk", (int)key);
 	    }

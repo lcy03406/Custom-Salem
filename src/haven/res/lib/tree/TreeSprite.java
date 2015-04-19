@@ -28,7 +28,7 @@ public class TreeSprite extends StaticSprite
     }        
     else
     {
-        this.fscale = Math.max(0.5f,paramFloat*0.5f);
+        this.fscale = 0.5f;
         this.scale = mkscale(fscale);
     }
   }
@@ -50,7 +50,7 @@ public class TreeSprite extends StaticSprite
     }        
     else
     {
-        this.fscale = Math.max(0.5f,i * 0.5f / 100);
+        this.fscale = 0.5f;
         this.scale = mkscale(fscale);
     }
   }
