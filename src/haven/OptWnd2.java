@@ -56,6 +56,8 @@ public class OptWnd2 extends Window {
     };
     CheckBox opt_shadow;
     CheckBox opt_aa;
+    CheckBox opt_qw;
+    CheckBox opt_sb;
     CheckBox opt_flight;
     CheckBox opt_cel;
     CheckBox opt_show_tempers;
@@ -343,7 +345,7 @@ public class OptWnd2 extends Window {
 	    opt_aa.a = Config.fsaa;//Config.glcfg.fsaa.val;
 	    checkVideoOpt(opt_aa, Config.glcfg.fsaa);
 	    
-	    CheckBox chb = new CheckBox(new Coord(180, y+=25), tab, "Quality water"){
+	    opt_qw = new CheckBox(new Coord(180, y+=25), tab, "Quality water"){
 		@Override
 		public void set(boolean val) {
 		    try {
@@ -359,8 +361,21 @@ public class OptWnd2 extends Window {
 		    Config.saveOptions();
 		}
 	    };
-	    chb.a = Config.water;
-	    checkVideoOpt(chb, Config.glcfg.wsurf, Text.render("If character textures glitch, try turning Per-pixel lighting on."));
+	    opt_qw.a = Config.water;
+	    checkVideoOpt(opt_qw, Config.glcfg.wsurf, Text.render("If character textures glitch, try turning Per-pixel lighting on."));
+	    
+	    opt_sb = new CheckBox(new Coord(180, y+=25), tab, "Skybox"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.skybox = val;
+		    Utils.setprefb("skybox", val);
+		}
+
+		{tooltip = Text.render("Display the skybox.");}
+		
+	    };
+            opt_sb.a = Config.skybox;
 	    
 	    y = 200;
 	    int x = 290;
