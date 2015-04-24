@@ -20,6 +20,7 @@ class EquipOpts extends GameUI.Hidewnd {
 	an.put(14, "Back");
 	an.put(5, "Belt");
 	an.put(4, "Keys");
+	an.put(8, "Neck");
 	slotNames = Collections.unmodifiableMap(an);
 	slotOrder = Collections.unmodifiableList(ao);
     }
