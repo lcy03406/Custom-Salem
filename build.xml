@@ -143,6 +143,8 @@
 	</target>
 
 	<target name="clean">
+                <delete file="build/lsalem.jar" />
+                <delete file="build/lclient-res.jar" />
 		<delete dir="build/classes" />
 		<delete dir="build/classes-lib" />
 		<delete dir="resources/compiled" />
