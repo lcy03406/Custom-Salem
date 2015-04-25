@@ -59,6 +59,11 @@ public class SeasonImg extends Window {
     public void draw(GOut g) {
 	Tex t = seasons[ui.sess.glob.season];
         g.image(t, this.sz.sub(t.sz()).div(2));
+        if(ui.sess.glob.timetd!=null && ui.sess.glob.timeth!=null)
+        {
+            g.image(ui.sess.glob.timetd,new Coord(10,6));
+            g.image(ui.sess.glob.timeth,new Coord(10,6+ui.sess.glob.timetd.getHeight()-4));
+        }
         wbox.draw(g, Coord.z, sz);
     }
 }

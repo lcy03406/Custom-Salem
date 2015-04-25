@@ -20,7 +20,7 @@ class EquipOpts extends GameUI.Hidewnd {
 	an.put(14, "Back");
 	an.put(5, "Belt");
 	an.put(4, "Keys");
-	an.put(8, "Neck");
+	an.put(13, "Neck");
 	slotNames = Collections.unmodifiableMap(an);
 	slotOrder = Collections.unmodifiableList(ao);
     }
@@ -68,7 +68,7 @@ class EquipOpts extends GameUI.Hidewnd {
 
     private void read() {
 	selected = new LinkedList<Integer>();
-	String[] slots =  Utils.getpref("equip_proxy_slots", "6;7;9;14;5;4").split(";");
+	String[] slots =  Utils.getpref("equip_proxy_slots", "6;7;9;14;5;4;13").split(";");
 	for(String slot : slots){
 	    try {
 		selected.add(Integer.parseInt(slot));

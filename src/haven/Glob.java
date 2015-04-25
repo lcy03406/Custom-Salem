@@ -27,6 +27,7 @@
 package haven;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,6 +46,8 @@ public class Glob {
     public static final float MAX_BRIGHT = 0.62f;
 	
     public long time, epoch = System.currentTimeMillis();
+    public static final Text.Foundry ttfnd = new Text.Foundry("SansSerif", 10);
+    public BufferedImage timetd,timeth;
     public int season;
     public OCache oc = new OCache(this);
     public MCache map;
@@ -235,14 +238,48 @@ public class Glob {
 	lastrep = now;
 	return(rgtime);
     }
-
+    
+    private final int minute = 60;
+    private final int hour = minute*60;
+    private final int day = hour*24;
+    private final int month = day*30;
+    private final int year = month*12;
+    private static String ordinal(int i) {
+    String[] sufixes = new String[] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
+    switch (i % 100) {
+    case 11:
+    case 12:
+    case 13:
+        return i + "th";
+    default:
+        return i + sufixes[i % 10];
+    }
+}
+    private void setServerTime(int st)
+    {
+        time = st;
+        int ad = st / year;
+        st = st % year;
+        int mnt = st / month;
+        st = st % month;
+        int dy = st / day;
+        st = st % day;
+        int hr = st / hour;
+        st = st % hour;
+        int mn = st / minute;
+        String ds = String.format("day %d of the %s moon, %d AW",dy,ordinal(mnt),ad);
+        String hs = String.format("%02d:%02d",hr,mn);
+        timetd = Utils.outline2(ttfnd.render(ds, Color.BLACK).img,Color.LIGHT_GRAY);
+        timeth = Utils.outline2(ttfnd.render(hs, Color.BLACK).img,Color.LIGHT_GRAY);
+    }
+    
     public void blob(Message msg) {
 	boolean inc = msg.uint8() != 0;
 	while(!msg.eom()) {
 	    int t = msg.uint8();
 	    switch(t) {
 	    case GMSG_TIME:
-		time = msg.int32();
+                setServerTime(msg.int32());
 		season = msg.uint8();
 		epoch = System.currentTimeMillis();
 		if(!inc)
