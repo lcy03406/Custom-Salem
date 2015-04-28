@@ -28,9 +28,9 @@ public class TimerWdg extends Widget {
 	name = new Label(new Coord(5,5), this, timer.getName());
 	time = new Label(new Coord(5, 25), this, timer.toString());
 	
-	start = new Button(new Coord(90,2), 50, this, "start");
-	stop = new Button(new Coord(90,2), 50, this, "stop");
-	delete = new Button(new Coord(90,21), 50, this, "delete");
+	start = new Button(new Coord(125,4), 50, this, "start");
+	stop = new Button(new Coord(125,4), 50, this, "stop");
+	delete = new Button(new Coord(125,27), 50, this, "delete");
 	updbtns();
     }
     
@@ -66,9 +66,12 @@ public class TimerWdg extends Widget {
 	    timer.stop();
 	    updbtns();
 	} else if(sender == delete){
-	    timer.destroy();
-	    TimerController.getInstance().save();
-	    ui.destroy(this);
+            if(!TimerPanel.getInstance().isDeletionLocked())
+            {
+                timer.destroy();
+                TimerController.getInstance().save();
+                ui.destroy(this);
+            }
 	} else {
 	    super.wdgmsg(sender, msg, args);
 	}

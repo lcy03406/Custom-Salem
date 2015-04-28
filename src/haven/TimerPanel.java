@@ -1,5 +1,6 @@
 package haven;
 
+import java.awt.image.BufferedImage;
 import org.ender.timer.Timer;
 import org.ender.timer.TimerController;
 
@@ -7,6 +8,20 @@ public class TimerPanel extends Window {
     
     private static TimerPanel instance;
     private Button btnnew;
+    private IButton lockbtn;
+    private Label lockstate;
+            
+    private static final BufferedImage ilockc = Resource.loadimg("gfx/hud/lockc");
+    private static final BufferedImage ilockch = Resource.loadimg("gfx/hud/lockch");
+    private static final BufferedImage ilocko = Resource.loadimg("gfx/hud/locko");
+    private static final BufferedImage ilockoh = Resource.loadimg("gfx/hud/lockoh");
+    private static final String OPT_LOCKED = "_locked";
+    boolean locked;
+        
+    public static TimerPanel getInstance()
+    {
+        return instance;
+    }
     
     public static void toggle(){
 	if(instance == null){
@@ -16,11 +31,31 @@ public class TimerPanel extends Window {
 	}
     }
     
-    public TimerPanel(Widget parent){
+    private TimerPanel(Widget parent){
 	super(new Coord(250, 100), Coord.z, parent, "Timers");
 	justclose = true;
 	btnnew = new Button(Coord.z, 100, this, "Add timer");
 	
+	lockbtn = new IButton(Coord.z, this, locked?ilockc:ilocko, locked?ilocko:ilockc, locked?ilockch:ilockoh) {
+	    public void click() {
+		locked = !locked;
+		if(locked) {
+		    up = ilockc;
+		    down = ilocko;
+		    hover = ilockch;
+		} else {
+		    up = ilocko;
+		    down = ilockc;
+		    hover = ilockoh;
+		}
+		storeOpt(OPT_LOCKED, locked);
+                updateLockedLabel(locked);
+	    }
+	};
+	lockbtn.recthit = true;
+        lockstate = new Label(Coord.z, this, "");
+        updateLockedLabel(locked);
+        
 	synchronized (TimerController.getInstance().lock){
 	    for(Timer timer : TimerController.getInstance().timers){
 		new TimerWdg(Coord.z, this, timer);
@@ -29,6 +64,24 @@ public class TimerPanel extends Window {
 	pack();
     }
 
+    private void updateLockedLabel(boolean locked)
+    {
+        lockstate.settext(locked?"Timers protected from deletion":"Timers can be deleted");
+    }
+    
+    public boolean isDeletionLocked()
+    {
+        return locked;
+    }
+    
+    @Override
+    protected  void loadOpts() {
+	super.loadOpts();
+	synchronized (Config.window_props) {
+	    locked = getOptBool(OPT_LOCKED, false);
+	}
+    }
+    
     @Override
     public void pack() {
 	int n, i=0, h = 0;
@@ -44,7 +97,9 @@ public class TimerPanel extends Window {
 	    i++;
 	}
 	
-	btnnew.c = new Coord(0,h);
+	btnnew.c = new Coord(0,h+4);
+	lockbtn.c = new Coord(btnnew.sz.x+4,h+6);
+	lockstate.c = new Coord(btnnew.sz.x+24,h+6);
 	super.pack();
     }
 
@@ -110,7 +165,6 @@ public class TimerPanel extends Window {
 
 	@Override
 	public void destroy() {
-	    instance = null;
 	    panel = null;
 	    super.destroy();
 	}
