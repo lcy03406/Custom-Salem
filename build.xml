@@ -90,6 +90,7 @@
 			<fileset dir="build/classes-lib" />
 			<fileset file="changelog.txt" />
 			<fileset file="etc/radar.xml" />
+			<fileset file="etc/timer.wav" />
 			<fileset file="etc/trans.txt" />
 			<fileset file="etc/contents_icons.json" />
                         <fileset file="etc/item_radius.json" />

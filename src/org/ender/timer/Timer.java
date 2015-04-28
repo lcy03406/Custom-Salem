@@ -1,14 +1,23 @@
 package org.ender.timer;
 
+import haven.Audio;
+import haven.Config;
 import haven.Coord;
 import haven.Label;
 import haven.UI;
 import haven.Window;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 
 public class Timer {
     public void setDuration(long duration) {
 	this.duration = duration;
+    }
+
+    private InputStream FileInputStream(String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public interface  Callback {
@@ -49,16 +58,30 @@ public class Timer {
 	long now = System.currentTimeMillis();
 	remaining = (duration - now + local - (server - start)/SERVER_RATIO);
 	if(remaining <= 0){
-	    Window wnd = new Window(new Coord(250,100), Coord.z, UI.instance.root, name);
-	    String str;
-	    if(remaining < -1500){
-		str = String.format("%s elapsed since timer named \"%s\"  finished it's work", toString(), name);
-	    } else {
-		str = String.format("Timer named \"%s\" just finished it's work", name);
-	    }
-	    new Label(Coord.z, wnd, str);
-	    wnd.justclose = true;
-	    wnd.pack();
+            //show a window on the screen
+            {
+                Window wnd = new Window(new Coord(250,100), Coord.z, UI.instance.root, name);
+                String str;
+                if(remaining < -1500){
+                    str = String.format("%s elapsed since timer named \"%s\"  finished it's work", toString(), name);
+                } else {
+                    str = String.format("Timer named \"%s\" just finished it's work", name);
+                }
+                new Label(Coord.z, wnd, str);
+                wnd.justclose = true;
+                wnd.pack();
+            }
+            //play a sound
+            {
+                InputStream file = null;
+                try {
+                    file = new FileInputStream(Config.userhome+"/timer.wav");
+                } catch (FileNotFoundException ex) {
+                    file = Timer.class.getResourceAsStream("/timer.wav");
+                }
+                
+                Audio.play(file, 1.0, 1.0);
+            }
 	    return true;
 	}
 	if(updater != null){
