@@ -9,7 +9,7 @@ public class TimerPanel extends Window {
     private static TimerPanel instance;
     private Button btnnew;
     private IButton lockbtn,soundbtn;
-            
+    
     private static final BufferedImage ilockc = Resource.loadimg("gfx/hud/lockc");
     private static final BufferedImage ilockch = Resource.loadimg("gfx/hud/lockch");
     private static final BufferedImage ilocko = Resource.loadimg("gfx/hud/locko");
@@ -20,19 +20,31 @@ public class TimerPanel extends Window {
     private static final BufferedImage isoundo = Resource.loadimg("gfx/hud/soundo");
     private static final BufferedImage isoundoh = Resource.loadimg("gfx/hud/soundoh");
     private static final String OPT_SOUNDED = "_sounded";
-    boolean locked,silenced;
+    static boolean locked,silenced;
         
+    static {
+	synchronized (Config.window_props) {
+	    try {
+		silenced = Config.window_props.getProperty("Timers"+OPT_SOUNDED, null).equals("true");
+	    } catch (Exception e){
+		silenced = true;
+	    }
+	}
+    }
+            
     public static TimerPanel getInstance()
     {
+	if(instance == null)
+        {
+            instance = new TimerPanel(UI.instance.gui);
+            instance.visible = false;
+        }
         return instance;
     }
     
     public static void toggle(){
-	if(instance == null){
-	    instance = new TimerPanel(UI.instance.gui);
-	} else {
-	    UI.instance.destroy(instance);
-	}
+        getInstance();
+        instance.visible = !instance.visible;
     }
     
     private TimerPanel(Widget parent){
@@ -85,11 +97,11 @@ public class TimerPanel extends Window {
 	pack();
     }
     
-    public boolean isDeletionLocked()
+    public static boolean isDeletionLocked()
     {
         return locked;
     }
-    public boolean isSilenced()
+    public static boolean isSilenced()
     {
         return silenced;
     }
@@ -99,7 +111,6 @@ public class TimerPanel extends Window {
 	super.loadOpts();
 	synchronized (Config.window_props) {
 	    locked = getOptBool(OPT_LOCKED, false);
-	    silenced = getOptBool(OPT_SOUNDED, false);
 	}
     }
     
@@ -179,6 +190,9 @@ public class TimerPanel extends Window {
 		    System.out.println(e.getMessage());
 		    e.printStackTrace();
 		}
+            } else if(sender == cbtn)
+            {
+                toggle();
 	    } else {
 		super.wdgmsg(sender, msg, args);
 	    }

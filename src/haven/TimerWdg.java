@@ -66,7 +66,7 @@ public class TimerWdg extends Widget {
 	    timer.stop();
 	    updbtns();
 	} else if(sender == delete){
-            if(!TimerPanel.getInstance().isDeletionLocked())
+            if(!TimerPanel.isDeletionLocked())
             {
                 timer.destroy();
                 TimerController.getInstance().save();

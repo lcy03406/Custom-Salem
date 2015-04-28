@@ -73,7 +73,7 @@ public class Timer {
                 wnd.pack();
             }
             //play a sound
-            if(!TimerPanel.getInstance().isSilenced())
+            if(!TimerPanel.isSilenced())
             {
                 InputStream file = null;
                 try {
