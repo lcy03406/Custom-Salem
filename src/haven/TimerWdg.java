@@ -9,7 +9,7 @@ public class TimerWdg extends Widget {
     private Timer timer;
     public Label time, name;
     private Button start, stop, delete;
-    
+            
     public TimerWdg(Coord c, Widget parent, Timer timer) {
 	super(c, bg.sz(), parent);
 

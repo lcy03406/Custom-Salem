@@ -4,6 +4,7 @@ import haven.Audio;
 import haven.Config;
 import haven.Coord;
 import haven.Label;
+import haven.TimerPanel;
 import haven.UI;
 import haven.Window;
 import java.io.FileInputStream;
@@ -72,6 +73,7 @@ public class Timer {
                 wnd.pack();
             }
             //play a sound
+            if(!TimerPanel.getInstance().isSilenced())
             {
                 InputStream file = null;
                 try {

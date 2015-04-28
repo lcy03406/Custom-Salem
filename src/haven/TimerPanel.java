@@ -8,15 +8,19 @@ public class TimerPanel extends Window {
     
     private static TimerPanel instance;
     private Button btnnew;
-    private IButton lockbtn;
-    private Label lockstate;
+    private IButton lockbtn,soundbtn;
             
     private static final BufferedImage ilockc = Resource.loadimg("gfx/hud/lockc");
     private static final BufferedImage ilockch = Resource.loadimg("gfx/hud/lockch");
     private static final BufferedImage ilocko = Resource.loadimg("gfx/hud/locko");
     private static final BufferedImage ilockoh = Resource.loadimg("gfx/hud/lockoh");
     private static final String OPT_LOCKED = "_locked";
-    boolean locked;
+    private static final BufferedImage isoundc = Resource.loadimg("gfx/hud/soundc");
+    private static final BufferedImage isoundch = Resource.loadimg("gfx/hud/soundch");
+    private static final BufferedImage isoundo = Resource.loadimg("gfx/hud/soundo");
+    private static final BufferedImage isoundoh = Resource.loadimg("gfx/hud/soundoh");
+    private static final String OPT_SOUNDED = "_sounded";
+    boolean locked,silenced;
         
     public static TimerPanel getInstance()
     {
@@ -49,12 +53,29 @@ public class TimerPanel extends Window {
 		    hover = ilockoh;
 		}
 		storeOpt(OPT_LOCKED, locked);
-                updateLockedLabel(locked);
 	    }
+            
+            {tooltip = Text.render("Whether to protect timers from accidental deletion.");}
 	};
 	lockbtn.recthit = true;
-        lockstate = new Label(Coord.z, this, "");
-        updateLockedLabel(locked);
+	soundbtn = new IButton(Coord.z, this, silenced?isoundc:isoundo, silenced?isoundo:isoundc, silenced?isoundch:isoundoh) {
+	    public void click() {
+		silenced = !silenced;
+		if(silenced) {
+		    up = isoundc;
+		    down = isoundo;
+		    hover = isoundch;
+		} else {
+		    up = isoundo;
+		    down = isoundc;
+		    hover = isoundoh;
+		}
+		storeOpt(OPT_SOUNDED, silenced);
+	    }
+            
+            {tooltip = Text.render("Whether to play sound on timer finish: timer.wav is played, can be overwritten in ~/Salem");}	
+	};
+	soundbtn.recthit = true;
         
 	synchronized (TimerController.getInstance().lock){
 	    for(Timer timer : TimerController.getInstance().timers){
@@ -63,15 +84,14 @@ public class TimerPanel extends Window {
 	}
 	pack();
     }
-
-    private void updateLockedLabel(boolean locked)
-    {
-        lockstate.settext(locked?"Timers protected from deletion":"Timers can be deleted");
-    }
     
     public boolean isDeletionLocked()
     {
         return locked;
+    }
+    public boolean isSilenced()
+    {
+        return silenced;
     }
     
     @Override
@@ -79,6 +99,7 @@ public class TimerPanel extends Window {
 	super.loadOpts();
 	synchronized (Config.window_props) {
 	    locked = getOptBool(OPT_LOCKED, false);
+	    silenced = getOptBool(OPT_SOUNDED, false);
 	}
     }
     
@@ -99,7 +120,7 @@ public class TimerPanel extends Window {
 	
 	btnnew.c = new Coord(0,h+4);
 	lockbtn.c = new Coord(btnnew.sz.x+4,h+6);
-	lockstate.c = new Coord(btnnew.sz.x+24,h+6);
+	soundbtn.c = new Coord(btnnew.sz.x+24,h+6);
 	super.pack();
     }
 
