@@ -27,6 +27,7 @@
 package haven;
 
 import haven.UI.UIException;
+
 import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -108,6 +109,8 @@ public class RootWidget extends ConsoleHost {
 	    }else if(code == KeyEvent.VK_Z && ctrl){
 		Config.click_adjust = (Config.click_adjust + 1) % 5;
 		ui.message(String.format("Click adjust %d", Config.click_adjust), GameUI.MsgType.INFO);
+	    }else if(code == KeyEvent.VK_A && ctrl){
+		BotHelper.forage();
 	    } else if(key != 0) {
 		wdgmsg("gk", (int)key);
 	    }

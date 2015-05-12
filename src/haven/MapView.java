@@ -1074,8 +1074,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	} catch(Loading e) {
 	    lastload = e;
 	    String text = "Loading...";
-	    g.chcolor(Color.BLACK);
-	    g.frect(Coord.z, sz);
+	    //g.chcolor(Color.BLACK);
+	    //g.frect(Coord.z, sz);
 	    g.chcolor(Color.WHITE);
 	    g.atext(text, sz.div(2), 0.5, 0.5);
 	}

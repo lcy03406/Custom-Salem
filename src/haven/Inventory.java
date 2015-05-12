@@ -179,14 +179,14 @@ public class Inventory extends Widget implements DTarget {
         isTranslated = true;
         //first step: deciding the size of the sorted inventory
         int width = this.isz.x;
-        int height = this.isz.y;
+        //int height = this.isz.y;
         if(this.equals(this.ui.gui.maininv))
         {
             //flexible size
             int nr_items = wmap.size();
             float aspect_ratio = 8/4;
             width  = Math.max(4,(int) Math.ceil(Math.sqrt(aspect_ratio*nr_items)));
-            height = Math.max(4,(int) Math.ceil(nr_items/width));
+            //height = Math.max(4,(int) Math.ceil(nr_items/width));
         }
         //now sort the item array
         List<WItem> array = new ArrayList<WItem>(wmap.values());
@@ -227,7 +227,7 @@ public class Inventory extends Widget implements DTarget {
         {
             //i.e. we don't have an item there but the server does: find a solution!
             int width = isz.x;
-            int height = isz.y;
+            //int height = isz.y;
             int index = 0;
             Coord newloc;
             do{
@@ -253,7 +253,7 @@ public class Inventory extends Widget implements DTarget {
         else{
             //find a spot for it
             int width = isz_client.x;
-            int height = isz_client.y;
+            //int height = isz_client.y;
             int index = 0;
             Coord newloc;
             do{
@@ -433,7 +433,8 @@ public class Inventory extends Widget implements DTarget {
 	List<WItem> items = new ArrayList<WItem>();
 	for (Widget wdg = lchild; wdg != null; wdg = wdg.prev) {
 	    if (wdg.visible && wdg instanceof WItem) {
-		if (((WItem) wdg).item.resname().equals(name))
+		String iname = ((WItem) wdg).item.name();
+		if (BotHelper.matchName(iname, name))
 		    items.add((WItem) wdg);
 	    }
 	}
@@ -442,14 +443,14 @@ public class Inventory extends Widget implements DTarget {
     }
     
     public GItem findItem(String name) {
-        for(WItem w : wmap.values()) {
-            if (name.isEmpty() || name.equals(w.item.name()))
-        	return w.item;
-        }
-        return null;
+	List<WItem> l = getSame(name, false);
+	if (l.isEmpty())
+	    return null;
+	return l.get(0).item;
     }
     
     public Coord findEmpty() {
+	sortItemsLocally(cmp_name);
         int width = isz.x;
         int height = isz.y;
         if(this.equals(this.ui.gui.maininv))
@@ -465,11 +466,13 @@ public class Inventory extends Widget implements DTarget {
     }
 
     public ArrayList<GItem> allItem(String name) {
-	ArrayList<GItem> l = new ArrayList<GItem>();
-        for(WItem w : wmap.values()) {
-            if (name.isEmpty() || name.equals(w.item.name()))
-        	l.add(w.item);
-        }
-	return l;
+	List<WItem> l = getSame(name, false);
+	if (l.isEmpty())
+	    return null;
+	ArrayList<GItem> a = new ArrayList<GItem>();
+	for (WItem i : l) {
+	    a.add(i.item);
+	}
+	return a;
     }
 }

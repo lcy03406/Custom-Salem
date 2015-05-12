@@ -48,7 +48,6 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 	    str += o.toString();
 	}
 	BotHelper.debug(str);
-	System.out.println(str);
         
 	Message msg = new Message(Message.RMSG_WDGMSG);
 	msg.adduint16(id);
@@ -130,7 +129,6 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 			    }
 			}
 			BotHelper.debug(str);
-			System.out.println(str);
 		    }
 		    
 		    if (name.equals("curs")) {

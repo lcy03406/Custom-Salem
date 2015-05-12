@@ -80,7 +80,7 @@ public class Makewindow extends Widget {
     }
 
     public void uimsg(String msg, Object... args) {
-        System.out.println("UIMSG for makewindow, "+msg);
+        //System.out.println("UIMSG for makewindow, "+msg);
 	if(msg == "inpop") {
 	    Spec[] inputs = new Spec[args.length / 2];
 	    for(int i = 0, a = 0; a < args.length; i++, a += 2)

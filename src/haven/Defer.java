@@ -187,7 +187,9 @@ public class Defer extends ThreadGroup {
 		    f.run();
 		    f = null;
 		}
-	    } finally {
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }finally {
 		synchronized(queue) {
 		    pool.remove(this);
 		    if((pool.size() < 1) && !queue.isEmpty()) {

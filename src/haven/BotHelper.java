@@ -1,5 +1,7 @@
 package haven;
 
+import haven.Fightview.Relation;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
@@ -152,17 +154,41 @@ public class BotHelper {
     /**
      * 等待事件
      */
-    public static String waiting;
-    public static Object waiter = new Object();
+    private static String waiting;
+    private static Object waiter = new Object();
+    private static boolean waitsig = false;
     /**
      * 唤醒脚本。当然在脚本里是没用的。
      * @param w
      */
     public static void wake(String w) {
+	debug("wake " + w);
 	synchronized (waiter) {
-	    debug("wake " + w);
-	    if (w.equals(waiting))
+	    if (w.equals(waiting)) {
+		waitsig = true;
 		waiter.notify();
+	    }
+	}
+    }
+    
+    private static interface Do
+    {
+	public void doSomething();
+    };
+    private static void doAndWait(Do inner, String w, int timeout) throws InterruptedException {
+	if (aNull())
+	    return;
+	synchronized (waiter) {
+	    waiting = w;
+	    waitsig = false;
+	}
+	inner.doSomething();
+	synchronized (waiter) {
+	    if (!waitsig) {
+		waiter.wait(timeout);
+	    }
+	    waitsig = false;
+	    waiting = "";
 	}
     }
     
@@ -173,10 +199,7 @@ public class BotHelper {
      * 
      */
     public static void waitFor(String w, int timeout) throws InterruptedException {
-	synchronized (waiter) {
-	    waiting = w;
-	    waiter.wait(timeout);
-	}
+	doAndWait( new Do(){public void doSomething() {}}, w, timeout);
     }
     
     private static String getCursForAct(String a) {
@@ -200,16 +223,11 @@ public class BotHelper {
      * @param a 动作名  mine dig sift carry pave repair destroy
      * 
      */
-    public static void act(String a) throws InterruptedException {
-	if (aNull())
-	    return;
-	synchronized (waiter) {
-	    waiting = "curs:gfx/hud/curs/" + getCursForAct(a); 
+    public static void act(final String a) throws InterruptedException {
+	doAndWait( new Do(){public void doSomething() {
 	    UI.instance.gui.act(a);
-	    waiter.wait(5000);
-	    waiting = "";
 	    action = a;
-	}
+	}}, "curs:gfx/hud/curs/" + getCursForAct(a), 5000);
     }
     
     /**
@@ -219,28 +237,27 @@ public class BotHelper {
      * @param timeout 超时（毫秒）
      * 
      */
-    public static void flower(String a, String waitfor, int timeout) throws InterruptedException {
-	synchronized (waiter) {
-	    waiting = waitfor; 
-	    if (FlowerMenu.instance != null) {
-		FlowerMenu.instance.chooseName(a);
-	    }
-	    waiter.wait(timeout);
-	    waiting = "";
-	}
+    public static void flower(final String a, String waitfor, int timeout) throws InterruptedException {
+	if (FlowerMenu.instance == null)
+	    return;
+	doAndWait( new Do(){public void doSomething() {
+	    FlowerMenu.instance.chooseName(a);
+	}}, waitfor, timeout);
     }
     
     /**
      * 获取地表
      * @param c 坐标
-     * @return 地形ID：深水58，浅水57，铺炉渣11，铺砖17，铺石头18，土31，矿洞42，黑森林44，枫叶林7
+     * @return 地形ID
+     *  铺石头13 铺gniess23 土 42 浅水59 深水61
      */
     public static int mapTile(Coord c) {
+	//旧的 深水58，浅水57，铺炉渣11，铺砖17，铺石头18，土31，矿洞42，黑森林44，枫叶林7
 	if (aNull())
 	    return -1;
 	return UI.instance.sess.glob.map.gettile(c.div(tilesz));
     }
-    
+
     /**
      * 获取地表高度
      * @param c 坐标
@@ -250,6 +267,32 @@ public class BotHelper {
 	if (aNull())
 	    return -1;
 	return UI.instance.sess.glob.map.getcz(c);
+    }
+
+    /**
+     * 获取地表工具选中范围起点
+     * @return 坐标
+     */
+    public static Coord mapToolC1() {
+	if (aNull())
+	    return null;
+	FlatnessTool ft = FlatnessTool.instance(null);
+	if (ft == null)
+	    return null;
+	return ft.c1.mul(tilesz);
+    }
+    
+    /**
+     * 获取地表工具选中范围终点
+     * @return 坐标
+     */
+    public static Coord mapToolC2() {
+	if (aNull())
+	    return null;
+	FlatnessTool ft = FlatnessTool.instance(null);
+	if (ft == null)
+	    return null;
+	return ft.c2.mul(tilesz);
     }
     
     /**
@@ -299,17 +342,12 @@ public class BotHelper {
      * @param timeout 超时
      * 
      */
-    public static void mapClick(Coord mc, int button, int modflags, String waitfor, int timeout) throws InterruptedException {
-	if (aNull())
-	    return;
-	synchronized (waiter) {
-	    waiting = waitfor; 
+    public static void mapClick(final Coord mc, final int button, final int modflags, String waitfor, int timeout) throws InterruptedException {
+	doAndWait( new Do(){public void doSomething() {
 	    MapView map = UI.instance.gui.map;
 	    map.wdgmsg(map, "click", cc(), mc, button, modflags);
-	    waiter.wait(timeout);
-	    waiting = "";
-	}
-   }
+	}}, waitfor, timeout);
+    }
     
     /**
      * 移动，并等待移动停止
@@ -329,24 +367,36 @@ public class BotHelper {
      * @param modflags 功能键
      * 
      */
-    public static void mapPlace(Coord mc, int angle, int modflags) throws InterruptedException {
-	if (aNull())
-	    return;
-	synchronized (waiter) {
-	    waiting = "pack"; 
+    public static void mapPlace(final Coord mc, final int angle, int modflags) throws InterruptedException {
+	doAndWait( new Do(){public void doSomething() {
 	    MapView map = UI.instance.gui.map;
 	    map.wdgmsg(map, "place", mc, angle, 1, 0);
-	    waiter.wait((int)(pos().dist(mc)*120));
-	    waiting = "";
-	}
+	}}, "pack", (int)(pos().dist(mc)*120));
     }
     
     /**
+     * 用于匹配名字的辅助函数。在gobFind和gobsArea函数内部用matchName匹配名字。
+     * 匹配方式是：
+     * 如果name为空，则返回true；
+     * 如果name以"/"结尾，且gobname以name开始（使用String的startsWith方法），则返回true；
+     * 如果gobname与name相等（使用String的equals方法），则返回true；
+     * 否则返回false。
+     */
+    public static boolean matchName(String gobname, String name) {
+	if (name.isEmpty())
+	    return true;
+	if (name.endsWith("/") && gobname.startsWith(name))
+	    return true;
+	return gobname.equals(name);
+    }
+
+    /**
      * 搜索最近的某种物体
-     * @param name 物体名字（可以开debuging然后点击物品看到）（空字符串表示不判断物体名字）
+     * @param name 物体名字（可以开debuging然后点击物品看到）@see matchName
      * @param center 搜索中心点
      * @param radius 最大搜索半径
      * @return 物体
+     * 
      */
     public static Gob gobFind(String name, Coord center, double radius) {
 	if (aNull())
@@ -356,7 +406,9 @@ public class BotHelper {
 	OCache oc = UI.instance.gui.map.glob.oc;
 	synchronized (oc) {
 	    for (Gob gob : oc){
-                if(gob.name().equals(name) || name.isEmpty()) {
+		if (gob == player())
+		    continue;
+                if(matchName(gob.name(), name)) {
                     double d = gob.rc.dist(center);
                     if (d < r) {
                 	g = gob;
@@ -370,7 +422,7 @@ public class BotHelper {
     
     /**
      * 搜索矩形区域内的所有物体
-     * @param name 物体名字（可以开debuging然后点击物品看到）（空字符串表示不判断物体名字）
+     * @param name 物体名字（可以开debuging然后点击物品看到）@see matchName
      * @param min 最小坐标XY
      * @param max 最大坐标XY
      * @return 一堆物体
@@ -382,7 +434,7 @@ public class BotHelper {
 	ArrayList<Gob> a = new ArrayList<Gob>();
 	synchronized (oc) {
 	    for (Gob gob : oc){
-                if(gob.name().equals(name) || name.isEmpty()) {
+		if (matchName(gob.name(), name)) {
                     if (gob.rc.in(min, max)) {
                 	a.add(gob);
                     }
@@ -401,37 +453,27 @@ public class BotHelper {
      * @param timeout 超时（毫秒）
      * 
      */
-    public static void gobClick(Gob gob, int button, int modflags, String waitfor, int timeout) throws InterruptedException {
-	if (aNull())
-	    return;
-	synchronized (waiter) {
-	    waiting = waitfor; 
+    public static void gobClick(final Gob gob, final int button, final int modflags, String waitfor, int timeout) throws InterruptedException {
+	doAndWait( new Do(){public void doSomething() {
 	    MapView map = UI.instance.gui.map;
 	    map.wdgmsg(map, "click", gob.sc, gob.rc, button, modflags, 0, (int)gob.id, gob.rc, 0, MapView.getid(gob));
-	    waiter.wait(timeout);
-	    waiting = "";
-	}
+	}}, waitfor, timeout);
     }
     /**
      * 点击物体的指定部位，并等待事件
      * @param gob 物体
-     * @param part 部位。风箱末端是16。
+     * @param part 部位。风箱末端是左17、右18、上19。
      * @param button 按键。1=左，3=右
      * @param modflags 功能键
      * @param waitfor 事件
      * @param timeout 超时（毫秒）
      * 
      */
-    public static void gobClickPart(Gob gob, int part, int button, int modflags, String waitfor, int timeout) throws InterruptedException {
-	if (aNull())
-	    return;
-	synchronized (waiter) {
-	    waiting = waitfor; 
+    public static void gobClickPart(final Gob gob, final int part, final int button, final int modflags, String waitfor, int timeout) throws InterruptedException {
+	doAndWait( new Do(){public void doSomething() {
 	    MapView map = UI.instance.gui.map;
 	    map.wdgmsg(map, "click", gob.sc, gob.rc, button, modflags, 0, (int)gob.id, gob.rc, 0, part);
-	    waiter.wait(timeout);
-	    waiting = "";
-	}
+	}}, waitfor, timeout);
     }    
     /**
      * 手拿物品与物体交互，并等待事件
@@ -441,22 +483,84 @@ public class BotHelper {
      * @param timeout 超时（毫秒）
      * 
      */
-    public static void gobItemact(Gob gob, int modflags, String waitfor, int timeout) throws InterruptedException {
-	if (aNull())
-	    return;
-	synchronized (waiter) {
-	    waiting = waitfor; 
+    public static void gobItemact(final Gob gob, final int modflags, String waitfor, int timeout) throws InterruptedException {
+	doAndWait( new Do(){public void doSomething() {
 	    MapView map = UI.instance.gui.map;
 	    map.wdgmsg(map, "itemact", gob.sc, gob.rc, modflags, (int)gob.id, gob.rc, MapView.getid(gob));
-	    waiter.wait(timeout);
-	    waiting = "";
-	}
+	}}, waitfor, timeout);
     }
     
-    private static Inventory inv() {
+    /**
+     * 半自动打怪/扫野。快捷键Ctrl+A
+     * 如果在战斗中，则跟随战斗目标；
+     * 否则搜索最近的herbs、items、crab、frog，右键。
+     */
+    public static void forage() {
+	if (aNull())
+	    return;
+	double r = 400;
+	OCache oc = UI.instance.gui.map.glob.oc;
+	Fightview fv = UI.instance.gui.fv;
+        if(fv != null && !fv.lsrel.isEmpty()){
+            Relation rel = fv.lsrel.getFirst();
+            Gob enemy = oc.getgob(rel.gobid);
+            if(enemy!=null && !enemy.virtual)
+            {
+        	try {
+        	    BotHelper.gobClick(enemy, 1, 0, "", 1);
+        	} catch (Exception e) {
+        	}
+        	return;
+            }
+        }
+	Gob g = null;
+	Coord pos = pos();
+	Moving m = player().getattr(Moving.class);
+        if(m!=null) {
+            if(m instanceof LinMove) {
+                LinMove lm = (LinMove) m;
+                pos = lm.t;
+            }	    
+	}
+	synchronized (oc) {
+	    for (Gob gob : oc){
+		String name = gob.name();
+		if (matchName(name, "gfx/terobjs/herbs/") || matchName(name, "gfx/terobjs/items/")
+			|| matchName(name, "gfx/kritter/crab/") || matchName(name, "gfx/kritter/frog/")) {
+                    double d = gob.rc.dist(pos);
+                    if (d < r) {
+                	g = gob;
+                	r = d;
+                    }
+                }
+	    }
+	}
+	if (g != null) {
+	    try {
+		BotHelper.gobClick(g, 3, 0, "", 1);
+	    } catch (Exception e) {
+	    }
+	}
+    }
+
+    /**
+     * 自己的物品栏
+     * @return 物品栏
+     */
+    public static Inventory inv() {
 	if (aNull())
 	    return null;
 	return UI.instance.gui.maininv;
+    }
+    
+    /**
+     * 建筑的物品栏
+     * @return 物品栏
+     */
+    public static Inventory box() {
+	if (aNull())
+	    return null;
+	return box;
     }
    
     /**
@@ -496,19 +600,15 @@ public class BotHelper {
      * 手中物品放进建筑
      * 
      */
-    public static void itemBoxDrop(Coord c) throws InterruptedException {
-	Inventory inv = box;
+    public static void itemBoxDrop(final Coord c) throws InterruptedException {
+	final Inventory inv = box;
 	if (inv == null)
 	    return;
 	if (hand() == null)
 	    return;
-	synchronized (waiter) {
-	    waiting = "hand_drop";
+	doAndWait( new Do(){public void doSomething() {
 	    inv.wdgmsg("drop", c);
-	    waiter.wait(5000);
-	    waiting = "";
-	    waiter.wait(500);
-	}
+	}}, "hand_drop", 5000);
     }    
     /**
      * 查找物品栏里的一个物品
@@ -539,18 +639,14 @@ public class BotHelper {
      * 
      */
     public static void itemDrop() throws InterruptedException {
-	Inventory inv = inv();
+	final Inventory inv = inv();
 	if (inv == null)
 	    return;
 	if (hand() == null)
 	    return;
-	synchronized (waiter) {
-	    waiting = "hand_drop";
+	doAndWait( new Do(){public void doSomething() {
 	    inv.wdgmsg("drop", inv.findEmpty());
-	    waiter.wait(5000);
-	    waiting = "";
-	    waiter.wait(500);
-	}
+	}}, "hand_drop", 5000);
     }    
 
     /**
@@ -558,14 +654,10 @@ public class BotHelper {
      * @param item 物品
      * 
      */
-    public static void itemTake(GItem item) throws InterruptedException {
-	synchronized (waiter) {
-	    waiting = "hand_take"; 
+    public static void itemTake(final GItem item) throws InterruptedException {
+	doAndWait( new Do(){public void doSomething() {
 	    item.wdgmsg("take", ic());
-	    waiter.wait(5000);
-	    waiting = "";
-	    waiter.wait(500);
-	}
+	}}, "hand_take", 5000);
     }
     
     /**
@@ -573,12 +665,10 @@ public class BotHelper {
      * @param item 物品
      * 
      */
-    public static void itemTransfer(GItem item) throws InterruptedException {
-	synchronized (waiter) {
-	    waiting = ""; 
+    public static void itemTransfer(final GItem item) throws InterruptedException {
+	doAndWait( new Do(){public void doSomething() {
 	    item.wdgmsg("transfer", ic());
-	    waiter.wait(2000);
-	}
+	}}, "", 100);
     } 
     
     /**
@@ -588,13 +678,10 @@ public class BotHelper {
      * @param timeout 超时（毫秒）
      * 
      */
-    public static void itemAct(GItem item, String waitfor, int timeout) throws InterruptedException {
-	synchronized (waiter) {
-	    waiting = waitfor; 
+    public static void itemAct(final GItem item, String waitfor, int timeout) throws InterruptedException {
+	doAndWait( new Do(){public void doSomething() {
 	    item.wdgmsg("iact", ic());
-	    waiter.wait(timeout);
-	    waiting = "";
-	}
+	}}, waitfor, timeout);
     }
     
     /**
@@ -605,15 +692,10 @@ public class BotHelper {
      * @param timeout 超时（毫秒）
      * 
      */
-    public static void itemItemact(GItem item, int modflags, String waitfor, int timeout) throws InterruptedException {
-	if (aNull())
-	    return;
-	synchronized (waiter) {
-	    waiting = waitfor; 
+    public static void itemItemact(final GItem item, final int modflags, String waitfor, int timeout) throws InterruptedException {
+	doAndWait( new Do(){public void doSomething() {
 	    item.wdgmsg("itemact", modflags);
-	    waiter.wait(timeout);
-	    waiting = "";
-	}
+	}}, waitfor, timeout);
     }
     
     /**
@@ -632,7 +714,7 @@ public class BotHelper {
      */
     public static boolean potHumus(Gob pot) {
 	int mask = pot.mask();
-	return (mask & 2) != 0;
+	return (mask & 1) != 0;
     }
 
     /**

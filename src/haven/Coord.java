@@ -217,11 +217,23 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
     public boolean in(Coord min, Coord max) {
 	return x >= min.x && x <= max.x && y >= min.y && y <= max.y;
     }
-
+    
+    /**
+     * 取格子中心坐标
+     * @return 格子中心坐标
+     * {@code}
+     */
     public Coord center() {
 	return div(tilesz).mul(tilesz).add(tilesz.div(2));
     }
 
+    
+    /**
+     * 修正坐标
+     * @param type 0：不修正，1：格子中心，2：格子顶点，3：格子1/2，4：格子1/3
+     * @return 新坐标
+     * {@code}
+     */
     public Coord adjust(int type) {
 	if (type == 0)
 	    return this;

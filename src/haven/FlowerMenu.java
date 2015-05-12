@@ -29,11 +29,21 @@ package haven;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
+import java.util.HashSet;
 
 import static java.lang.Math.PI;
 
 public class FlowerMenu extends Widget {
     public static FlowerMenu instance;
+    public static final HashSet<String> autoconfig = new HashSet<String>();
+    static {
+	autoconfig.add("Pick");
+	autoconfig.add("Pry Face");
+	autoconfig.add("Smash Face");
+	autoconfig.add("She Loves Me");
+	autoconfig.add("She Loves Me Not");
+	autoconfig.add("Remove Cone Scales");
+    }
     public static final Tex pbgl = Resource.loadtex("gfx/hud/fpl");
     public static final Tex pbgm = Resource.loadtex("gfx/hud/fpm");
     public static final Tex pbgr = Resource.loadtex("gfx/hud/fpr");
@@ -41,8 +51,8 @@ public class FlowerMenu extends Widget {
     static Text.Foundry ptf = new Text.Foundry(new Font("SansSerif", Font.PLAIN, 12));
     static int ph = pbgm.sz().y, ppl = 8;
     FlowerMenu.Petal[] opts;
+    FlowerMenu.Petal autochoose = null;
     private double fast_menu1, fast_menu2;
-    private Petal autochoose = null;
 
     @Widget.RName("sm")
     public static class $_ implements Widget.Factory {
@@ -52,7 +62,7 @@ public class FlowerMenu extends Widget {
 	    String[] opts = new String[args.length];
 	    for(int i = 0; i < args.length; i++)
 		opts[i] = (String)args[i];
-	    instance = new FlowerMenu(c, parent, opts);
+	    new FlowerMenu(c, parent, opts);
 	    BotHelper.wake("flower_open");
 	    return instance;
 	}
@@ -215,6 +225,7 @@ public class FlowerMenu extends Widget {
 	fitscreen(organize(opts));
 	ui.grabmouse(this);
 	ui.grabkeys(this);
+	instance = this;
 	new FlowerMenu.Opening();
     }
 
@@ -232,7 +243,7 @@ public class FlowerMenu extends Widget {
 	if(wc.y + wsz.y > ssz.y)
 	    c.y -= wc.y + wsz.y - ssz.y;
     }
-
+    
     public boolean mousedown(Coord c, int button) {
 	if(!anims.isEmpty())
 	    return(true);
