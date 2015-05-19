@@ -183,10 +183,6 @@ public class Config {
 	window_props = loadProps("windows.conf");
 
 	loadItemRadius();
-<<<<<<< HEAD
-
-        Wiki.init(getFile("cache"), 3);
-=======
 	loadAutochoose();
 	Wiki.init(getFile("cache"), 3);
 
@@ -233,7 +229,6 @@ public class Config {
     public static void saveGobPathCfg(){
 	Gson gson = GobPath.Cfg.getGson();
 	saveFile("gob_path.json", gson.toJson(gobPathCfg));
->>>>>>> upstream/master
     }
 
     private static void loadBuildVersion() {
@@ -503,14 +498,13 @@ public class Config {
 	brighten = val;
 	Utils.setpreff("brighten", val);
     }
-<<<<<<< HEAD
     
     //project overgrown
     public static void setFieldproducescale(int val) {
 	fieldproducescale = val;
 	Utils.setpreff("fieldproducescale", val);
-=======
-
+    }
+    
     public static String loadFile(String name){
 	InputStream inputStream = null;
 	File file = Config.getFile(name);
@@ -562,6 +556,5 @@ public class Config {
 	    return gobPathCfg.get(resname);
 	}
 	return GobPath.Cfg.def;
->>>>>>> upstream/master
     }
 }

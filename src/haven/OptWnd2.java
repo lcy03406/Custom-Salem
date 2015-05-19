@@ -773,7 +773,7 @@ public class OptWnd2 extends Window {
         /* HOTKEY TAB */
         {
             
-	    tab = body.new Tab(new Coord(390, 0), 60, "Hotkeys");
+	    tab = body.new Tab(new Coord(360, 0), 60, "Hotkeys");
             
             new Label(new Coord(10, 25), tab, "Enter commands to execute for configureable hotkeys.");
             new Label(new Coord(10, 35), tab, "Use your hotkeys through shift+ctrl+<key>.");
@@ -823,7 +823,25 @@ public class OptWnd2 extends Window {
         }
         
         {
-            tab = body.new Tab(new Coord(210, 0), 60, "Cheats");
+            tab = body.new Tab(new Coord(430, 0), 60, "Cheats"){
+                FlowerList list = new FlowerList(new Coord(200, 55), this);
+                Button add = new Button(new Coord(355, 308), 45, this, "Add");
+                TextEntry value = new TextEntry(new Coord(200, 310), 150, this, "");
+                {
+                    value.canactivate = true;
+                }
+
+                @Override
+                public void wdgmsg(Widget sender, String msg, Object... args) {
+                    if((sender == add || sender == value) && msg.equals("activate")){
+                        list.add(value.text);
+                        value.settext("");
+                    } else {
+                        super.wdgmsg(sender, msg, args);
+                    }
+                }
+            };
+            new Label(new Coord(200, 30), tab, "Choose menu items to select automatically:");
 
             int y = 5;
             (new CheckBox(new Coord(0, y+=25), tab, "Auto sift"){
@@ -883,27 +901,6 @@ public class OptWnd2 extends Window {
 	    if(t.btn.text.text.equals(last))
 		body.showtab(t);
 	}
-
-	//Flower menu
-	tab = body.new Tab(new Coord(280, 0), 60, "Menu"){
-	    FlowerList list = new FlowerList(new Coord(0, 55), this);
-	    Button add = new Button(new Coord(155, 308), 45, this, "Add");
-	    TextEntry value = new TextEntry(new Coord(0, 310), 150, this, "");
-	    {
-		value.canactivate = true;
-	    }
-
-	    @Override
-	    public void wdgmsg(Widget sender, String msg, Object... args) {
-		if((sender == add || sender == value) && msg.equals("activate")){
-		    list.add(value.text);
-		    value.settext("");
-		} else {
-		    super.wdgmsg(sender, msg, args);
-		}
-	    }
-	};
-	new Label(new Coord(0, 30), tab, "Choose menu items to select automatically:");
     }
     
     public static void setRadarInfo(RadarConfig rcf, MarkerFactory mf){
@@ -929,7 +926,7 @@ public class OptWnd2 extends Window {
         }
         
         //create the new one
-        radartab = body.new Tab(new Coord(280,0), 100, "Radar config");
+        radartab = body.new Tab(new Coord(280,0), 70, "Radar config");
 
         int x = 0, y = 35;
         for(final ConfigGroup cg : rc.getGroups())

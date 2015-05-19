@@ -49,9 +49,7 @@ public class WeightWdg extends Window {
 	    g.aimage(label, sz.div(2), 0.5, 0.5);
 	}
 
-	g.chcolor(SeasonImg.color);
 	Window.swbox.draw(g, Coord.z, this.sz);
-	g.chcolor();
     }
 
     @Override

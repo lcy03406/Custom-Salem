@@ -1086,7 +1086,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 	    x+=18;
 	    lndb = new MenuButton(new Coord(x, y), this, "lnd", -1, "Display Landscape Tool") {
 		public void click() {
-		    FlatnessTool.instance(GameUI.this);
+		    FlatnessTool.instance(ui);
 		}
 	    };
 	    x+=18;
