@@ -26,6 +26,7 @@
 
 package haven;
 
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -358,7 +359,22 @@ public class UI {
 	}
     }
 
+    public void message(String str, Color msgColor) {
+	if((cons!=null) && (gui!=null)){
+	    gui.message(str, msgColor);
+	}
+    }
+
+    public static boolean isCursor(String name) {
+	return instance != null && instance.root != null && instance.root.cursor.name.equals(name);
+    }
+
     public void destroy() {
 	audio.clear();
+    }
+
+    public static class Cursor {
+	public static final String SIFTING = "gfx/hud/curs/sft";
+	public static final String GOBBLE = "gfx/hud/curs/eat";
     }
 }

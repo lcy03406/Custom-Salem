@@ -45,33 +45,7 @@ public class Inventory extends Widget implements DTarget {
     public static final Coord sqlo = new Coord(4, 4);
     public static final Tex refl = Resource.loadtex("gfx/hud/invref");
 
-    private static final Comparator<WItem> cmp_asc = new Comparator<WItem>() {
-	@Override
-	public int compare(WItem o1, WItem o2) {
-	    float c1 = o1.carats.get();
-	    float c2 = o2.carats.get();
-
-	    if(c1 == c2) {
-		Alchemy a = o1.alch.get();
-		double q1 = (a == null) ? 0 : a.purity();
-
-		a = o2.alch.get();
-		double q2 = (a == null) ? 0 : a.purity();
-
-		if(q1 == q2) {
-		    return 0;
-		} else if(q1 > q2) {
-		    return 1;
-		} else {
-		    return -1;
-		}
-	    } else if(c1 > c2){
-		return 1;
-	    } else {
-		return -1;
-	    }
-	}
-    };
+    private static final Comparator<WItem> cmp_asc = new WItemComparator();
     private static final Comparator<WItem> cmp_desc = new Comparator<WItem>() {
 	@Override
 	public int compare(WItem o1, WItem o2) {
@@ -366,25 +340,6 @@ public class Inventory extends Widget implements DTarget {
 	g.image(sqlite, c);
     }
 
-    @Override
-    public boolean mousedown(Coord c, int button) {
-//	if(button == 2){
-//	    int i = 0;
-//	    Coord ct = new Coord();
-//	    List<GItem> items = getAll();
-//	    Collections.sort(items, GItem.comp);
-//	    for(GItem item : items){
-//		item.wdgmsg("take", Coord.z);
-//		ct.x = i%isz.x;
-//		ct.y = i/isz.x;
-//		wdgmsg("drop", ct);
-//		i++;
-//	    }
-//	    return true;
-//	}
-	return super.mousedown(c, button);
-    }
-
     public boolean mousewheel(Coord c, int amount) {
         if(ui.modshift) {
             wdgmsg("xfer", amount);
@@ -431,7 +386,7 @@ public class Inventory extends Widget implements DTarget {
     }
 
     public void uimsg(String msg, Object... args) {
-	if(msg == "sz") {
+	if(msg.equals("sz")) {
 	    isz = (Coord)args[0];
             if(isTranslated)
             {

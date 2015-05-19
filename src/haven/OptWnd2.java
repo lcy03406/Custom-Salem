@@ -40,6 +40,7 @@ import java.util.List;
 public class OptWnd2 extends Window {
     public static final RichText.Foundry foundry = new RichText.Foundry(TextAttribute.FAMILY, "SansSerif", TextAttribute.SIZE, 10);
     public static OptWnd2 instance = null;
+    private final CheckBox gob_path_color;
     private Tabs body;
     private Tabs.Tab radartab;
     private static RadarConfig rc=null;
@@ -213,7 +214,7 @@ public class OptWnd2 extends Window {
 		
 	    }.a = Config.ss_compress;
 	    
-	    new CheckBox(new Coord(0, y += 25), tab, "Include UI on screenshots"){
+	    new CheckBox(new Coord(200, y + 25), tab, "Include UI on screenshots"){
 		@Override
 		public void changed(boolean val) {
 		    super.changed(val);
@@ -224,6 +225,18 @@ public class OptWnd2 extends Window {
 		{tooltip = Text.render("Sets default value of include UI on screenshot dialog");}
 		
 	    }.a = Config.ss_ui;
+
+	    new CheckBox(new Coord(0, y += 25), tab, "Show weight widget"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.weight_wdg = val;
+		    Utils.setprefb("weight_wdg", val);
+		}
+
+		{tooltip = Text.render("Shows small floating widget with current carrying weight");}
+
+	    }.a = Config.weight_wdg;
 	    
 	    new CheckBox(new Coord(0, y += 25), tab, "Arrow home pointer"){
 		@Override
@@ -294,8 +307,9 @@ public class OptWnd2 extends Window {
 	    addinfo("ortho",	"Isometric Cam",	"Isometric camera centered on character. Use mousewheel scrolling to zoom in and out. Drag with middle mouse button to rotate camera.", null);
 	    addinfo("sortho",	"Smooth Isometric Cam",	"Isometric camera centered on character with smoothed movement. Use mousewheel scrolling to zoom in and out. Drag with middle mouse button to rotate camera.", null);
 	    addinfo("follow",	"Follow Cam",		"The camera follows the character. Use mousewheel scrolling to zoom in and out. Drag with middle mouse button to rotate camera.", null);
-	    addinfo("sfollow",	"Smoot Follow Cam",	"The camera smoothly follows the character. Use mousewheel scrolling to zoom in and out. Drag with middle mouse button to rotate camera.", null);
-	    addinfo("free",	"Freestyle",		"You can move around freely within the larger area around character. Use mousewheel scrolling to zoom in and out. Drag with middle mouse button to rotate camera.", null);
+	    addinfo("sfollow",	"Smooth Follow Cam",	"The camera smoothly follows the character. Use mousewheel scrolling to zoom in and out. Drag with middle mouse button to rotate camera.", null);
+	    addinfo("free",	"Freestyle Cam",	"You can move around freely within the larger area around character. Use mousewheel scrolling to zoom in and out. Drag with middle mouse button to rotate camera.", null);
+	    addinfo("best",	"Smooth Freestyle Cam",	"You can move around freely within the larger area around character. Use mousewheel scrolling to zoom in and out. Drag with middle mouse button to rotate camera.", null);
 
 	    final Tabs cambox = new Tabs(new Coord(100, 60), new Coord(300, 200), tab);
 	    
@@ -323,7 +337,22 @@ public class OptWnd2 extends Window {
 	    for(String camname : clist)
 		cameras.add(camname, new Coord(10, y += 25));
 	    cameras.check(caminfomap.containsKey(curcam) ? caminfomap.get(curcam).name : curcam);
-	    
+
+	    y+=40;
+	    new CheckBox(new Coord(5, y), tab, "Rotate isometric cams by steps"){
+		@Override
+		public void changed(boolean val) {
+		    super.changed(val);
+		    Config.isocam_steps = val;
+		    Utils.setprefb("isocam_steps", val);
+		    if(ui.gui != null && ui.gui.map != null && ui.gui.map.camera != null){
+			ui.gui.map.camera.fixangle();
+		    }
+		}
+
+		{tooltip = Text.render("Makes isometric cameras rotate in 90 degree steps.");}
+	    }.a = Config.isocam_steps;
+
 	    y = 200;
 	    
 	    opt_aa = new CheckBox(new Coord(180, y+=25), tab, "Antialiasing"){
@@ -793,12 +822,88 @@ public class OptWnd2 extends Window {
             }
         }
         
+        {
+            tab = body.new Tab(new Coord(210, 0), 60, "Cheats");
+
+            int y = 5;
+            (new CheckBox(new Coord(0, y+=25), tab, "Auto sift"){
+                @Override
+                public void changed(boolean val) {
+                    super.changed(val);
+                    Config.autosift = val;
+                    Utils.setprefb("autosift", val);
+                }
+                {tooltip = Text.render("Clicks on ground with sift cursor will be repeated until non-sift click received.");}
+            }).a = Config.autosift;
+
+            (new CheckBox(new Coord(0, y+=25), tab, "Show actor path"){
+                @Override
+                public void changed(boolean val) {
+                    super.changed(val);
+                    Config.gobpath = val;
+                    Utils.setprefb("gobpath", val);
+                    gob_path_color.enabled = val;
+                }
+                {tooltip = Text.render("Will draw line to position where actor is moving.");}
+            }).a = Config.gobpath;
+
+            gob_path_color = new CheckBox(new Coord(10, y+=25), tab, "Use kin color"){
+                @Override
+                public void changed(boolean val) {
+                    super.changed(val);
+                    Config.gobpath_color = val;
+                    Utils.setprefb("gobpath_color", val);
+                }
+                {tooltip = Text.render("Will draw actor path using color from kin list.");}
+            };
+            gob_path_color.a = Config.gobpath_color;
+            gob_path_color.enabled = Config.gobpath;
+
+            new Button(new Coord(10, y+=25), 75, tab, "options"){
+                @Override
+                public void click() {
+                    GobPathOptWnd.toggle();
+                }
+            };
+
+            (new CheckBox(new Coord(0, y+=35), tab, "Auto drop bats"){
+                @Override
+                public void changed(boolean val) {
+                    super.changed(val);
+                    Config.auto_drop_bats = val;
+                    Utils.setprefb("auto_drop_bats", val);
+                }
+                {tooltip = Text.render("Will automatically drop bats that sit on your neck.");}
+            }).a = Config.auto_drop_bats;
+        }
+        
 	//new Frame(new Coord(-10, 20), new Coord(420, 330), this);
 	String last = Utils.getpref("optwndtab", "");
 	for(Tabs.Tab t : body.tabs) {
 	    if(t.btn.text.text.equals(last))
 		body.showtab(t);
 	}
+
+	//Flower menu
+	tab = body.new Tab(new Coord(280, 0), 60, "Menu"){
+	    FlowerList list = new FlowerList(new Coord(0, 55), this);
+	    Button add = new Button(new Coord(155, 308), 45, this, "Add");
+	    TextEntry value = new TextEntry(new Coord(0, 310), 150, this, "");
+	    {
+		value.canactivate = true;
+	    }
+
+	    @Override
+	    public void wdgmsg(Widget sender, String msg, Object... args) {
+		if((sender == add || sender == value) && msg.equals("activate")){
+		    list.add(value.text);
+		    value.settext("");
+		} else {
+		    super.wdgmsg(sender, msg, args);
+		}
+	    }
+	};
+	new Label(new Coord(0, 30), tab, "Choose menu items to select automatically:");
     }
     
     public static void setRadarInfo(RadarConfig rcf, MarkerFactory mf){

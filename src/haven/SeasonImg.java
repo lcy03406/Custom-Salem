@@ -27,10 +27,29 @@
 package haven;
 
 import static haven.Window.wbox;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class SeasonImg extends Window {
-    private static final Tex seasons[] = {Resource.loadtex("gfx/hud/coldsnap"),Resource.loadtex("gfx/hud/everbloom"),Resource.loadtex("gfx/hud/bloodmoon")};
+    private static final SimpleDateFormat datef = new SimpleDateFormat("yyyy-MM-dd, HH:mm:ss", Locale.ENGLISH);
+    private long time;
+    private static long EPOCH;
+    private Tex timeTex;
+    private static final Tex seasons[] = {
+        Resource.loadtex("gfx/hud/coldsnap"),
+        Resource.loadtex("gfx/hud/everbloom"),
+        Resource.loadtex("gfx/hud/bloodmoon")
+    };
     private double t = 0;
+    static {
+	Calendar c = new GregorianCalendar(1631, 0, 1);//Year when Providence was established
+	c.setTimeZone(TimeZone.getTimeZone("GMT"));
+	EPOCH = c.getTimeInMillis();
+    }
     
     public SeasonImg(Coord c, Coord sz, Widget parent) {
 	super(c, sz, parent,null);
@@ -39,6 +58,7 @@ public class SeasonImg extends Window {
 		this.c = new Coord(Config.window_props.getProperty("season_pos", c.toString()));
 	    } catch (Exception e){}
 	}
+	datef.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
     
     @Override
@@ -59,11 +79,21 @@ public class SeasonImg extends Window {
     public void draw(GOut g) {
 	Tex t = seasons[ui.sess.glob.season];
         g.image(t, this.sz.sub(t.sz()).div(2));
-        if(ui.sess.glob.timetd!=null && ui.sess.glob.timeth!=null)
-        {
-            g.image(ui.sess.glob.timetd,new Coord(10,6));
-            g.image(ui.sess.glob.timeth,new Coord(10,6+ui.sess.glob.timetd.getHeight()-4));
-        }
         wbox.draw(g, Coord.z, sz);
+    }
+
+    @Override
+    public Object tooltip(Coord c, Widget prev) {
+	long stime = ui.sess.glob.globtime();
+	if ((int) (time / 1000) != (int) (stime / 1000) || timeTex == null) {
+	    time = stime;
+	    if (timeTex != null) {
+		timeTex.dispose();
+	    }
+	    Date date = new Date(time + EPOCH);
+	    timeTex = Text.render(datef.format(date)).tex();
+	}
+
+	return timeTex;
     }
 }

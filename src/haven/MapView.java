@@ -30,6 +30,7 @@ import haven.Fightview.Relation;
 import static haven.MCache.tilesz;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +42,7 @@ import java.util.TreeMap;
 import javax.media.opengl.GL;
 public class MapView extends PView implements DTarget, Console.Directory {
     public static final String DEFCAM = "sortho";
+    private final R2DWdg r2dwdg;
     public long plgob = -1;
     public Coord cc;
     private final Glob glob;
@@ -53,7 +55,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
     private int[] visol = new int[32];
     private Grabber grab;
     public static final Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
-    
+
     {
 	camtypes.put("follow", FollowCam.class);
 	camtypes.put("sfollow", SmoothFollowCam.class);
@@ -61,7 +63,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	camtypes.put("ortho", OrthoCam.class);
 	camtypes.put("sortho", SOrthoCam.class);
     }
-    
+
     public interface Delayed {
 	public void run(GOut g);
     }
@@ -91,6 +93,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	public boolean wheel(Coord sc, int amount) {
 	    return(false);
 	}
+	public void fixangle() {}
 	
 	public void resized() {
 	    float field = 0.5f;
@@ -403,13 +406,16 @@ public class MapView extends PView implements DTarget, Console.Directory {
     static {camtypes.put("sucky", SFreeCam.class);}
     
     private static class OrthoCam extends Camera {
+
+	public static final float DEFANGLE = -(float) Math.PI / 4.0f;
+
 	public OrthoCam(MapView mv) {
 	    super(mv);
 	}
 
 	protected float dist = 500.0f;
 	protected float elev = (float)Math.PI / 6.0f;
-	protected float angl = -(float)Math.PI / 4.0f;
+	protected float angl = DEFANGLE;
 	protected float field = (float)(100 * Math.sqrt(2));
 	private Coord dragorig = null;
 	private float anglorig;
@@ -438,8 +444,22 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    return(true);
 	}
 
+	@Override
+	public void fixangle() {
+	    angl = stepify(angl - DEFANGLE) + DEFANGLE;
+	}
+
+	protected float stepify(float a) {
+	    if(Config.isocam_steps) {
+		a = Math.round(2 * a / Math.PI);
+		a = (float) (a * Math.PI / 2);
+	    }
+	    return a;
+	}
+
 	public void drag(Coord c) {
-	    angl = anglorig + ((float)(c.x - dragorig.x) / 100.0f);
+	    float delta = stepify((float) (c.x - dragorig.x) / 100.0f);
+	    angl = anglorig + delta;
 	    angl = angl % ((float)Math.PI * 2.0f);
 	}
 	
@@ -477,7 +497,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    while(angl > pi2) {angl -= pi2; tangl -= pi2; anglorig -= pi2;}
 	    while(angl < 0)   {angl += pi2; tangl += pi2; anglorig += pi2;}
 	    if(Math.abs(tangl - angl) < 0.0001)
-		angl = tangl;
+		angl = tangl = tangl % ((float)Math.PI * 2.0f);
 
 	    field = field + ((tfield - field) * (1f - (float)Math.pow(500, -dt)));
 	    if(Math.abs(tfield - field) < 0.0001)
@@ -490,8 +510,14 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    return(true);
 	}
 
+	@Override
+	public void fixangle() {
+	    tangl = stepify(tangl - DEFANGLE) + DEFANGLE;
+	}
+
 	public void drag(Coord c) {
-	    tangl = anglorig + ((float)(c.x - dragorig.x) / 100.0f);
+	    float delta = stepify((float) (c.x - dragorig.x) / 100.0f);
+	    tangl = anglorig + delta;
 	}
 
 	public boolean wheel(Coord c, int amount) {
@@ -520,6 +546,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	this.cc = cc;
 	this.plgob = plgob;
 	setcanfocus(true);
+
+	r2dwdg = new R2DWdg(this);
     }
     
     public void enol(int... overlays) {
@@ -560,7 +588,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		return(false);
 	    }
 	};
-    
     public static final int WFOL = 18;
     public static final Tex wftex = Resource.loadtex("gfx/hud/flat");
     private final Rendered mapol = new Rendered() {
@@ -574,6 +601,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		mats[4] = new Material(new Color(255, 0, 0, 96));
 		mats[16] = new Material(new Color(0, 255, 0, 32));
 		mats[17] = new Material(new Color(255, 255, 0, 32));
+		mats[WFOL] = new Material(wftex, true);
 		mats[WFOL] = new Material(wftex);
 	    }
 	    
@@ -902,7 +930,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	rl.render(g);
 	return(rl.get(g, c));
     }
-    
+
     public void delay(Delayed d) {
 	synchronized(delayed) {
 	    delayed.add(d);
@@ -1171,7 +1199,13 @@ public class MapView extends PView implements DTarget, Console.Directory {
     
     public void resize(Coord sz) {
 	super.resize(sz);
+	r2dwdg.resize(sz);
 	camera.resized();
+    }
+
+    @Override
+    protected void render2d(GOut g) {
+	//2d render will be done in r2dwdg
     }
 
     private class Plob extends Gob {
@@ -1339,9 +1373,10 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
 	
 	protected void hit(Coord pc, Coord mc, ClickInfo inf) {
+	    int modflags = ui.modflags();
 	    if(inf == null) {
 		if(Config.center){mc = mc.div(11).mul(11).add(5, 5);}
-		wdgmsg("click", pc, mc, clickb, ui.modflags());
+		wdgmsg("click", pc, mc, clickb, modflags);
 	    } else {
 		if(ui.modmeta){
 		    ChatUI.Channel channel = ui.gui.chat.sel;
@@ -1350,9 +1385,9 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		    }
 		}
 		if(inf.ol == null) {
-		    wdgmsg("click", pc, mc, clickb, ui.modflags(), 0, (int)inf.gob.id, inf.gob.rc, 0, getid(inf.r));
+		    wdgmsg("click", pc, mc, clickb, modflags, 0, (int)inf.gob.id, inf.gob.rc, 0, getid(inf.r));
 		} else {
-		    wdgmsg("click", pc, mc, clickb, ui.modflags(), 1, (int)inf.gob.id, inf.gob.rc, inf.ol.id, getid(inf.r));
+		    wdgmsg("click", pc, mc, clickb, modflags, 1, (int)inf.gob.id, inf.gob.rc, inf.ol.id, getid(inf.r));
 		}
 	    }
 	}

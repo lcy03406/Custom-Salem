@@ -37,17 +37,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Inspiration extends ItemInfo.Tip {
-    public final int xc;
+    public final int xc, base;
+    public final float multi;
     public final String[] attrs;
     public final int[] exp;
     public final int[] o;
     
     public Inspiration(Owner owner, int xc, String[] attrs, int[] exp) {
 	super(owner);
-	this.xc = xc;
 	this.o = CharWnd.sortattrs(attrs);
 	this.attrs = attrs;
 	this.exp = exp;
+	this.base = total();
+	this.xc = (xc >= 0)?xc:base;
+	int k = Math.round(100*(float)xc/base);
+	multi = k/100.0f;
+    }
+
+    public Inspiration(Owner o, String[] attrs, int[] exp) {
+	this(o, -1, attrs, exp);
     }
 
     public int total() {
@@ -59,7 +67,7 @@ public class Inspiration extends ItemInfo.Tip {
 	}
 	return(ret);
     }
-    
+
     public BufferedImage longtip() {
 	StringBuilder buf = new StringBuilder();
 	Color[] cs = UI.instance.gui.chrwdg.attrcols(attrs);

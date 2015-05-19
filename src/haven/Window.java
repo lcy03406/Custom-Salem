@@ -74,8 +74,8 @@ public class Window extends Widget implements DTarget {
     public boolean dm = false;
     public Coord ctl, csz, atl, asz, ac;
     public Coord doff;
-    private final Collection<Widget> twdgs = new LinkedList<Widget>();
     protected final IButton cbtn;
+    private final Collection<Widget> twdgs = new LinkedList<Widget>();
 
 // ******************************
     private static final String OPT_POS = "_pos";

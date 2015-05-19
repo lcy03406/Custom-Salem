@@ -27,6 +27,7 @@
 package haven;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import haven.GLSettings.SettingException;
@@ -76,6 +77,7 @@ public class Config {
     public static boolean translate = Utils.getprefb("translate", false);
 
     public static String currentCharName = "";
+    public static Map<String, Boolean> AUTOCHOOSE = null;
     static Properties window_props;
     public static Properties options;
     private static Map<String, Object> buildinfo = new HashMap<String, Object>();
@@ -159,6 +161,13 @@ public class Config {
     
     public static boolean show_radius = Utils.getprefb("show_radius", false);
     public static Map<String, ColoredRadius.Cfg> item_radius;
+    public static boolean autosift = Utils.getprefb("autosift", false);
+    public static boolean gobpath = Utils.getprefb("gobpath", false);
+    public static boolean gobpath_color = Utils.getprefb("gobpath_color", true);
+    public static Map<String, GobPath.Cfg> gobPathCfg;
+    public static boolean isocam_steps = Utils.getprefb("isocam_steps", true);
+    public static boolean auto_drop_bats = Utils.getprefb("auto_drop_bats", false);
+    public static boolean weight_wdg = Utils.getprefb("weight_wdg", false);
 
     static {
 	String p;
@@ -174,8 +183,57 @@ public class Config {
 	window_props = loadProps("windows.conf");
 
 	loadItemRadius();
+<<<<<<< HEAD
 
         Wiki.init(getFile("cache"), 3);
+=======
+	loadAutochoose();
+	Wiki.init(getFile("cache"), 3);
+
+	loadGobPathCfg();
+    }
+
+    private static void loadAutochoose() {
+	String json = loadFile("autochoose.json");
+	if(json != null){
+	    try {
+		Gson gson = (new GsonBuilder()).create();
+		Type collectionType = new TypeToken<HashMap<String, Boolean>>(){}.getType();
+		AUTOCHOOSE = gson.fromJson(json, collectionType);
+	    }catch(Exception ignored){ }
+	}
+	if(AUTOCHOOSE == null){
+	    AUTOCHOOSE = new HashMap<String, Boolean>();
+	    AUTOCHOOSE.put("Pick", false);
+	    AUTOCHOOSE.put("Open", false);
+	}
+    }
+
+    @SuppressWarnings("SynchronizeOnNonFinalField")
+    public static void  saveAutochoose() {
+	synchronized (AUTOCHOOSE) {
+	    Gson gson = (new GsonBuilder()).create();
+	    saveFile("autochoose.json", gson.toJson(AUTOCHOOSE));
+	}
+    }
+
+    private static void loadGobPathCfg() {
+	String json = loadFile("gob_path.json");
+	if(json != null){
+	    try {
+		Gson gson = GobPath.Cfg.getGson();
+		Type collectionType = new TypeToken<HashMap<String, GobPath.Cfg>>(){}.getType();
+		gobPathCfg = gson.fromJson(json, collectionType);
+	    }catch(Exception e){
+		gobPathCfg = new HashMap<String, GobPath.Cfg>();
+	    }
+	}
+    }
+
+    public static void saveGobPathCfg(){
+	Gson gson = GobPath.Cfg.getGson();
+	saveFile("gob_path.json", gson.toJson(gobPathCfg));
+>>>>>>> upstream/master
     }
 
     private static void loadBuildVersion() {
@@ -445,10 +503,65 @@ public class Config {
 	brighten = val;
 	Utils.setpreff("brighten", val);
     }
+<<<<<<< HEAD
     
     //project overgrown
     public static void setFieldproducescale(int val) {
 	fieldproducescale = val;
 	Utils.setpreff("fieldproducescale", val);
+=======
+
+    public static String loadFile(String name){
+	InputStream inputStream = null;
+	File file = Config.getFile(name);
+	if(file.exists() && file.canRead()) {
+	    try {
+		inputStream = new FileInputStream(file);
+	    } catch (FileNotFoundException ignored) {
+	    }
+	} else {
+	    inputStream = Config.class.getResourceAsStream("/"+name);
+	}
+	if(inputStream != null) {
+	    try {
+	    	return Utils.stream2str(inputStream);
+	    } catch (Exception ignore){
+	    } finally {
+		try {inputStream.close();} catch (IOException ignored) {}
+	    }
+	}
+	return null;
+    }
+
+    public static void saveFile(String name, String data){
+	File file = Config.getFile(name);
+	boolean exists = file.exists();
+	if(!exists){
+	    try {
+		//noinspection ResultOfMethodCallIgnored
+		new File(file.getParent()).mkdirs();
+		exists = file.createNewFile();
+	    } catch (IOException ignored) {}
+	}
+	if(exists && file.canWrite()){
+	    PrintWriter out = null;
+	    try {
+		out = new PrintWriter(file);
+		out.print(data);
+	    } catch (FileNotFoundException ignored) {
+	    } finally {
+		if (out != null) {
+		    out.close();
+		}
+	    }
+	}
+    }
+
+    public static GobPath.Cfg getGobPathCfg(String resname) {
+	if(gobPathCfg.containsKey(resname)){
+	    return gobPathCfg.get(resname);
+	}
+	return GobPath.Cfg.def;
+>>>>>>> upstream/master
     }
 }

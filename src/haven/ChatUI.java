@@ -1,7 +1,7 @@
 /*
  *  This file is part of the Haven & Hearth game client.
  *  Copyright (C) 2009 Fredrik Tolf <fredrik@dolda2000.com>, and
- *                     BjÃ¶rn Johannessen <johannessen.bjorn@gmail.com>
+ *                     Björn Johannessen <johannessen.bjorn@gmail.com>
  *
  *  Redistribution and/or modification of this file is subject to the
  *  terms of the GNU Lesser General Public License, version 3, as
@@ -168,7 +168,15 @@ public class ChatUI extends Widget {
     }
 
     public static abstract class Channel extends Widget {
-	public final List<Message> msgs = new LinkedList<Message>();
+	public final List<Message> msgs = new LinkedList<Message>(){
+	    @Override
+	    public boolean add(Message message) {
+		if(size() >= 200){
+		    removeFirst().tex().dispose();
+		}
+		return super.add(message);
+	    }
+        };
 	private final Scrollbar sb;
         private FileOutputStream fos = null;
 	public IButton cbtn;

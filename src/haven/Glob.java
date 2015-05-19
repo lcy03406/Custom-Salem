@@ -46,8 +46,6 @@ public class Glob {
     public static final float MAX_BRIGHT = 0.62f;
 	
     public long time, epoch = System.currentTimeMillis();
-    public static final Text.Foundry ttfnd = new Text.Foundry("SansSerif", 10);
-    public BufferedImage timetd,timeth;
     public int season;
     public OCache oc = new OCache(this);
     public MCache map;
@@ -258,19 +256,6 @@ public class Glob {
     private void setServerTime(int st)
     {
         time = st;
-        int ad = st / year;
-        st = st % year;
-        int mnt = st / month;
-        st = st % month;
-        int dy = st / day;
-        st = st % day;
-        int hr = st / hour;
-        st = st % hour;
-        int mn = st / minute;
-        String ds = String.format("day %d of the %s moon, %d AW",dy,ordinal(mnt),ad);
-        String hs = String.format("%02d:%02d",hr,mn);
-        timetd = Utils.outline2(ttfnd.render(ds, Color.BLACK).img,Color.LIGHT_GRAY);
-        timeth = Utils.outline2(ttfnd.render(hs, Color.BLACK).img,Color.LIGHT_GRAY);
     }
     
     public void blob(Message msg) {

@@ -121,7 +121,7 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	return (img);
     }
 
-    public BufferedImage drawmap(Coord ul, Coord sz) {
+    public BufferedImage drawmap(Coord ul, Coord sz, boolean pretty) {
 	BufferedImage[] texes = new BufferedImage[256];
 	MCache m = UI.instance.sess.glob.map;
 	BufferedImage buf = TexI.mkbuf(sz);
@@ -139,7 +139,8 @@ public class LocalMiniMap extends Window implements Console.Directory{
 		    BufferedImage tex = tileimg(t, texes);
 		    int rgb = 0x000000ff;
 		    if (tex != null) {
-			rgb = tex.getRGB(Utils.floormod(c.x, tex.getWidth()), Utils.floormod(c.y, tex.getHeight()));
+			Coord tc = pretty?c2:c;
+			rgb = tex.getRGB(Utils.floormod(tc.x, tex.getWidth()), Utils.floormod(tc.y, tex.getHeight()));
 		    }
 		    buf.setRGB(c.x, c.y, rgb);
 		} catch (Loading e){
@@ -188,13 +189,13 @@ public class LocalMiniMap extends Window implements Console.Directory{
     private Future<BufferedImage> getheightmap(final Coord plg){
 	Future<BufferedImage> f = Defer.later(new Defer.Callable<BufferedImage> () {
 	    public BufferedImage call() {
-		return drawmap2(plg);
+		return drawheightmap(plg);
 	    }
 	});
 	return f;
     }
 
-    public BufferedImage drawmap2(Coord plg) {
+    public BufferedImage drawheightmap(Coord plg) {
 	MCache m = ui.sess.glob.map;
 	Coord ul = (plg.sub(1, 1)).mul(cmaps);
 	BufferedImage buf = TexI.mkbuf(hmsz);
@@ -409,12 +410,16 @@ public class LocalMiniMap extends Window implements Console.Directory{
 		    final Coord tcg = new Coord(cg);
 		    final Coord ul = cg.mul(cmaps);
 		    if((f == null) && (cg.manhattan2(plg) <= 1)) {
-			f = Defer.later(new Defer.Callable<MapTile> () {
+			f = Defer.later(new Defer.Callable<MapTile>() {
 			    public MapTile call() {
-				BufferedImage img = drawmap(ul, cmaps);
-				if(img == null){return null;}
-				store(img, tcg);
-				return(new MapTile(new TexI(img), ul, tcg));
+				BufferedImage img = drawmap(ul, cmaps, true);
+				if(img == null) { return null; }
+				MapTile mapTile = new MapTile(new TexI(img), ul, tcg);
+				if(Config.store_map) {
+				    img = drawmap(ul, cmaps, false);
+				    store(img, tcg);
+				}
+				return mapTile;
 			    }
 			});
 			cache.put(tcg, f);
@@ -461,7 +466,7 @@ public class LocalMiniMap extends Window implements Console.Directory{
 	}
 
 	g.gl.glPopMatrix();
-	//drawicons(g);
+
 	Window.swbox.draw(og, Coord.z, this.sz);
         
         //draw the lock icon
@@ -485,7 +490,7 @@ public class LocalMiniMap extends Window implements Console.Directory{
     }
 
     private void store(BufferedImage img, Coord cg) {
-	if(!Config.store_map){return;}
+	if(!Config.store_map || img == null){return;}
 	Coord c = cg.sub(sp);
 	String fileName = mapsessfile(String.format("tile_%d_%d.png", c.x, c.y));
 	File outputfile = new File(fileName);
@@ -497,7 +502,17 @@ public class LocalMiniMap extends Window implements Console.Directory{
     private void checkSession(Coord plg) {
 	if(cgrid == null || plg.manhattan(cgrid) > 5){
 	    sp = plg;
-	    cache.clear();
+	    synchronized (cache) {
+		for (Future<MapTile> v : cache.values()) {
+		    if(v != null && v.done()) {
+			MapTile tile = v.get();
+			if(tile != null && tile.img != null) {
+			    tile.img.dispose();
+			}
+		    }
+		}
+		cache.clear();
+	    }
 	    session = Utils.current_date();
 	    if(Config.store_map){
 		(new File(mapsessfolder())).mkdirs();

@@ -201,7 +201,15 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
 	return(ret);
     }
 
-    public Coord abs(){return new Coord(Math.abs(x), Math.abs(y));}
+    public Coord abs() {
+	return new Coord(Math.abs(x),Math.abs(y));
+    }
 
-    public long mul(){return x*y;}
+    public long mul() {
+	return x*y;
+    }
+
+    public Coord rotate(double angle){
+	return new Coord((int)(x*Math.cos(angle) - y*Math.sin(angle)), (int)(x*Math.sin(angle) + y*Math.cos(angle)));
+    }
 }

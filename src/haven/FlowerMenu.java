@@ -43,6 +43,7 @@ public class FlowerMenu extends Widget {
     static int ph = pbgm.sz().y, ppl = 8;
     FlowerMenu.Petal[] opts;
     private double fast_menu1, fast_menu2;
+    private Petal autochoose = null;
 
     @Widget.RName("sm")
     public static class $_ implements Widget.Factory {
@@ -199,8 +200,13 @@ public class FlowerMenu extends Widget {
 	if(study == null) {
 	    opts = new FlowerMenu.Petal[options.length];
 	    for(int i = 0; i < options.length; i++) {
-		opts[i] = new FlowerMenu.Petal(options[i]);
-		opts[i].num = i;
+		String name = options[i];
+		Petal p = new Petal(name);
+		p.num = i;
+		if(Config.AUTOCHOOSE.containsKey(name ) && Config.AUTOCHOOSE.get(name)){
+		    autochoose = p;
+		}
+		opts[i] = p;
 	    }
 	} else {
 	    opts = new FlowerMenu.Petal[]{study};
@@ -255,6 +261,15 @@ public class FlowerMenu extends Widget {
 	    i++;
 	}
 	return 0;
+    }
+
+    @Override
+    public void tick(double dt) {
+	if(autochoose != null){
+	    choose(autochoose);
+	    autochoose = null;
+	}
+	super.tick(dt);
     }
 
     public void draw(GOut g) {

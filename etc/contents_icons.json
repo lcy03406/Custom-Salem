@@ -4,9 +4,10 @@
   "seeds of Pumpkin"    : "gfx/invobjs/pumpkin",
   "seeds of Cereal"     : "gfx/invobjs/cereal",
   "seeds of Yellow Corn": "gfx/invobjs/maize0",
-  "seeds of White Corn" : "gfx/invobjs/maize0",
-  "seeds of Blue Corn"  : "gfx/invobjs/maize0",
-  "seeds of Golden Corn": "gfx/invobjs/maize0",
+  "seeds of White Corn" : "gfx/invobjs/maize1",
+  "seeds of Blue Corn"  : "gfx/invobjs/maize2",
+  "seeds of Golden Corn": "gfx/invobjs/maize3",
+  "seeds of Potato"     : "gfx/invobjs/seeds-potato",
   "Oatmeal"             : "gfx/invobjs/flour0",
   "Rye Flour"           : "gfx/invobjs/flour1",
   "Barley Flour"        : "gfx/invobjs/flour2",
@@ -16,5 +17,11 @@
   "Blue Cornmeal"       : "gfx/invobjs/cornmeal2",
   "Golden Cornmeal"     : "gfx/invobjs/cornmeal3",
   "Bonemeal"            : "gfx/invobjs/bonemeal",
-  "Sugar"               : "gfx/invobjs/sugar"
+  "Sugar"               : "gfx/invobjs/sugar",
+  "Goldflakes"          : "gfx/invobjs/goldflakes",
+  "Green Tea"           : "gfx/invobjs/tealeaves",
+  "Yellow Tea"          : "gfx/invobjs/yellowtealeaves",
+  "Black Tea"           : "gfx/invobjs/blacktealeaves",
+  "White Tea"           : "gfx/invobjs/wiltedtealeaves",
+  "Raw Egg Yolk"        : "gfx/invobjs/turkeyegg"
 }

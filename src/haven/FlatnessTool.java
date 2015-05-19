@@ -1,13 +1,16 @@
 package haven;
 
 import haven.MCache.LoadingMap;
+
 import java.awt.event.KeyEvent;
 
-public class FlatnessTool extends Window implements MapView.Grabber{
+class FlatnessTool extends Window implements MapView.Grabber {
     static final String title = "Area selection";
     static final String defaulttext = "Select area";
+
     static public float minheight = Float.MAX_VALUE;
     static public float maxheight = -minheight;
+
     private final Label text, area;
     private final MapView mv;
     Coord sc;
@@ -17,29 +20,31 @@ public class FlatnessTool extends Window implements MapView.Grabber{
     private Button btnToggle;
     private boolean grabbed = false;
     private MapView.GrabXL grab;
-    private static FlatnessTool instance;
 
-    public FlatnessTool(MapView mv, Coord c, Widget parent){
-	super(c, new Coord(150,50), parent, title);
+    private static FlatnessTool instance; 
+
+    public FlatnessTool(MapView mv, Coord c, Widget parent) {
+	super(c, new Coord(150, 50), parent, title);
 	this.map = this.ui.sess.glob.map;
 	this.text = new Label(Coord.z, this, defaulttext);
 	this.area = new Label(new Coord(0, text.sz.y), this, "");
 	this.mv = mv;
 	grab = mv.new GrabXL(this){
-		@Override
-		public boolean mmousewheel(Coord cc, int amount){
+	    @Override
+	    public boolean mmousewheel(Coord cc, int amount) {
 		return false;
-		}
-	    };
-
+	    }
+	    
+	};
 	this.mv.enol(MapView.WFOL);
-	btnToggle = new Button(new Coord(0, area.c.add(area.sz).y), 75, this, "Grab");
+	btnToggle = new Button(new Coord(0, area.c.add(area.sz).y), 75, this, "");
+	//toggle();
 	this.pack();
     }
-	    
-    public static FlatnessTool instance(GameUI gui){
-	if(instance == null && gui != null && gui.map != null){
-	    instance = new FlatnessTool(gui.map, new Coord(100,100), gui);
+
+    public static FlatnessTool instance(UI ui) {
+	if(instance == null){
+	    instance = new FlatnessTool(ui.gui.map, new Coord(100, 100), ui.gui);
 	}
 	return instance;
     }
@@ -62,7 +67,7 @@ public class FlatnessTool extends Window implements MapView.Grabber{
 	}
     }
 
-    private void checkflatness(Coord c1, Coord c2){
+    private void checkflatness(Coord c1, Coord c2) {
 	if(c1 == null || c2 == null){
 	    return;
 	}
@@ -78,43 +83,44 @@ public class FlatnessTool extends Window implements MapView.Grabber{
 	double mean = 0;
 	Coord c = new Coord();
 	try {
-	    for(c.x = c1.x; c.x <= c2.x; c.x++){
-		for(c.y = c1.y; c.y <= c2.y; c.y++){
+	    for (c.x = c1.x; c.x <= c2.x; c.x++) {
+		for (c.y = c1.y; c.y <= c2.y; c.y++) {
 		    h = map.getcz(c.mul(MCache.tilesz));
-		    if(h < minheight)
+		    if (h < minheight) {
 			minheight = h;
-		    if(h > maxheight)
+		    }
+		    if (h > maxheight) {
 			maxheight = h;
-		    mean += (double)h;
+		    }
+		    mean += (double)h/(double)n;
 		}
 	    }
-	    mean /= (double)n;
-	}catch(LoadingMap e){
+	} catch (LoadingMap e) {
 	    return;
 	}
 
 	String text = "";
-	if(minheight == maxheight)
+	if (minheight == maxheight)
 	    text += "Area is flat.";
-	else
-	    text += "Area is not flat.";
+	else {
+	    text += "Area isn't flat.";
+	}
+	text += String.format(" Lowest: [%.0f], Highest: [%.0f], Mean: [%.2f].", minheight, maxheight, mean);
 
-	text += String.format(" Lowest: [%.0f], Heighest: [%.0f], Mean: [%.2f].", minheight, maxheight, mean);
 	settext(text);
 	setarea(sz);
+
 	this.pack();
     }
 
-    private void setarea(Coord sz){area.settext(String.format("Size: (%d\u00D7%d) = %dm\u00B2", sz.x, sz.y, sz.mul()));}
+    private void setarea(Coord sz) {
+	area.settext(String.format("Size: (%d\u00D7%d) = %dm\u00B2", sz.x, sz.y, sz.mul()));
+    }
 
     @Override
     public void destroy() {
-	if(this.grabbed)
-	    this.toggle();
-
-	if(this.ol != null)
+	if (this.ol != null)
 	    this.ol.destroy();
-	
 	this.mv.disol(MapView.WFOL);
 	this.mv.release(grab);
 	instance = null;
@@ -124,32 +130,33 @@ public class FlatnessTool extends Window implements MapView.Grabber{
     @Override
     public boolean mmousedown(Coord mc, int button) {
 	Coord c = mc.div(MCache.tilesz);
-	if(this.ol != null)
+	if (this.ol != null)
 	    this.ol.destroy();
 	this.ol = map.new Overlay(c, c, 1<<MapView.WFOL);
 	this.sc = c;
 	grab.mv = true;
 	this.ui.grabmouse(this.mv);
+        
 	checkflatness(c, c);
 
 	return true;
     }
 
     @Override
-    public boolean mmouseup(Coord mc, int button){
+    public boolean mmouseup(Coord mc, int button) {
 	grab.mv = false;
 	this.ui.grabmouse(null);
 	return true;
     }
 
     @Override
-    public void mmousemove(Coord mc){
-	if(!grab.mv)
+    public void mmousemove(Coord mc) {
+	if (!grab.mv)
 	    return;
 	Coord c = mc.div(MCache.tilesz);
-	Coord c1 = new Coord(0,0);
-	Coord c2 = new Coord(0,0);
-	if(c.x < this.sc.x){
+	Coord c1 = new Coord(0, 0);
+	Coord c2 = new Coord(0, 0);
+	if (c.x < this.sc.x) {
 	    c1.x = c.x;
 	    c2.x = this.sc.x;
 	} else {
@@ -176,8 +183,8 @@ public class FlatnessTool extends Window implements MapView.Grabber{
 	}
     }
 
-    public boolean type(char key, java.awt.event.KeyEvent ev){
-	if (key == KeyEvent.VK_ENTER || key == KeyEvent.VK_ESCAPE){
+    public boolean type(char key, java.awt.event.KeyEvent ev) {
+	if (key == KeyEvent.VK_ENTER || key == KeyEvent.VK_ESCAPE) {
 	    close();
 	    return true;
 	}
@@ -185,26 +192,29 @@ public class FlatnessTool extends Window implements MapView.Grabber{
     }
 
     @Override
-    public void wdgmsg(Widget wdg, String msg, Object... args){
-	if(wdg == cbtn){
+    public void wdgmsg(Widget wdg, String msg, Object... args) {
+	if (wdg == cbtn) {
 	    ui.destroy(this);
 	} else if(wdg == btnToggle){
 	    toggle();
-	} else{
+	} else {
 	    super.wdgmsg(wdg, msg, args);
 	}
     }
 
-    private final void settext(String text){this.text.settext(text);}
+    private final void settext(String text) {
+	this.text.settext(text);
+    }
 
-    public static void recalcheight(){
+    public static void recalcheight() {
 	if(instance != null){
 	    instance.checkflatness(instance.c1, instance.c2);
+	    //instance.ol.update();
 	}
     }
 
     @Override
-    public boolean mmousewheel(Coord mc, int amount){
+    public boolean mmousewheel(Coord mc, int amount) {
 	return false;
     }
 }
