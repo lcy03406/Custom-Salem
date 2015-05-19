@@ -1274,11 +1274,13 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    
 	    public void hit(Coord pc, Coord mc) {
 		rc = mc;
-		if(adjust)
-		    rc = rc.center();
+		if (adjust)
+		    rc = rc.adjust(Config.click_adjust);
 		Gob pl = player();
 		if((pl != null) && !freerot)
 		    a = rc.angle(pl.rc);
+		if (adjust)
+		    a = Math.floor(a / (Math.PI/4))* (Math.PI/4);
 		lastmc = pc;
 	    }
 	}

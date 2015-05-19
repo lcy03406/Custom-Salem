@@ -35,15 +35,6 @@ import static java.lang.Math.PI;
 
 public class FlowerMenu extends Widget {
     public static FlowerMenu instance;
-    public static final HashSet<String> autoconfig = new HashSet<String>();
-    static {
-	autoconfig.add("Pick");
-	autoconfig.add("Pry Face");
-	autoconfig.add("Smash Face");
-	autoconfig.add("She Loves Me");
-	autoconfig.add("She Loves Me Not");
-	autoconfig.add("Remove Cone Scales");
-    }
     public static final Tex pbgl = Resource.loadtex("gfx/hud/fpl");
     public static final Tex pbgm = Resource.loadtex("gfx/hud/fpm");
     public static final Tex pbgr = Resource.loadtex("gfx/hud/fpr");
@@ -321,7 +312,7 @@ public class FlowerMenu extends Widget {
 	} else {
 	    for(FlowerMenu.Petal p : opts){
 		if(p.name.equals(name)){
-		    wdgmsg("cl", p.num, 0);
+		    autochoose = p;
 		    return;
 		}
 	    }

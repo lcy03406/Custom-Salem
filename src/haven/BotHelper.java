@@ -4,6 +4,7 @@ import haven.Fightview.Relation;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static haven.MCache.tilesz;
@@ -150,6 +151,9 @@ public class BotHelper {
      * 当前动作
      */
     public static String action;
+    /**
+     * 当前打开的容器
+     */
     public static Inventory box;
     /**
      * 等待事件
@@ -390,6 +394,71 @@ public class BotHelper {
 	return gobname.equals(name);
     }
 
+    private static List<String> confForage = new ArrayList<String>();
+    static {
+	confForage.add("gfx/terobjs/herbs/");
+	confForage.add("gfx/terobjs/items/");
+	confForage.add("gfx/kritter/crab/");
+	confForage.add("gfx/kritter/frog/");
+    }
+    
+    /**
+     * 设置Ctrl+A自动拾取的物体类型。
+     * 默认是"gfx/terobjs/herbs/","gfx/terobjs/items/","gfx/kritter/crab/","gfx/kritter/frog/"
+     * @param conf 物体名
+     */
+    public static void configForage(List<String> conf) {
+	confForage = conf;
+    }
+    
+    /**
+     * 检查gobname与configForage的物体类型是否匹配
+     * @param gobname 要匹配的物体名
+     * @return 是否匹配
+     */
+    public static boolean matchForage(String gobname) {
+	for (String name : confForage) {
+	    if (matchName(gobname, name)) {
+		return true;
+	    }
+	}
+	return false;
+    }
+    
+    
+    private static List<String> confChoose = new ArrayList<String>();
+    static {
+	confChoose.add("Pick");
+	confChoose.add("Pry Face");
+	confChoose.add("Smash Face");
+	confChoose.add("She Loves Me");
+	confChoose.add("She Loves Me Not");
+	confChoose.add("Remove Cone Scales");
+    }
+    
+    /**
+     * 设置自动选择的菊花菜单选项。
+     * 默认是"Pick","Pry Face","Smash Face","She Loves Me","She Loves Me Not","Remove Cone Scales"
+     * @param conf 选项名
+     */
+    public static void configChoose(List<String> conf) {
+	confChoose = conf;
+    }
+
+    /**
+     * 检查petalname与configChoose是否匹配
+     * @param petalname 要检查的选项
+     * @return 是否匹配
+     */
+    public static boolean matchChoose(String petalname) {
+	for (String name : confChoose) {
+	    if (petalname.equals(name)) {
+		return true;
+	    }
+	}
+	return false;
+    }
+    
     /**
      * 搜索最近的某种物体
      * @param name 物体名字（可以开debuging然后点击物品看到）@see matchName
@@ -524,9 +593,8 @@ public class BotHelper {
 	}
 	synchronized (oc) {
 	    for (Gob gob : oc){
-		String name = gob.name();
-		if (matchName(name, "gfx/terobjs/herbs/") || matchName(name, "gfx/terobjs/items/")
-			|| matchName(name, "gfx/kritter/crab/") || matchName(name, "gfx/kritter/frog/")) {
+		String gobname = gob.name();
+		if (matchForage(gobname)) {
                     double d = gob.rc.dist(pos);
                     if (d < r) {
                 	g = gob;

@@ -185,7 +185,8 @@ public class Inventory extends Widget implements DTarget {
             //flexible size
             int nr_items = wmap.size();
             float aspect_ratio = 8/4;
-            width  = Math.max(4,(int) Math.ceil(Math.sqrt(aspect_ratio*nr_items)));
+            width = Math.max(4,(int) Math.ceil(Math.sqrt(aspect_ratio*nr_items)));
+            width = 20; 
             //height = Math.max(4,(int) Math.ceil(nr_items/width));
         }
         //now sort the item array
@@ -433,8 +434,8 @@ public class Inventory extends Widget implements DTarget {
 	List<WItem> items = new ArrayList<WItem>();
 	for (Widget wdg = lchild; wdg != null; wdg = wdg.prev) {
 	    if (wdg.visible && wdg instanceof WItem) {
-		String iname = ((WItem) wdg).item.name();
-		if (BotHelper.matchName(iname, name))
+		GItem item = ((WItem) wdg).item;
+		if (item != null && BotHelper.matchName(item.name(), name))
 		    items.add((WItem) wdg);
 	    }
 	}
