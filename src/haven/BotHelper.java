@@ -5,6 +5,7 @@ import haven.Fightview.Relation;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 import static haven.MCache.tilesz;
@@ -425,40 +426,18 @@ public class BotHelper {
 	return false;
     }
     
-    
-    private static List<String> confChoose = new ArrayList<String>();
-    static {
-	confChoose.add("Pick");
-	confChoose.add("Pry Face");
-	confChoose.add("Smash Face");
-	confChoose.add("She Loves Me");
-	confChoose.add("She Loves Me Not");
-	confChoose.add("Remove Cone Scales");
-    }
-    
+        
     /**
      * 设置自动选择的菊花菜单选项。
      * 默认是"Pick","Pry Face","Smash Face","She Loves Me","She Loves Me Not","Remove Cone Scales"
      * @param conf 选项名
      */
     public static void configChoose(List<String> conf) {
-	confChoose = conf;
+	for (String s : conf) {
+	    Config.AUTOCHOOSE.put(s, true);
+	}
     }
 
-    /**
-     * 检查petalname与configChoose是否匹配
-     * @param petalname 要检查的选项
-     * @return 是否匹配
-     */
-    public static boolean matchChoose(String petalname) {
-	for (String name : confChoose) {
-	    if (petalname.equals(name)) {
-		return true;
-	    }
-	}
-	return false;
-    }
-    
     /**
      * 搜索最近的某种物体
      * @param name 物体名字（可以开debuging然后点击物品看到）@see matchName
@@ -793,4 +772,50 @@ public class BotHelper {
     public static int potPlants(Gob pot) {
 	return pot.ols.size();
     }
+    
+    static class Field {
+	public int bars[] = new int[4];
+	public float aether = 0;
+	public float upkeep = 0;
+	public float plenty = 0;
+	public float influence = 0;
+    }
+    public static Field readField() {
+	if (aNull())
+	    return null;
+	Window wnd = UI.instance.gui.findWindow("Field");
+	if (wnd == null)
+	    return null;
+	Field p = new Field();
+	for(Widget wdg = wnd.child; wdg != null; wdg = wdg.next) {
+	    if (wdg instanceof VMeter) {
+		VMeter vm = (VMeter) wdg;
+		if (vm.cl.equals(Color.RED)) {
+		    p.bars[0] = vm.amount;
+		} else if (vm.cl.equals(Color.GREEN)) {
+		    p.bars[1] = vm.amount;
+		} else if (vm.cl.equals(Color.BLUE)) {
+		    p.bars[2] = vm.amount;
+		} else {
+		    p.bars[3] = vm.amount;
+		}
+	    } else if (wdg instanceof Label) {
+		Label lbl = (Label) wdg;
+		String[] s = lbl.texts.split(":");
+		if (s.length != 2)
+		    continue;
+		float var = Float.parseFloat(s[1]);
+		switch (s[0]) {
+		case "Æther":
+		    p.aether = var;
+		    break;
+		}
+		if (lbl.texts.startsWith()) {
+		    p.aether = var;
+		}
+	    }
+	}
+	return p;
+    }
+    
 }

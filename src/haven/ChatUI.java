@@ -1,7 +1,7 @@
 /*
  *  This file is part of the Haven & Hearth game client.
  *  Copyright (C) 2009 Fredrik Tolf <fredrik@dolda2000.com>, and
- *                     Björn Johannessen <johannessen.bjorn@gmail.com>
+ *                     BjÃ¶rn Johannessen <johannessen.bjorn@gmail.com>
  *
  *  Redistribution and/or modification of this file is subject to the
  *  terms of the GNU Lesser General Public License, version 3, as
@@ -27,12 +27,8 @@
 
 package haven;
 
-import haven.ChatUI.MultiChat.NamedMessage;
-import haven.minimap.Radar;
-
 import static haven.Window.cbtni;
 
-import static haven.Window.cbtni;
 import java.util.*;
 import java.awt.Color;
 import java.awt.Font;

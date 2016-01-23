@@ -203,8 +203,13 @@ public class Config {
 	}
 	if(AUTOCHOOSE == null){
 	    AUTOCHOOSE = new HashMap<String, Boolean>();
-	    AUTOCHOOSE.put("Pick", false);
 	    AUTOCHOOSE.put("Open", false);
+	    AUTOCHOOSE.put("Pick", true);
+	    AUTOCHOOSE.put("Pry Face", true);
+	    AUTOCHOOSE.put("Smash Face", true);
+	    AUTOCHOOSE.put("She Loves Me", true);
+	    AUTOCHOOSE.put("She Loves Me Not", true);
+	    AUTOCHOOSE.put("Remove Cone Scales", true);
 	}
     }
 

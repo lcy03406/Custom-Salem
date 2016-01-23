@@ -28,6 +28,7 @@ package haven;
 
 import haven.Gob.Overlay;
 import haven.res.lib.HomeTrackerFX;
+
 import org.ender.timer.TimerController;
 
 import java.awt.*;
@@ -40,6 +41,7 @@ import java.util.List;
 import static haven.Inventory.invsq;
 import static haven.Inventory.isqsz;
 import static haven.Widget.gettype;
+
 import java.util.Map.Entry;
 
 public class GameUI extends ConsoleHost implements Console.Directory {
@@ -1661,5 +1663,17 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 ui.wdgmsg(map, "click", map.player().sc, htfx.c, 1,0);
             }
         }
+    }
+    
+    public Window findWindow(String name) {
+	for(Widget wdg = child; wdg != null; wdg = wdg.next) {
+	    if (wdg instanceof Window) {
+		Window wnd = (Window) wdg;
+		if (wnd.name.equals(name)) {
+		    return wnd;
+		}
+	    }
+	}
+	return null;
     }
 }

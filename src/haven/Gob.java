@@ -208,17 +208,29 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
     public String name() {
 	try {
-	    ResDrawable rd = this.getattr(ResDrawable.class);
-	    if(rd!=null && rd.res != null)
+	    Drawable d = this.getattr(Drawable.class);
+	    if (d == null) {
+		return "^NODRAW^";
+	    }
+	    if (d instanceof ResDrawable) {
+		ResDrawable rd = (ResDrawable)d;
+		if(rd.res == null)
+		    return "^NORES^";
 		return rd.res.get().name;
-	    return "^NORES^";
+	    } else if (d instanceof Composite) {
+		Composite c = (Composite) d;
+		if (c.base == null)
+		    return "^NORCOMP^";
+		return c.base.get().name;
+	    }
 	} catch (Loading e) {
 	    e.printStackTrace();
 	    return "^LOADING^";
 	} catch (Exception e) {
 	    e.printStackTrace();
-	    return "^EXCEPTION^";	    
+	    return "^EXCEPTION^";
 	}
+	return "^UNCAUGHT^";
     }
     
     public int mask() {
@@ -238,10 +250,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     
     public String toString() {
 	String str = String.format("%s:%d:%s:%d:", rc, id, name(), mask());
-	//if (ols == null)
-	//    return str;
-	//for(Overlay ol : ols)
-	//    str += "&" + ol.res.get().name;
+	if (ols == null)
+	    return str;
+	for(Overlay ol : ols)
+	    str += "&" + ol.res.get().name;
 	return str;
     }
    

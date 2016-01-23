@@ -91,18 +91,17 @@ public class RemoteUI implements UI.Receiver, UI.Runner {
 		    Object[] cargs = msg.list();
 		    ui.newwidget(id, type, parent, pargs, cargs);
 		    
-//		    String str = String.format("[R.N]%d:%s:%d:", id, type, parent);
-//		    for(Object o : pargs) {
-//			str += "&";
-//			str += o.toString();
-//		    }
-//		    str += ":";
-//		    for(Object o : cargs) {
-//			str += "&";
-//			str += o.toString();
-//		    }
-//		    Helper.debug(str);
-//		    System.out.println(str);
+		    String str = String.format("[R.N]%d:%s:%d:", id, type, parent);
+		    for(Object o : pargs) {
+			str += "&";
+			str += o.toString();
+		    }
+		    str += ":";
+		    for(Object o : cargs) {
+			str += "&";
+			str += o.toString();
+		    }
+		    BotHelper.debug(str);
 
 		} else if(msg.type == Message.RMSG_WDGMSG) {
 		    int id = msg.uint16();
